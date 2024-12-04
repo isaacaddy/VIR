@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Change Ownership - DVLA</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .logo {
+            width: 130px; /* Increased width */
+            height: 75px; /* Adjusted height to maintain aspect ratio */
+            border-radius: 50%; /* Circular logo */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+            transition: transform 0.3s; /* Smooth scaling on hover */
+        }
+        .logo:hover {
+            transform: scale(1.1); /* Slightly enlarge on hover */
+        }
+        .success-popup {
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s ease-out;
+        }
+
+        .success-popup.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Loading button animation */
+        .button-loading {
+            position: relative;
+            color: transparent !important;
+        }
+
+        .button-loading::after {
+            content: "";
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            top: 50%;
+            left: 50%;
+            margin: -8px 0 0 -8px;
+            border: 2px solid transparent;
+            border-top-color: white;
+            border-radius: 50%;
+            animation: button-loading-spinner 1s ease infinite;
+        }
+
+        @keyframes button-loading-spinner {
+            from { transform: rotate(0turn); }
+            to { transform: rotate(1turn); }
+        }
+
+        /* Add to your existing styles */
+        .animate-spin {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Error toast animation */
+        @keyframes slideIn {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+
+        .fixed.bottom-4.right-4 {
+            animation: slideIn 0.3s ease-out;
+        }
+
+        #successPopup.show {
+            display: flex;
+        }
+
+        #successPopup.show .bg-white {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        #successPopup .bg-white {
+            transition: all 0.3s ease-out;
+        }
+
+        /* Loading button animation */
+        .button-loading {
+            position: relative;
+            color: transparent !important;
+        }
+
+        .button-loading::after {
+            content: "";
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            top: 50%;
+            left: 50%;
+            margin: -8px 0 0 -8px;
+            border: 2px solid transparent;
+            border-top-color: white;
+            border-radius: 50%;
+            animation: button-loading-spinner 1s ease infinite;
+        }
+
+        @keyframes button-loading-spinner {
+            from { transform: rotate(0turn); }
+            to { transform: rotate(1turn); }
+        }
+    </style>
+    
+</head>
+<body class="bg-gradient-to-br from-green-50 to-blue-50 min-h-screen flex items-center justify-center">
+    <div id="successPopup" class="fixed inset-0 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg shadow-xl p-6 transform transition-all duration-300 scale-0">
+            <div class="text-center">
+                <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
+                    <span class="material-icons text-green-500 text-2xl">check_circle</span>
+                </div>
+                <p class="text-gray-800 font-medium">Vehicle ownership information has been saved successfully</p>
+            </div>
+        </div>
+    </div>
+    <div class="flex min-h-screen w-full">
+        <!-- Sidebar -->
+        <div class="w-64 bg-gradient-to-b from-green-700 to-teal-600 p-6 text-white shadow-lg flex flex-col justify-between">
+            <div>
+                <div class="flex items-center mb-8">
+                    <a href="dashboard.html">
+                        <img src="./images/oop.png" alt="DVLA Logo" class="logo cursor-pointer">
+                    </a>
+                    <div class="ml-3">
+                        <h2 class="text-2xl font-bold">DVLA</h2>
+                        <p class="text-sm opacity-75">Vehicle Inspection and Registration</p>
+                    </div>
+                </div>
+                <nav>
+                    <a href="dashboard.html" class="flex items-center p-3 mb-2 hover:bg-green-500 rounded-lg transition duration-200">
+                        <span class="material-icons mr-3">dashboard</span>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="records.html" class="flex items-center p-3 mb-2 hover:bg-green-500 rounded-lg transition duration-200">
+                        <span class="material-icons mr-3">search</span>
+                        <span>Search Records</span>
+                    </a>
+                    <a href="changeowner.html" class="flex items-center p-3 mb-2 bg-green-600 rounded-lg transition duration-200">
+                        <span class="material-icons mr-3">sync_alt</span>
+                        <span>Change Ownership</span>
+                    </a>
+                    <a href="admin.html" class="flex items-center p-3 mb-2 hover:bg-green-500 rounded-lg transition duration-200">
+                        <span class="material-icons mr-3">admin_panel_settings</span>
+                        <span>Admin</span>
+                    </a>
+                    
+                </nav>
+            </div>
+
+            <div class="mt-auto flex flex-col items-center">
+                <button onclick="handleLogout()" class="flex items-center bg-gradient-to-r from-green-600 to-teal-600 text-white px-5 py-3 rounded-lg shadow-lg hover:from-green-500 hover:to-teal-500 transform hover:scale-105 transition duration-200 ease-in-out mb-4">
+                    <span class="material-icons mr-2">logout</span>
+                    <span class="font-semibold">Logout</span>
+                </button>
+                <div class="text-center opacity-75 text-sm">
+                    © 2024 DVLA Club
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 p-8 relative">
+            <a href="dashboard.html" class="absolute top-4 left-4 text-green-500 text-2xl hover:text-green-700 transition">←</a>
+            
+            <div class="bg-white rounded-lg shadow-lg p-6 mt-12">
+                <h1 class="text-3xl font-bold mb-6 text-center text-gray-800">Change of Ownership</h1>
+
+                <!-- Progress Steps -->
+                <div class="flex items-center mb-6">
+                    <div class="flex items-center flex-1">
+                        <div id="step1" class="flex items-center">
+                            <div class="w-10 h-10 flex items-center justify-center rounded-full bg-green-500 text-white font-bold">1</div>
+                            <span class="ml-2 font-medium text-green-500">Current Owner Information</span>
+                        </div>
+                        <div class="flex-1 h-1 bg-gray-300 mx-2"></div>
+                    </div>
+
+                    <div class="flex items-center flex-1">
+                        <div id="step2" class="flex items-center">
+                            <div class="w-10 h-10 flex items-center justify-center rounded-full bg-green-500 text-white font-bold">2</div>
+                            <span class="ml-2 font-medium text-green-500">Previous Owner Information</span>
+                        </div>
+                        <div class="flex-1 h-1 bg-gray-300 mx-2"></div>
+                    </div>
+
+                    <div class="flex items-center">
+                        <div id="step3" class="flex items-center">
+                            <div class="w-10 h-10 flex items-center justify-center rounded-full border-2 border-green-500 text-green-500 font-bold">3</div>
+                            <span class="ml-2 font-medium text-gray-600">Vehicle Information</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form Sections -->
+                <div id="section1" class="form-section space-y-4">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-gray-700 mb-2 font-semibold">C.O Full Name</label>
+                            <input type="text" name="co_full_name" class="w-full p-2 border rounded-lg text-gray-800">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 mb-2 font-semibold">C.O Postal Address</label>
+                            <input type="text" name="co_postal_address" class="w-full p-2 border rounded-lg text-gray-800">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 mb-2 font-semibold">C.O Residential Address</label>
+                            <input type="text" name="co_residential_address" class="w-full p-2 border rounded-lg text-gray-800">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 mb-2 font-semibold">C.O Contact</label>
+                            <input type="tel" name="co_contact" class="w-full p-2 border rounded-lg text-gray-800">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 mb-2 font-semibold">C.O E-mail</label>
+                            <input type="email" name="co_email" class="w-full p-2 border rounded-lg text-gray-800">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 mb-2 font-semibold">C.O TIN</label>
+                            <input type="text" name="co_tin" class="w-full p-2 border rounded-lg text-gray-800">
+                        </div>
+                    </div>
+                    <div class="flex justify-between mt-6">
+                        <button onclick="navigatePrevious()" class="px-6 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition opacity-0">Previous</button>
+                        <button onclick="navigateNext()" class="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">Next</button>
+                        <button onclick="saveFormData()" class="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition invisible" id="saveButton">Save</button>
+                    </div>
+                </div>
+
+                <div id="section2" class="form-section hidden space-y-4">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-gray-700 mb-2 font-semibold">Transfer Date</label>
+                            <input type="date" name="transfer_date" class="w-full p-2 border rounded-lg text-gray-800">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 mb-2 font-semibold">Full Name</label>
+                            <input type="text" name="po_full_name" class="w-full p-2 border rounded-lg text-gray-800">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 mb-2 font-semibold">Postal Address</label>
+                            <input type="text" name="po_postal_address" class="w-full p-2 border rounded-lg text-gray-800">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 mb-2 font-semibold">Residential Address</label>
+                            <input type="text" name="po_residential_address" class="w-full p-2 border rounded-lg text-gray-800">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 mb-2 font-semibold">Contact</label>
+                            <input type="tel" name="po_contact" class="w-full p-2 border rounded-lg text-gray-800">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 mb-2 font-semibold">E-mail</label>
+                            <input type="email" name="po_email" class="w-full p-2 border rounded-lg text-gray-800">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 mb-2 font-semibold">TIN</label>
+                            <input type="text" name="po_tin" class="w-full p-2 border rounded-lg text-gray-800">
+                        </div>
+                    </div>
+                    <div class="flex justify-between mt-6">
+                        <button onclick="navigatePrevious()" class="px-6 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition">Previous</button>
+                        <button onclick="navigateNext()" class="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">Next</button>
+                        <button onclick="saveFormData()" class="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition invisible">Save</button>
+                    </div>
+                </div>
+
+                <div id="section3" class="form-section hidden space-y-4">
+                    <div class="grid grid-cols-2 gap-4">
+                        <!-- Vehicle Information -->
+                        <div>
+                            <label class="block text-gray-700 mb-2 font-semibold">Vehicle Make</label>
+                            <input type="text" name="vehicle_make" class="w-full p-2 border rounded-lg text-gray-800">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 mb-2 font-semibold">Model name/no.</label>
+                            <input type="text" name="model_name" class="w-full p-2 border rounded-lg text-gray-800">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 mb-2 font-semibold">Chassis Number</label>
+                            <input type="text" name="chassis_number" class="w-full p-2 border rounded-lg text-gray-800">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 mb-2 font-semibold">Year of Manufacture</label>
+                            <input type="number" name="year_of_manufacture" class="w-full p-2 border rounded-lg text-gray-800">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 mb-2 font-semibold">Body Type</label>
+                            <input type="text" name="body_type" class="w-full p-2 border rounded-lg text-gray-800">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 mb-2 font-semibold">Color</label>
+                            <input type="text" name="color" class="w-full p-2 border rounded-lg text-gray-800">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 mb-2 font-semibold">Transfer Date</label>
+                            <input type="date" name="transfer_date" class="w-full p-2 border rounded-lg text-gray-800">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 mb-2 font-semibold">Vehicle Use</label>
+                            <select name="vehicleUse" class="w-full p-2 border rounded-lg text-gray-800">
+                                <option value="">Select Vehicle Use</option>
+                                <option value="Commercial">Commercial</option>
+                                <option value="Private">Private</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 mb-2 font-semibold">Fuel Type</label>
+                            <select name="fuelType" class="w-full p-2 border rounded-lg text-gray-800">
+                                <option value="">Select Fuel Type</option>
+                                <option value="Petrol">Petrol</option>
+                                <option value="Diesel">Diesel</option>
+                                <option value="Electric">Electric</option>
+                                <option value="Hybrid">Hybrid</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 mb-2 font-semibold">Cubic Capacity</label>
+                            <input type="number" name="cubic_capacity" class="w-full p-2 border rounded-lg text-gray-800">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 mb-2 font-semibold">Engine No.</label>
+                            <input type="text" name="engine_number" class="w-full p-2 border rounded-lg text-gray-800">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 mb-2 font-semibold">No. of Cylinders</label>
+                            <input type="number" name="number_of_cylinders" class="w-full p-2 border rounded-lg text-gray-800">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 mb-2 font-semibold">Remarks</label>
+                            <select name="remarks" class="w-full p-2 border rounded-lg text-gray-800">
+                                <option value="">Select Officer</option>
+                                <option value="Mr. Addison">Mr. Addison</option>
+                                <option value="Mr. Bona">Mr. Bona</option>
+                                <option value="Mr. Adams">Mr. Adams</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 mb-2 font-semibold">Vehicle Number</label>
+                            <input type="text" name="vehicle_number" class="w-full p-2 border rounded-lg text-gray-800">
+                        </div>
+                    </div>
+
+                    <!-- Success Popup -->
+                    <div id="successPopup" class="success-popup mb-4 hidden">
+                        <div class="flex items-center justify-center bg-white rounded-lg shadow-md p-3 transform transition-all duration-300">
+                            <span class="material-icons text-green-500 mr-2">check_circle</span>
+                            <p class="text-gray-800 font-medium">Change of Ownership information has been saved successfully</p>
+                        </div>
+                    </div>
+
+                    <!-- Navigation Buttons -->
+                    <div class="flex justify-between mt-6">
+                        <button onclick="navigatePrevious()" class="px-6 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition">Previous</button>
+                        <button onclick="navigateNext()" class="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition invisible">Next</button>
+                        <button onclick="saveOwnership()" type="submit" class="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">
+                            Submit
+                        </button>
+                    </div>
+
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const sections = ['section1', 'section2', 'section3'];
+        const steps = document.querySelectorAll('.flex.items-center.flex-1 .w-10, #step3 .w-10');
+        const successPopup = document.getElementById('successPopup');
+        let currentSection = 0;
+
+        function showSection(index) {
+            sections.forEach((section, i) => {
+                const el = document.getElementById(section);
+                el.classList.toggle('hidden', i !== index);
+            });
+
+            // Update progress indicators
+            for (let i = 1; i <= 3; i++) {
+                const step = document.getElementById(`step${i}`);
+                const circle = step.querySelector('div');
+                if (i - 1 < index) {
+                    // Previously completed steps
+                    circle.classList.add('bg-green-500', 'text-white');
+                    circle.classList.remove('border-2', 'border-green-500', 'text-green-500');
+                } else if (i - 1 === index) {
+                    // Current step
+                    circle.classList.add('bg-green-500', 'text-white');
+                    circle.classList.remove('border-2', 'border-green-500', 'text-green-500');
+                } else {
+                    // Future steps
+                    circle.classList.remove('bg-green-500', 'text-white');
+                    circle.classList.add('border-2', 'border-green-500', 'text-green-500');
+                }
+            }
+        }
+
+        function navigateNext() {
+            if (currentSection < sections.length - 1) {
+                currentSection++;
+                showSection(currentSection);
+                // Make the Save button visible when on the last section
+                if (currentSection === sections.length - 1) {
+                    document.getElementById('saveButton').classList.remove('invisible');
+                }
+            }
+        }
+
+        function navigatePrevious() {
+            if (currentSection > 0) {
+                currentSection--;
+                showSection(currentSection);
+                // Hide save button when going back to section1
+                if (currentSection === 0) {
+                    document.getElementById('saveButton').classList.add('invisible');
+                }
+            }
+        }
+
+        function saveFormData() {
+            if (currentSection === 2) {
+                const saveButton = document.querySelector('#section3 button:last-child');
+                saveButton.disabled = true;
+                saveButton.classList.add('button-loading');
+
+                // Collect form data matching PHP backend structure
+                const formData = {
+                    // Current Owner
+                    co_full_name: document.querySelector('#section1 input[type="text"]').value,
+                    co_postal_address: document.querySelector('#section1 input[type="text"]:nth-of-type(2)').value,
+                    co_residential_address: document.querySelector('#section1 input[type="text"]:nth-of-type(3)').value,
+                    co_contact: document.querySelector('#section1 input[type="tel"]').value,
+                    co_email: document.querySelector('#section1 input[type="email"]').value,
+                    co_tin: document.querySelector('#section1 input[type="text"]:last-of-type').value,
+                    
+                    // Previous Owner
+                    transfer_date: document.querySelector('#section2 input[type="date"]').value,
+                    po_full_name: document.querySelector('#section2 input[type="text"]').value,
+                    po_postal_address: document.querySelector('#section2 input[type="text"]:nth-of-type(2)').value,
+                    po_residential_address: document.querySelector('#section2 input[type="text"]:nth-of-type(3)').value,
+                    po_contact: document.querySelector('#section2 input[type="tel"]').value,
+                    po_email: document.querySelector('#section2 input[type="email"]').value,
+                    po_tin: document.querySelector('#section2 input[type="text"]:last-of-type').value,
+                    
+                    // Vehicle
+                    vehicle_make: document.querySelector('#section3 input[type="text"]').value,
+                    model_name: document.querySelector('#section3 input[type="text"]:nth-of-type(2)').value,
+                    chassis_number: document.querySelector('#section3 input[type="text"]:nth-of-type(3)').value,
+                    year_of_manufacture: document.querySelector('#section3 input[type="number"]').value,
+                    body_type: document.querySelector('#section3 input[type="text"]:nth-of-type(4)').value,
+                    color: document.querySelector('#section3 input[type="text"]:nth-of-type(5)').value,
+                    vehicle_use: document.querySelector('select[name="vehicleUse"]').value,
+                    fuel_type: document.querySelector('select[name="fuelType"]').value,
+                    cubic_capacity: document.querySelector('#section3 input[type="number"]:nth-of-type(2)').value,
+                    engine_number: document.querySelector('#section3 input[type="text"]:nth-of-type(6)').value,
+                    number_of_cylinders: document.querySelector('#section3 input[type="number"]:last-of-type').value,
+                    remarks: document.querySelector('select[name="remarks"]').value,
+                    vehicle_number: document.querySelector('#section3 input[type="text"]:last-of-type').value
+                };
+
+                // Show loading for 3 seconds then save
+                setTimeout(() => {
+                    fetch('backend/api/save_ownership.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(formData)
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        // Remove loading state
+                        saveButton.disabled = false;
+                        saveButton.classList.remove('button-loading');
+
+                        if (data.status === 'success') {
+                            const popup = document.getElementById('successPopup');
+                            popup.classList.remove('hidden');
+                            popup.classList.add('show');
+
+                            setTimeout(() => {
+                                popup.classList.remove('show');
+                                popup.classList.add('hidden');
+                                window.location.href = 'records.html';
+                            }, 3000);
+                        } else {
+                            throw new Error(data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        saveButton.disabled = false;
+                        saveButton.classList.remove('button-loading');
+                        alert('Failed to save data: ' + error.message);
+                    });
+                }, 3000);
+            }
+        }
+
+        function clearForm() {
+            document.querySelectorAll('input, select, textarea').forEach(input => {
+                input.value = '';
+            });
+            currentSection = 0;
+            showSection(currentSection);
+        }
+
+        // Function to populate form for editing
+        function populateFormForEditing() {
+            const editingRecord = JSON.parse(localStorage.getItem('editingRecord'));
+            if (editingRecord) {
+                const record = editingRecord.record;
+                document.querySelector('input[type="text"]').value = record.fullName || '';
+                document.querySelectorAll('input[type="text"]')[1].value = record.postalAddress || '';
+                document.querySelectorAll('input[type="text"]')[2].value = record.residentialAddress || '';
+                document.querySelector('input[type="tel"]').value = record.contact || '';
+                document.querySelector('input[type="email"]').value = record.email || '';
+                // ... populate other fields ...
+            }
+        }
+
+        // Add this new function to handle updates
+        function updateRecord(recordId) {
+            if (currentSection === 2) { // Only if we're on the last section
+                const formData = {
+                    id: recordId,
+                    currentOwner: {
+                        fullName: document.querySelector('#section1 input[type="text"]').value,
+                        postalAddress: document.querySelector('#section1 input[type="text"]:nth-of-type(2)').value,
+                        residentialAddress: document.querySelector('#section1 input[type="text"]:nth-of-type(3)').value,
+                        contact: document.querySelector('#section1 input[type="tel"]').value,
+                        email: document.querySelector('#section1 input[type="email"]').value,
+                        tin: document.querySelector('#section1 input[type="text"]:last-of-type').value
+                    },
+                    previousOwner: {
+                        transferDate: document.querySelector('#section2 input[type="date"]').value,
+                        fullName: document.querySelector('#section2 input[type="text"]').value,
+                        postalAddress: document.querySelector('#section2 input[type="text"]:nth-of-type(2)').value,
+                        residentialAddress: document.querySelector('#section2 input[type="text"]:nth-of-type(3)').value,
+                        contact: document.querySelector('#section2 input[type="tel"]').value,
+                        email: document.querySelector('#section2 input[type="email"]').value,
+                        tin: document.querySelector('#section2 input[type="text"]:last-of-type').value
+                    },
+                    vehicleInfo: {
+                        transferDate: document.querySelector('#section3 input[type="date"]').value,
+                        remarks: document.querySelector('#section3 select').value,
+                        vehicleMake: document.querySelector('#section3 input[type="text"]:nth-of-type(2)').value,
+                        chassisNumber: document.querySelector('#section3 input[type="text"]:nth-of-type(3)').value,
+                        bodyType: document.querySelector('#section3 input[type="text"]:nth-of-type(4)').value,
+                        vehicleUse: document.querySelector('#section3 select').value,
+                        fuelType: document.querySelector('#section3 select:nth-of-type(2)').value,
+                        yearOfManufacture: document.querySelector('#section3 input[type="date"]:nth-of-type(2)').value,
+                        cubicCapacity: document.querySelector('#section3 input[type="number"]').value,
+                        engineNo: document.querySelector('#section3 input[type="text"]:nth-of-type(5)').value,
+                        cylinders: document.querySelector('#section3 input[type="text"]:last-of-type').value
+                    }
+                };
+
+                // Send update request to backend
+                fetch(`http://localhost/vir-data/backend/api/update_ownership.php`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        successPopup.style.display = 'block';
+                        setTimeout(() => {
+                            successPopup.style.display = 'none';
+                            clearForm();
+                            window.location.href = 'records.html';
+                        }, 3000);
+                    } else {
+                        throw new Error(data.message || 'Failed to update record');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Failed to update record. Please try again.');
+                });
+            }
+        }
+
+        // Add this to your existing code to check for editing mode when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('edit') === 'true') {
+                const recordId = urlParams.get('id');
+                if (recordId) {
+                    // Fetch record data
+                    fetch(`http://localhost/vir-data/backend/api/get_records.php?id=${recordId}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.status === 'success') {
+                                populateFormForEditing(data.data);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            alert('Failed to fetch record data');
+                        });
+                }
+            }
+        });
+
+        // Add these new functions
+        function closeModal() {
+            document.getElementById('editModal').classList.add('hidden');
+            document.getElementById('editModal').classList.remove('flex');
+        }
+
+        function showModal() {
+            document.getElementById('editModal').classList.remove('hidden');
+            document.getElementById('editModal').classList.add('flex');
+        }
+
+        function editRecord(index) {
+            const record = members[index];
+            // Populate form fields
+            document.getElementById('edit-fullName').value = record.fullName || '';
+            // Populate other fields similarly
+            showModal();
+        }
+
+        function updateRecord() {
+            const updatedRecord = {
+                fullName: document.getElementById('edit-fullName').value,
+                // Get all other field values
+            };
+
+            const editingIndex = parseInt(localStorage.getItem('editingIndex'));
+            const records = JSON.parse(localStorage.getItem('vehicleRecords')) || [];
+            records[editingIndex] = updatedRecord;
+            localStorage.setItem('vehicleRecords', JSON.stringify(records));
+            
+            closeModal();
+            renderMembers(); // Refresh the table
+        }
+
+        // Add this function to handle logout
+        function handleLogout() {
+            showLogoutPopup();
+        }
+
+        function showLogoutPopup() {
+            document.getElementById('logoutPopup').classList.remove('hidden');
+        }
+
+        function closeLogoutPopup() {
+            document.getElementById('logoutPopup').classList.add('hidden');
+        }
+
+        function confirmLogout() {
+            localStorage.clear();
+            sessionStorage.clear();
+            window.location.href = "login.html";
+        }
+
+        function handleSendButton() {
+    // Show the success popup
+    const successPopup = document.getElementById('successPopup');
+    successPopup.classList.remove('hidden');
+    successPopup.classList.add('flex');
+    
+    
+    }
+
+    
+
+    function validateAllFields(formData) {
+        // Add your validation logic here
+        const requiredFields = {
+            currentOwner: ['fullName', 'contact', 'email'],
+            previousOwner: ['fullName', 'contact'],
+            vehicle: ['make', 'chassisNo', 'engineNo']
+        };
+
+        for (const section in requiredFields) {
+            for (const field of requiredFields[section]) {
+                if (!formData[section][field]) {
+                    showErrorMessage(`Please fill in all required fields in ${section.replace(/([A-Z])/g, ' $1').toLowerCase()}`);
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    function showErrorMessage(message) {
+        // Create and show error toast
+        const errorToast = document.createElement('div');
+        errorToast.className = 'fixed bottom-4 right-4 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 flex items-center';
+        errorToast.innerHTML = `
+            <span class="material-icons mr-2">error</span>
+            ${message}
+        `;
+        document.body.appendChild(errorToast);
+
+        // Remove after 3 seconds
+        setTimeout(() => {
+            errorToast.remove();
+        }, 3000);
+    }
+
+    function showSuccessPopup() {
+        const popup = document.getElementById('successPopup');
+        popup.classList.remove('hidden');
+        
+        // Force a reflow to enable the animation
+        popup.offsetHeight;
+        
+        // Add slide-down animation
+        const popupContent = popup.querySelector('.bg-green-500');
+        popupContent.style.transform = 'translateY(0)';
+        
+        // Auto hide after 5 seconds
+        setTimeout(() => {
+            hideSuccessPopup();
+        }, 5000);
+    }
+
+    function hideSuccessPopup() {
+        const popup = document.getElementById('successPopup');
+        const popupContent = popup.querySelector('.bg-green-500');
+        
+        // Slide up animation
+        popupContent.style.transform = 'translateY(-100%)';
+        
+        // Hide popup after animation
+        setTimeout(() => {
+            popup.classList.add('hidden');
+            // Redirect to records page
+            window.location.href = 'records.html';
+        }, 300);
+    }
+
+    function closeSuccessPopup() {
+        hideSuccessPopup();
+    }
+
+    // Add this temporarily to test the popup
+    document.querySelector('#section3 button:last-child').addEventListener('click', function() {
+        const popup = document.getElementById('successPopup');
+        popup.classList.remove('hidden');
+        void popup.offsetWidth; // Force reflow
+        popup.classList.add('show');
+        
+        setTimeout(() => {
+            popup.classList.remove('show');
+            setTimeout(() => {
+                popup.classList.add('hidden');
+            }, 300);
+        }, 3000);
+    });
+
+    async function saveOwnership() {
+        const saveButton = document.querySelector('button[type="submit"]');
+        saveButton.disabled = true;
+        saveButton.classList.add('button-loading');
+
+        const formData = {
+            // Current Owner
+            co_full_name: document.querySelector('#section1 input[name="co_full_name"]').value,
+            co_postal_address: document.querySelector('#section1 input[name="co_postal_address"]').value,
+            co_residential_address: document.querySelector('#section1 input[name="co_residential_address"]').value,
+            co_contact: document.querySelector('#section1 input[name="co_contact"]').value,
+            co_email: document.querySelector('#section1 input[name="co_email"]').value,
+            co_tin: document.querySelector('#section1 input[name="co_tin"]').value,
+            
+            // Previous Owner
+            transfer_date: document.querySelector('#section3 input[name="transfer_date"]').value,
+            po_full_name: document.querySelector('#section2 input[name="po_full_name"]').value,
+            po_postal_address: document.querySelector('#section2 input[name="po_postal_address"]').value,
+            po_residential_address: document.querySelector('#section2 input[name="po_residential_address"]').value,
+            po_contact: document.querySelector('#section2 input[name="po_contact"]').value,
+            po_email: document.querySelector('#section2 input[name="po_email"]').value,
+            po_tin: document.querySelector('#section2 input[name="po_tin"]').value,
+            
+            // Vehicle
+            vehicle_make: document.querySelector('#section3 input[name="vehicle_make"]').value,
+            model_name: document.querySelector('#section3 input[name="model_name"]').value,
+            chassis_number: document.querySelector('#section3 input[name="chassis_number"]').value,
+            year_of_manufacture: document.querySelector('#section3 input[name="year_of_manufacture"]').value,
+            body_type: document.querySelector('#section3 input[name="body_type"]').value,
+            color: document.querySelector('#section3 input[name="color"]').value,
+            vehicle_use: document.querySelector('#section3 select[name="vehicleUse"]').value,
+            fuel_type: document.querySelector('#section3 select[name="fuelType"]').value,
+            cubic_capacity: document.querySelector('#section3 input[name="cubic_capacity"]').value,
+            engine_number: document.querySelector('#section3 input[name="engine_number"]').value,
+            number_of_cylinders: document.querySelector('#section3 input[name="number_of_cylinders"]').value,
+            remarks: document.querySelector('#section3 select[name="remarks"]').value,
+            vehicle_number: document.querySelector('#section3 input[name="vehicle_number"]').value
+        };
+
+        try {
+            const response = await fetch('http://localhost/vir-data/backend/api/save_ownership.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            });
+
+            const data = await response.json();
+
+            if (data.status === 'success') {
+                const popup = document.getElementById('successPopup');
+                popup.classList.remove('hidden');
+                popup.classList.add('show');
+
+                setTimeout(() => {
+                    popup.classList.remove('show');
+                    popup.classList.add('hidden');
+                    window.location.href = 'records.html';
+                }, 2000);
+            } else {
+                throw new Error(data.message || 'Failed to save ownership information');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Failed to save ownership information: ' + error.message);
+        } finally {
+            saveButton.disabled = false;
+            saveButton.classList.remove('button-loading');
+        }
+    }
+
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        currentSection = 0;
+        showSection(0);  // Initialize with first section
+    });
+    </script>
+
+    <!-- Modal/Popup -->
+    <div id="editModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center">
+        <div class="bg-white rounded-lg p-6 w-3/4 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-bold">Edit Record</h2>
+                <span class="material-icons cursor-pointer" onclick="closeModal()">close</span>
+            </div>
+            <!-- Copy the entire form content here -->
+            <div class="space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <!-- Form fields -->
+                    <div>
+                        <label class="block text-gray-700 mb-2">Full Name</label>
+                        <input type="text" id="edit-fullName" class="w-full p-2 border rounded-lg">
+                    </div>
+                    <!-- Add all other form fields similarly -->
+                </div>
+            </div>
+            <div class="mt-6 flex justify-end space-x-4">
+                <button onclick="closeModal()" class="px-6 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition">Cancel</button>
+                <button onclick="updateRecord()" class="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">Update</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Logout Popup -->
+    <div id="logoutPopup" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-6 w-96 shadow-xl">
+            <h2 class="text-xl font-bold mb-4">Confirm Logout</h2>
+            <p class="text-gray-600 mb-6">Are you sure you want to logout?</p>
+            <div class="flex justify-end space-x-3">
+                <button onclick="closeLogoutPopup()" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition">
+                    Cancel
+                </button>
+                <button onclick="confirmLogout()" class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition">
+                    Logout
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        #logoutPopup {
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</body>
+</html>

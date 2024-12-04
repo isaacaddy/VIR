@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DVLA Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        
+        .logo {
+            width: 130px; /* Increased width */
+            height: 75px; /* Adjusted height to maintain aspect ratio */
+            border-radius: 50%; /* Circular logo */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+            transition: transform 0.3s; /* Smooth scaling on hover */
+        }
+        .logo:hover {
+            transform: scale(1.1); /* Slightly enlarge on hover */
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-green-50 to-blue-50 min-h-screen flex items-center justify-center">
+    <div class="flex min-h-screen w-full">
+        <!-- Sidebar -->
+        <div class="w-64 bg-gradient-to-b from-green-700 to-teal-600 p-6 text-white shadow-lg flex flex-col justify-between">
+            <div>
+                <div class="flex items-center mb-8">
+                    <a href="dashboard.html">
+                        <img src="./images/oop.png" alt="DVLA Logo" class="logo cursor-pointer">
+                    </a>
+                    <div class="ml-3">
+                        <h2 class="text-2xl font-bold">DVLA</h2>
+                        <p class="text-sm opacity-75">Vehicle Inspection and Registration</p>
+                    </div>
+                </div>
+                <nav>
+                    <a href="dashboard.html" class="flex items-center p-3 mb-2 bg-green-600 rounded-lg transition duration-200">
+                        <span class="material-icons mr-3">dashboard</span>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="records.html" class="flex items-center p-3 mb-2 hover:bg-green-500 rounded-lg transition duration-200">
+                        <span class="material-icons mr-3">search</span>
+                        <span>Search Records</span>
+                    </a>
+                    <a href="changeowner.html" class="flex items-center p-3 mb-2 hover:bg-green-500 rounded-lg transition duration-200">
+                        <span class="material-icons mr-3">sync_alt</span>
+                        <span>Change Ownership</span>
+                    </a>
+                    <a href="admin.html" class="flex items-center p-3 mb-2 hover:bg-green-500 rounded-lg transition duration-200">
+                        <span class="material-icons mr-3">admin_panel_settings</span>
+                        <span>Admin</span>
+                    </a>
+                    
+                </nav>
+            </div>
+            <div class="mt-auto flex flex-col items-center">
+                <button onclick="handleLogout()" class="flex items-center bg-gradient-to-r from-green-600 to-teal-600 text-white px-5 py-3 rounded-lg shadow-lg hover:from-green-500 hover:to-teal-500 transform hover:scale-105 transition duration-200 ease-in-out mb-4">
+                    <span class="material-icons mr-2">logout</span>
+                    <span class="font-semibold">Logout</span>
+                </button>
+                <div class="text-center opacity-75 text-sm">
+                    © 2024 DVLA Club
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 p-8">
+            <div class="flex flex-col lg:flex-row gap-6">
+                <!-- Left side (existing content) -->
+                <div class="flex-1">
+                    <!-- Personalized Greeting -->
+                    <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-4" id="userGreeting">Welcome!</h2>
+                        <p class="text-gray-600">Remember to verify documents for new registrations.</p>
+                    </div>
+
+                    <!-- Stats Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+                        <!-- Total Entries Card -->
+                        <div class="bg-white rounded-lg shadow-lg p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <div>
+                                    <h3 class="text-gray-500">Total Monthly Entries</h3>
+                                    <p class="text-2xl font-bold" id="totalTransfers">0</p>
+                                </div>
+                                <span class="material-icons text-green-500 text-3xl">sync_alt</span>
+                            </div>
+                            <div class="text-sm text-green-500">+15% from last month</div>
+                        </div>
+
+                        <!-- Today's Entry Card -->
+                        <div class="bg-white rounded-lg shadow-lg p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <div>
+                                    <h3 class="text-gray-500">Today's Entries</h3>
+                                    <p class="text-2xl font-bold" id="todayTransfers">0</p>
+                                </div>
+                                <span class="material-icons text-blue-500 text-3xl">today</span>
+                            </div>
+                            <div class="text-sm text-blue-500">+3 from yesterday</div>
+                        </div>
+
+                        <!-- Recent Activities Card -->
+                        <div class="bg-white rounded-lg shadow-lg p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <div>
+                                    <h3 class="text-gray-500">Recent Activities</h3>
+                                    <p class="text-2xl font-bold" id="recentActivities">0</p>
+                                </div>
+                                <span class="material-icons text-blue-500 text-3xl">history</span>
+                            </div>
+                            <div class="text-sm text-blue-500">Last 24 hours</div>
+                        </div>
+
+                        <!-- Total Registered Vehicles -->
+                        <div class="bg-white rounded-lg shadow-lg p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <div>
+                                    <h3 class="text-gray-500">Total Registered Vehicles</h3>
+                                    <p class="text-2xl font-bold" id="totalCars">0</p>
+                                </div>
+                                <span class="material-icons text-blue-500 text-3xl">directions_car</span>
+                            </div>
+                            <div class="text-sm text-blue-500">+8 from last month</div>
+                        </div>
+                    </div>
+
+                    <!-- Charts and Recent Transfers -->
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+                        <!-- Recent Transfers -->
+                        <div class="bg-white rounded-lg shadow-lg p-6">
+                            <div class="flex justify-between items-center mb-4">
+                                <h2 class="text-xl font-bold text-gray-800">Recent Transfers</h2>
+                                <button class="text-green-500 hover:text-green-600">View All</button>
+                            </div>
+                            <div class="space-y-4" id="recentTransfers">
+                                <!-- Sample Transfer -->
+                                <div class="border-b pb-3">
+                                    <div class="flex justify-between items-start">
+                                        <div>
+                                            <p class="font-semibold">John Doe</p>
+                                            <p class="text-sm text-gray-600">Toyota Camry - ABC123</p>
+                                        </div>
+                                        <span class="text-sm text-gray-500">Today</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Transfer Trends Chart -->
+                        <div class="bg-white rounded-lg shadow-lg p-6 lg:col-span-2">
+                            <div class="flex justify-between items-center mb-4">
+                                <h2 class="text-xl font-bold text-gray-800">Transfer Trends</h2>
+                                <select class="border rounded-lg px-2 py-1">
+                                    <option>This Week</option>
+                                    <option>This Month</option>
+                                    <option>This Year</option>
+                                </select>
+                            </div>
+                            <div class="h-48">
+                                <canvas id="transferTrendsChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Vehicle Types and Status -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- Vehicle Types Distribution -->
+                        <div class="bg-white rounded-lg shadow-lg p-6">
+                            <div class="flex justify-between items-center mb-6">
+                                <h2 class="text-xl font-bold text-gray-800">Vehicle Types Distribution</h2>
+                                <select class="border rounded-lg px-3 py-1 text-gray-600">
+                                    <option value="month">This Month</option>
+                                    <option value="quarter">This Quarter</option>
+                                    <option value="year">This Year</option>
+                                </select>
+                            </div>
+                            <div class="h-64">
+                                <canvas id="vehicleTypesChart"></canvas>
+                            </div>
+                            <div class="grid grid-cols-3 gap-4 mt-6 text-sm">
+                                <div class="text-center p-3 bg-gray-50 rounded-lg">
+                                    <p class="text-gray-600">Most Common</p>
+                                    <p class="font-bold text-gray-800 mt-1">Sedan</p>
+                                    <p class="text-green-600">35%</p>
+                                </div>
+                                <div class="text-center p-3 bg-gray-50 rounded-lg">
+                                    <p class="text-gray-600">Fastest Growing</p>
+                                    <p class="font-bold text-gray-800 mt-1">SUV</p>
+                                    <p class="text-green-600">+12%</p>
+                                </div>
+                                <div class="text-center p-3 bg-gray-50 rounded-lg">
+                                    <p class="text-gray-600">Total Types</p>
+                                    <p class="font-bold text-gray-800 mt-1">8</p>
+                                    <p class="text-blue-600">Categories</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Transfer Status -->
+                        <div class="bg-white rounded-lg shadow-lg p-6">
+                            <h2 class="text-xl font-bold text-gray-800 mb-4">Transfer Status</h2>
+                            <div class="h-48">
+                                <canvas id="transferStatusChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Sidebar -->
+                <div class="w-full lg:w-1/4 space-y-6">
+                    <!-- Quick Access Shortcuts (Moved here) -->
+                    <div class="bg-white rounded-lg shadow-lg p-6">
+                        <h2 class="text-xl font-bold text-gray-800 mb-4">Quick Access</h2>
+                        <div class="flex flex-col space-y-3">
+                            <button onclick="window.location.href='changeowner.html'" class="flex items-center bg-green-600 text-white px-4 py-3 rounded-lg hover:bg-green-500 transition duration-200">
+                                <span class="material-icons mr-2">add_circle</span>
+                                New Data Entry
+                            </button>
+                            <button onclick="window.location.href='records.html'" class="flex items-center bg-green-600 text-white px-4 py-3 rounded-lg hover:bg-green-500 transition duration-200">
+                                <span class="material-icons mr-2">schedule</span>
+                                Records Table
+                            </button>
+                            
+                        </div>
+                    </div>
+
+                    <!-- Announcements (existing content) -->
+                    <div class="bg-white rounded-lg shadow-lg p-6">
+                        <h2 class="text-xl font-bold text-gray-800 mb-4">Announcements</h2>
+                        <div class="space-y-4">
+                            <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4">
+                                <p>New regulations for vehicle inspections will take effect on January 1, 2025.</p>
+                            </div>
+                            <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4">
+                                <p>Reminder: Ensure all documents are verified before processing registrations.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Declare chart variables globally
+        let transferTrendsChart, vehicleTypesChart, transferStatusChart;
+
+        // Initialize charts when the document is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize Transfer Trends Chart
+            const transferTrendsCtx = document.getElementById('transferTrendsChart').getContext('2d');
+            transferTrendsChart = new Chart(transferTrendsCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    datasets: [{
+                        label: 'Transfers',
+                        data: [12, 19, 15, 17, 14, 13, 15],
+                        borderColor: 'rgb(16, 185, 129)',
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 5
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+
+            // Initialize Vehicle Types Chart
+            const vehicleTypesCtx = document.getElementById('vehicleTypesChart').getContext('2d');
+            vehicleTypesChart = new Chart(vehicleTypesCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Sedan', 'SUV', 'Truck', 'Van', 'Other'],
+                    datasets: [{
+                        data: [30, 25, 15, 20, 10],
+                        backgroundColor: [
+                            '#10B981',
+                            '#3B82F6',
+                            '#F59E0B',
+                            '#6366F1',
+                            '#EC4899'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                boxWidth: 12
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Initialize Transfer Status Chart
+            const transferStatusCtx = document.getElementById('transferStatusChart').getContext('2d');
+            transferStatusChart = new Chart(transferStatusCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Completed', 'Pending', 'Rejected'],
+                    datasets: [{
+                        label: 'Transfer Status',
+                        data: [65, 25, 10],
+                        backgroundColor: [
+                            '#10B981',
+                            '#F59E0B',
+                            '#EF4444'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 20
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+
+            // Initialize dashboard
+            console.log('Dashboard initializing...');
+            updateDashboard();
+            // Update every 5 minutes
+            setInterval(updateDashboard, 300000);
+
+            // Add this function to get and display user info
+            async function getUserInfo() {
+                try {
+                    const response = await fetch('http://localhost/vir-data/backend/api/user_info.php', {
+                        credentials: 'include'  // Important for session handling
+                    });
+                    const data = await response.json();
+                    
+                    if (data.status === 'success') {
+                        document.querySelector('#userGreeting').textContent = `Welcome, ${data.user.name}!`;
+                    }
+                } catch (error) {
+                    console.error('Failed to fetch user info:', error);
+                }
+            }
+
+            // Call getUserInfo when page loads
+            getUserInfo();
+            updateDashboard();
+        });
+
+        // Dashboard stats object
+        let dashboardStats = {
+            totalTransfers: 0,
+            todayTransfers: 0,
+            pendingApprovals: 0,
+            totalCars: 0
+        };
+
+        // Test API connection
+        async function testAPI() {
+            try {
+                const response = await fetch('http://localhost/vir-data/backend/api/dashboard_stats.php');
+                const data = await response.json();
+                console.log('API Response:', data);
+                return data;
+            } catch (error) {
+                console.error('API Error:', error);
+                return null;
+            }
+        }
+
+        // Update dashboard function
+        async function updateDashboard() {
+            try {
+                const response = await fetch('http://localhost/vir-data/backend/api/dashboard_stats.php');
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    // Update stats
+                    document.getElementById('totalTransfers').textContent = data.stats.total;
+                    document.getElementById('todayTransfers').textContent = data.stats.today;
+                    document.getElementById('recentActivities').textContent = data.stats.recent;
+                    document.getElementById('totalCars').textContent = data.stats.totalCars;
+
+                    // Update transfer trends chart
+                    if (transferTrendsChart) {
+                        transferTrendsChart.data.labels = data.trends.map(t => formatDate(t.date));
+                        transferTrendsChart.data.datasets[0].data = data.trends.map(t => t.count);
+                        transferTrendsChart.update();
+                    }
+
+                    // Update vehicle types chart
+                    if (vehicleTypesChart) {
+                        vehicleTypesChart.data.labels = data.vehicleTypes.map(t => t.body_type);
+                        vehicleTypesChart.data.datasets[0].data = data.vehicleTypes.map(t => t.count);
+                        vehicleTypesChart.update();
+                    }
+
+                    // Update recent transfers
+                    updateRecentTransfers(data.recentTransfers);
+                }
+            } catch (error) {
+                console.error('Error updating dashboard:', error);
+            }
+        }
+
+        // Helper function to format dates
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', {
+                weekday: 'short',
+                month: 'short',
+                day: 'numeric'
+            });
+        }
+
+        // Update recent transfers function
+        function updateRecentTransfers(transfers) {
+            const container = document.getElementById('recentTransfers');
+            if (!container || !transfers) return;
+
+            container.innerHTML = transfers.map(transfer => `
+                <div class="border-b pb-3">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="font-semibold">${transfer.new_owner_name}</p>
+                            <p class="text-sm text-gray-600">${transfer.vehicle_make} - ${transfer.chassis_number}</p>
+                        </div>
+                        <span class="text-sm text-gray-500">${formatDate(transfer.transfer_date)}</span>
+                    </div>
+                </div>
+            `).join('') || '<p class="text-gray-500">No recent transfers</p>';
+        }
+
+        function handleLogout() {
+            localStorage.clear();
+            sessionStorage.clear();
+            window.location.href = 'login.html';
+        }
+    </script>
+</body>
+</html>

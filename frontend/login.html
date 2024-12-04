@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DVLA Login</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #04A84A; /* Green background */
+        }
+        .login-container {
+            background-color: white; /* White background for the login box */
+            border-radius: 10px; /* Rounded corners */
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Shadow effect */
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center">
+    <div class="login-container max-w-md mx-auto p-8">
+        <h1 class="text-center text-2xl font-bold mb-4">Vehicle Inspection & Registration</h1>
+        <div class="flex justify-center mb-4">
+            <img src="./images/oop.png" alt="DVLA Logo" class="rounded-full w-24 h-24"> <!-- Adjust logo size -->
+        </div>
+        <form id="loginForm" class="space-y-6">
+            <div>
+                <input type="email" id="email" placeholder="Email" class="w-full p-3 border rounded-md bg-gray-100"> <!-- Light gray background -->
+            </div>
+            <div>
+                <input type="password" id="password" placeholder="Password" class="w-full p-3 border rounded-md bg-gray-100"> <!-- Light gray background -->
+            </div>
+            <button type="submit" onclick="login(event)" class="w-full bg-black text-white p-3 rounded-md hover:bg-gray-800">Login</button>
+        </form>
+    </div>
+
+    <script>
+        function login(e) {
+            e.preventDefault();
+            window.location.href = 'dashboard.html';
+        }
+    </script>
+</body>
+</html>

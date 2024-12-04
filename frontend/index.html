@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logo Animation</title>
+    <style>
+        /* Center the content on the screen */
+        body, html {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #04A84A; /* Green background */
+        }
+
+        /* Logo Container */
+        .logo-container {
+            width: 300px;
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            animation: fadeInOut 4s infinite;
+        }
+
+        /* Logo Image */
+        .logo {
+            width: 100%; /* Adjust as needed */
+            height: auto;
+        }
+
+        /* Fade in and out animation */
+        @keyframes fadeInOut {
+            0%, 100% {
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="logo-container">
+    <!-- Replace with your actual logo image source -->
+    <img src=".//images/oop.png" alt="Logo" class="logo">
+</div>
+
+<script>
+    // Optional JavaScript to stop animation after 20 seconds and redirect to login page
+    setTimeout(() => {
+        document.querySelector('.logo-container').style.animation = 'none';
+        window.location.href = 'login.html'; // Redirect to login page
+    }, 10000); // Stop animation and redirect after 20 seconds (20,000 milliseconds)
+</script>
+
+</body>
+</html>

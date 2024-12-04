@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <style>
+   
+    .logo {
+        width: 80px; /* Increased width */
+        height: 80px; /* Adjusted height to maintain aspect ratio */
+        border-radius: 50%; /* Circular logo */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+        transition: transform 0.3s; /* Smooth scaling on hover */
+    }
+    .logo:hover {
+        transform: scale(1.1); /* Slightly enlarge on hover */
+    }
+
+    .fade-in {
+        animation: fadeIn 0.5s ease-in;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .loading-spinner {
+        border: 3px solid #f3f3f3;
+        border-radius: 50%;
+        border-top: 3px solid #16a34a;
+        width: 24px;
+        height: 24px;
+        animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+</style>
+</head>
+<body class="bg-gradient-to-br from-green-50 to-blue-50 min-h-screen flex items-center justify-center">
+  
+  <div class="flex min-h-screen w-full">
+      <!-- Sidebar -->
+      <div class="w-64 bg-gradient-to-b from-green-700 to-teal-600 p-6 text-white shadow-lg flex flex-col justify-between">
+          <div>
+              <div class="flex items-center mb-8">
+                <a href="dashboard.html">
+                    <img src="./images/oop.png" alt="DVLA Logo" class="logo cursor-pointer">
+                </a>
+                  <div class="ml-3">
+                      <h2 class="text-2xl font-bold">DVLA</h2>
+                      <p class="text-sm opacity-75">Admin Panel</p>
+                  </div>
+              </div>
+              <nav>
+                  <a href="dashboard.html" class="flex items-center p-3 mb-2 bg-green-600 rounded-lg hover:bg-green-500 transition duration-200">
+                      <span class="material-icons mr-3">dashboard</span>
+                      <span>Dashboard</span>
+                  </a>
+                  <a href="records.html" class="flex items-center p-3 mb-2 hover:bg-green-500 rounded-lg transition duration-200">
+                      <span class="material-icons mr-3">search</span>
+                      <span>Search Records</span>
+                  </a>
+                  <a href="changeowner.html" class="flex items-center p-3 mb-2 hover:bg-green-500 rounded-lg transition duration-200">
+                      <span class="material-icons mr-3">sync_alt</span>
+                      <span>Change Ownership</span>
+                  </a>
+                  <a href="" class="flex items-center p-3 hover:bg-green-500 rounded-lg transition duration-200">
+                    <span class="material-icons mr-3">admin_panel_settings</span>
+                    <span>Admin</span>
+                  </a>
+              </nav>
+          </div>
+          <div class="mt-auto flex flex-col items-center">
+            <button onclick="handleLogout()" class="flex items-center bg-gradient-to-r from-green-600 to-teal-600 text-white px-5 py-3 rounded-lg shadow-lg hover:from-green-500 hover:to-teal-500 transform hover:scale-105 transition duration-200 ease-in-out mb-4">
+                <span class="material-icons mr-2">logout</span>
+                <span class="font-semibold">Logout</span>
+            </button>
+            <div class="text-center opacity-75 text-sm">
+                © 2024 DVLA Club
+            </div>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="flex-1 p-8">
+          <!-- Recent Activity Logs Section -->
+          <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+              <h2 class="text-2xl font-bold text-gray-800 mb-4">Recent Activity Logs</h2>
+              <div class="overflow-x-auto">
+                  <div id="logsLoading" class="flex justify-center py-4">
+                      <div class="loading-spinner"></div>
+                  </div>
+                  <table class="min-w-full bg-white border border-gray-300 rounded-lg shadow-md">
+                      <thead>
+                          <tr class="bg-gray-100 text-left text-gray-600">
+                              <th class="py-4 px-6">ID</th>
+                              <th class="py-4 px-6">Action</th>
+                              <th class="py-4 px-6">User</th>
+                              <th class="py-4 px-6">Timestamp</th>
+                          </tr>
+                      </thead>
+                      <tbody id="activityLogsList">
+                          <!-- Activity logs will be rendered here -->
+                      </tbody>
+                  </table>
+              </div>
+          </div>
+
+          <!-- User Registration Section -->
+          <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+              <h2 class="text-2xl font-bold text-gray-800 mb-4">Register New Member</h2>
+              <form id="registerForm">
+                  <div class="mb-4">
+                      <label class="block text-gray-700 mb-2" for="name">Name</label>
+                      <input type="text" id="name" 
+                             class="border border-gray-300 rounded-lg p-2 w-full" 
+                             required 
+                             minlength="2" 
+                             pattern="[A-Za-z ]{2,50}"
+                             title="Name should only contain letters and spaces, 2-50 characters long">
+                  </div>
+                  <div class="mb-4">
+                      <label class="block text-gray-700 mb-2" for="email">Email</label>
+                      <input type="email" id="email" 
+                             class="border border-gray-300 rounded-lg p-2 w-full" 
+                             required>
+                  </div>
+                  <div class="mb-4">
+                      <label class="block text-gray-700 mb-2" for="password">Password</label>
+                      <input type="password" id="password" 
+                             class="border border-gray-300 rounded-lg p-2 w-full" 
+                             required 
+                             minlength="6"
+                             title="Password must be at least 6 characters long">
+                  </div>
+                  <div class="mb-4">
+                      <label class="block text-gray-700 mb-2" for="role">Role</label>
+                      <select id="role" class="border border-gray-300 rounded-lg p-2 w-full" required>
+                          <option value="" disabled selected>Select Role</option>
+                          <option value="admin">Admin</option>
+                          <option value="member">Member</option>
+                      </select>
+                  </div>
+                  <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-500 transition duration-200">
+                      Register
+                  </button>
+              </form>
+          </div>
+
+          <!-- User Accounts Section -->
+          <div class="bg-white rounded-lg shadow-lg p-6">
+              <h2 class="text-2xl font-bold text-gray-800 mb-4">User Accounts</h2>
+              <div class="overflow-x-auto">
+                  <table class="min-w-full bg-white border border-gray-300 rounded-lg shadow-md">
+                      <thead>
+                          <tr class="bg-gray-100 text-left text-gray-600">
+                              <th class="py-4 px-6">ID</th>
+                              <th class="py-4 px-6">Name</th>
+                              <th class="py-4 px-6">Email</th>
+                              <th class="py-4 px-6">Role</th>
+                              <th class="py-4 px-6">Actions</th>
+                          </tr>
+                      </thead>
+                      <tbody id="userAccountsList">
+                          <!-- User accounts will be rendered here -->
+                      </tbody>
+                  </table>
+              </div>
+          </div>
+
+          <!-- Pagination -->
+          <div class="flex justify-center mt-6 space-x-4">
+              <button class="text-gray-400 hover:text-gray-600">&lt;</button>
+              <button class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition duration-200">1</button>
+              <button class="bg-gray-200 text-gray-600 px-4 py-2 rounded-md hover:bg-gray-300 transition duration-200">2</button>
+              <button class="bg-gray-200 text-gray-600 px-4 py-2 rounded-md hover:bg-gray-300 transition duration-200">3</button>
+              <button class="bg-gray-200 text-gray-600 px-4 py-2 rounded-md hover:bg-gray-300 transition duration-200">4</button>
+              <button class="bg-gray-200 text-gray-600 px-4 py-2 rounded-md hover:bg-gray-300 transition duration-200">5</button>
+              <button class="text-gray-400 hover:text-gray-600">&gt;</button>
+          </div>
+      </div>
+  </div>
+
+  <script>
+    // Update the fetchActivityLogs function
+    async function fetchActivityLogs() {
+        const loadingElement = document.getElementById('logsLoading');
+        const tableBody = document.getElementById('activityLogsList');
+        
+        try {
+            loadingElement.style.display = 'flex';
+            tableBody.innerHTML = ''; // Clear existing content
+            
+            const response = await fetch('http://localhost/vir-data/backend/api/activity_logs.php');
+            console.log('Activity Logs Response:', response); // Debug log
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            console.log('Activity Logs Data:', data); // Debug log
+            
+            if (data.status === 'success' && data.logs) {
+                if (data.logs.length === 0) {
+                    tableBody.innerHTML = `
+                        <tr>
+                            <td colspan="4" class="py-4 px-6 text-center text-gray-500">
+                                No activity logs found
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
+
+                data.logs.forEach((log, index) => {
+                    // Define action styles
+                    let actionStyle = '';
+                    let actionIcon = '';
+                    
+                    switch(log.action) {
+                        case 'login':
+                            actionStyle = 'text-green-600';
+                            actionIcon = 'login';
+                            break;
+                        case 'logout':
+                            actionStyle = 'text-blue-600';
+                            actionIcon = 'logout';
+                            break;
+                        case 'edit_record':
+                            actionStyle = 'text-yellow-600';
+                            actionIcon = 'edit';
+                            break;
+                        case 'delete_record':
+                            actionStyle = 'text-red-600';
+                            actionIcon = 'delete';
+                            break;
+                        default:
+                            actionStyle = 'text-gray-600';
+                            actionIcon = 'info';
+                    }
+
+                    const row = document.createElement('tr');
+                    row.className = 'border-b hover:bg-gray-50 transition duration-200 fade-in';
+                    row.style.animationDelay = `${index * 50}ms`;
+                    row.innerHTML = `
+                        <td class="py-4 px-6">${log.id}</td>
+                        <td class="py-4 px-6">
+                            <div class="flex items-center">
+                                <span class="material-icons ${actionStyle} mr-2">${actionIcon}</span>
+                                <span class="${actionStyle}">${log.action}</span>
+                            </div>
+                        </td>
+                        <td class="py-4 px-6">${log.user}</td>
+                        <td class="py-4 px-6">${formatTimestamp(log.timestamp)}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            } else {
+                throw new Error(data.message || 'Failed to fetch logs');
+            }
+        } catch (error) {
+            console.error('Error fetching logs:', error);
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="4" class="py-4 px-6 text-center text-red-500">
+                        Failed to load activity logs. Error: ${error.message}
+                    </td>
+                </tr>
+            `;
+        } finally {
+            loadingElement.style.display = 'none';
+        }
+    }
+
+    // Helper function to format timestamp
+    function formatTimestamp(timestamp) {
+        const date = new Date(timestamp);
+        return date.toLocaleString('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+        });
+    }
+
+    // Call fetchActivityLogs when the page loads
+    document.addEventListener('DOMContentLoaded', () => {
+        fetchActivityLogs();
+        fetchUsers();
+    });
+
+    // Refresh logs periodically (every 30 seconds)
+    setInterval(fetchActivityLogs, 30000);
+
+    // Function to fetch and display users
+    async function fetchUsers() {
+        try {
+            const response = await fetch('http://localhost/vir-data/backend/api/users.php');
+            const data = await response.json();
+            
+            if (data.status === 'success') {
+                const tbody = document.getElementById('userAccountsList');
+                tbody.innerHTML = '';
+                
+                if (!data.users || data.users.length === 0) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="5" class="py-4 px-6 text-center text-gray-500">
+                                No user accounts found
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
+                
+                data.users.forEach((user, index) => {
+                    const row = document.createElement('tr');
+                    row.className = 'border-b hover:bg-gray-50 transition duration-200';
+                    row.innerHTML = `
+                        <td class="py-4 px-6">${index + 1}</td>
+                        <td class="py-4 px-6">${user.name || 'N/A'}</td>
+                        <td class="py-4 px-6">${user.email || 'N/A'}</td>
+                        <td class="py-4 px-6">
+                            <span class="px-2 py-1 rounded-full ${user.role === 'admin' ? 'bg-purple-100 text-purple-800' : 'bg-green-100 text-green-800'}">
+                                ${user.role || 'member'}
+                            </span>
+                        </td>
+                        <td class="py-4 px-6">
+                            <div class="flex space-x-2">
+                                <button onclick="editUser(${user.id})" class="text-blue-500 hover:text-blue-700">
+                                    <span class="material-icons">edit</span>
+                                </button>
+                                <button onclick="deleteUser(${user.id})" class="text-red-500 hover:text-red-700">
+                                    <span class="material-icons">delete</span>
+                                </button>
+                            </div>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            } else {
+                throw new Error(data.message || 'Failed to fetch users');
+            }
+        } catch (error) {
+            console.error('Error fetching users:', error);
+            document.getElementById('userAccountsList').innerHTML = `
+                <tr>
+                    <td colspan="5" class="py-4 px-6 text-center text-red-500">
+                        Error loading user accounts: ${error.message}
+                    </td>
+                </tr>
+            `;
+        }
+    }
+
+    // Function to delete user
+    async function deleteUser(id) {
+        if (!confirm('Are you sure you want to delete this user?')) {
+            return;
+        }
+
+        try {
+            const response = await fetch(`http://localhost/vir-data/backend/api/users.php?id=${id}`, {
+                method: 'DELETE'
+            });
+            const data = await response.json();
+            
+            if (data.status === 'success') {
+                alert('User deleted successfully!');
+                fetchUsers(); // Refresh the user list
+                fetchActivityLogs(); // Refresh activity logs
+            } else {
+                throw new Error(data.message || 'Delete failed');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('An error occurred while deleting the user');
+        }
+    }
+
+    // Function to register user
+    async function registerUser(userData) {
+        try {
+            const response = await fetch('http://localhost/vir-data/backend/api/register.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(userData)
+            });
+            
+            const data = await response.json();
+            
+            if (data.status === 'success') {
+                alert('User registered successfully!');
+                fetchUsers(); // Refresh the user list
+                return true;
+            } else {
+                throw new Error(data.message || 'Registration failed');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('An error occurred during registration: ' + error.message);
+            return false;
+        }
+    }
+
+    // Event listener for registration form
+    document.getElementById('registerForm').addEventListener('submit', async function(event) {
+        event.preventDefault();
+        
+        const userData = {
+            name: document.getElementById('name').value,
+            email: document.getElementById('email').value,
+            password: document.getElementById('password').value,
+            role: document.getElementById('role').value
+        };
+
+        const success = await registerUser(userData);
+        if (success) {
+            this.reset();
+            fetchUsers(); // Refresh user list
+            fetchActivityLogs(); // Refresh activity logs
+        }
+    });
+
+    async function handleLogout() {
+        try {
+            const response = await fetch('http://localhost/vir-data/backend/api/logout.php', {
+                method: 'POST',
+                credentials: 'include' // Include cookies/session
+            });
+            
+            const data = await response.json();
+            
+            if (data.status === 'success') {
+                // Clear local storage and redirect
+                localStorage.clear();
+                sessionStorage.clear();
+                window.location.href = 'login.html';
+            } else {
+                throw new Error(data.message || 'Logout failed');
+            }
+        } catch (error) {
+            console.error('Logout error:', error);
+            alert('Error during logout: ' + error.message);
+        }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DVLA Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Add Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .logo {
+            width: 130px;
+            height: 75px;
+            border-radius: 50%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s;
+        }
+        .logo:hover {
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-green-50 to-blue-50 min-h-screen">
+    <div class="flex min-h-screen">
+        <!-- Sidebar -->
+        <div class="w-64 bg-gradient-to-b from-green-700 to-teal-600 p-6 text-white shadow-lg flex flex-col justify-between">
+            <div>
+                <div class="flex items-center mb-8">
+                    <img src="../images/oop.png" alt="DVLA Logo" class="logo">
+                    <div class="ml-3">
+                        <h2 class="text-2xl font-bold">DVLA</h2>
+                        <p class="text-sm opacity-75">Dashboard</p>
+                    </div>
+                </div>
+                <nav>
+                    <a href="#" class="flex items-center p-3 mb-2 bg-green-600 rounded-lg hover:bg-green-500 transition duration-200">
+                        <span class="material-icons mr-3">dashboard</span>
+                        Dashboard
+                    </a>
+                    <a href="records.html" class="flex items-center p-3 mb-2 hover:bg-green-500 rounded-lg transition duration-200">
+                        <span class="material-icons mr-3">search</span>
+                        Search Records
+                    </a>
+                    <a href="changeowner.html" class="flex items-center p-3 mb-2 hover:bg-green-500 rounded-lg transition duration-200">
+                        <span class="material-icons mr-3">sync_alt</span>
+                        Change Ownership
+                    </a>
+                    <a href="admin.html" class="flex items-center p-3 hover:bg-green-500 rounded-lg transition duration-200">
+                        <span class="material-icons mr-3">admin_panel_settings</span>
+                        Admin
+                    </a>
+                </nav>
+            </div>
+            <div class="mt-auto">
+                <button class="flex items-center bg-gradient-to-r from-green-600 to-teal-600 text-white px-5 py-3 rounded-lg shadow-lg hover:from-green-500 hover:to-teal-500 transform hover:scale-105 transition duration-200 ease-in-out w-full mb-4">
+                    <span class="material-icons mr-2">logout</span>
+                    Logout
+                </button>
+                <div class="text-center opacity-75 text-sm">
+                    © 2024 DVLA Club
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 p-8">
+            <!-- Header -->
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-2xl font-bold text-gray-800">Dashboard Overview</h1>
+                <div class="flex items-center space-x-4">
+                    <span class="text-gray-500">Welcome, Admin</span>
+                    <img src="https://ui-avatars.com/api/?name=Admin&background=0D9488&color=fff" alt="Admin" class="w-10 h-10 rounded-full">
+                </div>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h3 class="text-gray-500">Total Transfers</h3>
+                            <p class="text-2xl font-bold" id="totalTransfers">2,451</p>
+                        </div>
+                        <span class="material-icons text-green-500 text-3xl">sync_alt</span>
+                    </div>
+                    <div class="text-sm text-green-500">+15% from last month</div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h3 class="text-gray-500">Today's Transfers</h3>
+                            <p class="text-2xl font-bold" id="todayTransfers">12</p>
+                        </div>
+                        <span class="material-icons text-blue-500 text-3xl">today</span>
+                    </div>
+                    <div class="text-sm text-blue-500">+3 from yesterday</div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h3 class="text-gray-500">Pending Approvals</h3>
+                            <p class="text-2xl font-bold" id="pendingApprovals">8</p>
+                        </div>
+                        <span class="material-icons text-yellow-500 text-3xl">pending_actions</span>
+                    </div>
+                    <div class="text-sm text-yellow-500">Requires attention</div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h3 class="text-gray-500">Revenue (GHS)</h3>
+                            <p class="text-2xl font-bold" id="revenue">24,500</p>
+                        </div>
+                        <span class="material-icons text-purple-500 text-3xl">payments</span>
+                    </div>
+                    <div class="text-sm text-purple-500">+5% from last week</div>
+                </div>
+            </div>
+
+            <!-- Charts and Recent Transfers -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+                <!-- Recent Transfers -->
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-xl font-bold text-gray-800">Recent Transfers</h2>
+                        <button class="text-green-500 hover:text-green-600">View All</button>
+                    </div>
+                    <div class="space-y-4" id="recentTransfers">
+                        <!-- Sample Transfer -->
+                        <div class="border-b pb-3">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="font-semibold">John Doe</p>
+                                    <p class="text-sm text-gray-600">Toyota Camry - ABC123</p>
+                                </div>
+                                <span class="text-sm text-gray-500">Today</span>
+                            </div>
+                        </div>
+                        <!-- More transfers... -->
+                    </div>
+                </div>
+
+                <!-- Transfer Trends Chart -->
+                <div class="bg-white rounded-lg shadow-lg p-6 lg:col-span-2">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-xl font-bold text-gray-800">Transfer Trends</h2>
+                        <select class="border rounded-lg px-2 py-1">
+                            <option>This Week</option>
+                            <option>This Month</option>
+                            <option>This Year</option>
+                        </select>
+                    </div>
+                    <div class="h-48">
+                        <canvas id="transferTrendsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Vehicle Types and Status -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Vehicle Types Chart -->
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4">Vehicle Types Distribution</h2>
+                    <div class="h-48">
+                        <canvas id="vehicleTypesChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Transfer Status -->
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4">Transfer Status</h2>
+                    <div class="h-48">
+                        <canvas id="transferStatusChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample data for charts
+        const transferTrendsCtx = document.getElementById('transferTrendsChart').getContext('2d');
+        new Chart(transferTrendsCtx, {
+            type: 'line',
+            data: {
+                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                datasets: [{
+                    label: 'Transfers',
+                    data: [12, 19, 15, 17, 14, 13, 15],
+                    borderColor: 'rgb(16, 185, 129)',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 5
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+
+        const vehicleTypesCtx = document.getElementById('vehicleTypesChart').getContext('2d');
+        new Chart(vehicleTypesCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Sedan', 'SUV', 'Truck', 'Van', 'Other'],
+                datasets: [{
+                    data: [30, 25, 15, 20, 10],
+                    backgroundColor: [
+                        '#10B981',
+                        '#3B82F6',
+                        '#F59E0B',
+                        '#6366F1',
+                        '#EC4899'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: {
+                            boxWidth: 12
+                        }
+                    }
+                }
+            }
+        });
+
+        const transferStatusCtx = document.getElementById('transferStatusChart').getContext('2d');
+        new Chart(transferStatusCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Completed', 'Pending', 'Rejected'],
+                datasets: [{
+                    label: 'Transfer Status',
+                    data: [65, 25, 10],
+                    backgroundColor: [
+                        '#10B981',
+                        '#F59E0B',
+                        '#EF4444'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 20
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+
+        // Fetch and update dashboard data
+        async function updateDashboard() {
+            try {
+                const response = await fetch('http://localhost/vir-data/backend/api/dashboard_stats.php');
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    // Update statistics
+                    document.getElementById('totalTransfers').textContent = data.stats.total;
+                    document.getElementById('todayTransfers').textContent = data.stats.today;
+                    document.getElementById('pendingApprovals').textContent = data.stats.pending;
+                    document.getElementById('revenue').textContent = data.stats.revenue;
+
+                    // Update recent transfers
+                    const recentTransfersContainer = document.getElementById('recentTransfers');
+                    recentTransfersContainer.innerHTML = data.recentTransfers.map(transfer => `
+                        <div class="border-b pb-3">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="font-semibold">${transfer.new_owner_name}</p>
+                                    <p class="text-sm text-gray-600">${transfer.vehicle_make} - ${transfer.chassis_number}</p>
+                                </div>
+                                <span class="text-sm text-gray-500">${formatDate(transfer.transfer_date)}</span>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            } catch (error) {
+                console.error('Error updating dashboard:', error);
+            }
+        }
+
+        // Format date helper function
+        function formatDate(dateString) {
+            return new Date(dateString).toLocaleDateString();
+        }
+
+        // Initial update
+        updateDashboard();
+
+        // Update every 5 minutes
+        setInterval(updateDashboard, 300000);
+    </script>
+</body>
+</html>
+
+
+
+<!-- Highlighted Announcements or Alerts -->
+<div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+    <h2 class="text-xl font-bold text-gray-800 mb-4">Announcements</h2>
+    <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-4">
+        <p>New regulations for vehicle inspections will take effect on January 1, 2025.</p>
+    </div>
+    <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4">
+        <p>Reminder: Ensure all documents are verified before processing registrations.</p>
+
+
+        <div class="tile bg-white rounded-lg shadow-lg p-4 flex items-center justify-between">
+            <div>
+                <h3 class="text-lg font-bold">Total Registered Vehicles</h3>
+                <p class="text-2xl font-semibold">1,234</p>
+            </div>
+            <span class="material-icons text-green-600 text-4xl">directions_car</span>
+        </div>
+        <div class="tile bg-white rounded-lg shadow-lg p-4 flex items-center justify-between">
+            <div>
+                <h3 class="text-lg font-bold">Upcoming Inspections</h3>
+                <p class="text-2xl font-semibold">12</p>
+            </div>
+            <span class="material-icons text-yellow-600 text-4xl">schedule</span>
+        </div>
+        <div class="tile bg-white rounded-lg shadow-lg p-4 flex items-center justify-between">
+            <div>
+                <h3 class="text-lg font-bold">Pending Approvals</h3>
+                <p class="text-2xl font-semibold">5</p>
+            </div>
+            <span class="material-icons text-red-600 text-4xl">pending</span>
+        </div>
+        <div class="tile bg-white rounded-lg shadow-lg p-4 flex items-center justify-between">
+            <div>
+                <h3 class="text-lg font-bold">Recent Activity</h3>
+                <p class="text-2xl font-semibold">3</p>
+            </div>
+            <span class="material-icons text-blue-600 text-4xl">history</span>
+
+
+
+
+
+
+
+
+
+function saveAllFormData() {
+        // Get all form data from all sections
+        const formData = {
+            // Section 1 - Current Owner
+            currentOwner: {
+                fullName: document.getElementById('coFullName').value,
+                postalAddress: document.getElementById('coPostalAddress').value,
+                residentialAddress: document.getElementById('coResidentialAddress').value,
+                contact: document.getElementById('coContact').value,
+                email: document.getElementById('coEmail').value,
+                tin: document.getElementById('coTin').value
+            },
+            // Section 2 - Previous Owner
+            previousOwner: {
+                fullName: document.getElementById('poFullName').value,
+                postalAddress: document.getElementById('poPostalAddress').value,
+                residentialAddress: document.getElementById('poResidentialAddress').value,
+                contact: document.getElementById('poContact').value,
+                email: document.getElementById('poEmail').value,
+                tin: document.getElementById('poTin').value
+            },
+            // Section 3 - Vehicle Information
+            vehicle: {
+                make: document.getElementById('vehicleMake').value,
+                model: document.getElementById('vehicleModel').value,
+                chassisNo: document.getElementById('chassisNo').value,
+                engineNo: document.getElementById('engineNo').value,
+                vehicleUse: document.getElementById('vehicleUse').value,
+                registrationDate: document.getElementById('registrationDate').value
+            }
+        };
+
+        // Validate all required fields
+        if (!validateAllFields(formData)) {
+            return;
+        }
+
+        // Show loading state
+        const saveBtn = document.getElementById('saveAllBtn');
+        saveBtn.disabled = true;
+        saveBtn.innerHTML = `
+            <span class="material-icons animate-spin mr-2">refresh</span>
+            Saving...
+        `;
+
+        // Send data to backend
+        fetch('http://localhost/vir-data/backend/api/save_ownership.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                showSuccessPopup();
+            } else {
+                throw new Error(data.message || 'Failed to save data');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showErrorMessage('Failed to save data. Please try again.');
+        })
+        .finally(() => {
+            // Reset button state
+            saveBtn.disabled = false;
+            saveBtn.innerHTML = `
+                <span class="material-icons mr-2">save</span>
+                Save All Information
+            `;
+        });
+    }
+
+
+
+            Analyze the structure of these files for my project, i want to develop the backend and database using myphpadmin. Don't be doing unnecessary code, do what is necessary
+Also, give me the structure design of the database.
+
+
+develop a stock or inventory management system.
+It must have a dashboard, distribution monitoring page, where damaged goods can be recorded, pending goods, 
+pending payments, goods shortage and excess
+
+
+
+
+
+
+
+
+
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+<?php
+header("Access-Control-Allow-Origin: *");
+header("Content-Type: application/json; charset=UTF-8");
+header("Access-Control-Allow-Methods: POST");
+header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+
+include_once '../config/database.php';
+
+try {
+    // Get posted data
+    $data = json_decode(file_get_contents("php://input"), true);
+    
+    if (!$data) {
+        throw new Exception("No data received");
+    }
+
+    $database = new Database();
+    $conn = $database->getConnection();
+
+    // Prepare SQL statement
+    $sql = "INSERT INTO ownership_changes (
+        co_full_name, co_postal_address, co_residential_address, co_contact, co_email, co_tin,
+        transfer_date, po_full_name, po_postal_address, po_residential_address, po_contact, po_email, po_tin,
+        vehicle_make, model_name, chassis_number, year_of_manufacture, body_type, color,
+        vehicle_use, fuel_type, cubic_capacity, engine_number, number_of_cylinders, remarks, vehicle_number
+    ) VALUES (
+        :co_full_name, :co_postal_address, :co_residential_address, :co_contact, :co_email, :co_tin,
+        :transfer_date, :po_full_name, :po_postal_address, :po_residential_address, :po_contact, :po_email, :po_tin,
+        :vehicle_make, :model_name, :chassis_number, :year_of_manufacture, :body_type, :color,
+        :vehicle_use, :fuel_type, :cubic_capacity, :engine_number, :number_of_cylinders, :remarks, :vehicle_number
+    )";
+
+    $stmt = $conn->prepare($sql);
+
+    // Bind parameters
+    $stmt->bindParam(":co_full_name", $data['co_full_name']);
+    $stmt->bindParam(":co_postal_address", $data['co_postal_address']);
+    $stmt->bindParam(":co_residential_address", $data['co_residential_address']);
+    $stmt->bindParam(":co_contact", $data['co_contact']);
+    $stmt->bindParam(":co_email", $data['co_email']);
+    $stmt->bindParam(":co_tin", $data['co_tin']);
+    
+    $stmt->bindParam(":transfer_date", $data['transfer_date']);
+    $stmt->bindParam(":po_full_name", $data['po_full_name']);
+    $stmt->bindParam(":po_postal_address", $data['po_postal_address']);
+    $stmt->bindParam(":po_residential_address", $data['po_residential_address']);
+    $stmt->bindParam(":po_contact", $data['po_contact']);
+    $stmt->bindParam(":po_email", $data['po_email']);
+    $stmt->bindParam(":po_tin", $data['po_tin']);
+    
+    $stmt->bindParam(":vehicle_make", $data['vehicle_make']);
+    $stmt->bindParam(":model_name", $data['model_name']);
+    $stmt->bindParam(":chassis_number", $data['chassis_number']);
+    $stmt->bindParam(":year_of_manufacture", $data['year_of_manufacture']);
+    $stmt->bindParam(":body_type", $data['body_type']);
+    $stmt->bindParam(":color", $data['color']);
+    $stmt->bindParam(":vehicle_use", $data['vehicle_use']);
+    $stmt->bindParam(":fuel_type", $data['fuel_type']);
+    $stmt->bindParam(":cubic_capacity", $data['cubic_capacity']);
+    $stmt->bindParam(":engine_number", $data['engine_number']);
+    $stmt->bindParam(":number_of_cylinders", $data['number_of_cylinders']);
+    $stmt->bindParam(":remarks", $data['remarks']);
+    $stmt->bindParam(":vehicle_number", $data['vehicle_number']);
+
+    // Execute query
+    if($stmt->execute()) {
+        http_response_code(200);
+        echo json_encode(array("status" => "success", "message" => "Record saved successfully"));
+    } else {
+        throw new Exception("Failed to save record");
+    }
+
+} catch(Exception $e) {
+    http_response_code(500);
+    echo json_encode(array(
+        "status" => "error",
+        "message" => $e->getMessage(),
+        "data" => $data ?? null
+    ));
+}
+?> 
