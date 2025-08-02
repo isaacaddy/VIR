@@ -4,6 +4,10 @@ header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET');
 header('Access-Control-Allow-Headers: Content-Type');
 
+// Add error reporting for debugging
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 include_once '../config/database.php';
 
 try {
@@ -15,6 +19,7 @@ try {
                 id,
                 action,
                 user_email as user,
+                details,
                 created_at as timestamp
               FROM activity_logs 
               ORDER BY created_at DESC 

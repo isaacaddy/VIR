@@ -71,7 +71,7 @@
                       <span class="material-icons mr-3">sync_alt</span>
                       <span>Change Ownership</span>
                   </a>
-                  <a href="" class="flex items-center p-3 hover:bg-green-500 rounded-lg transition duration-200">
+                  <a href="admin.html" class="flex items-center p-3 hover:bg-green-500 rounded-lg transition duration-200">
                     <span class="material-icons mr-3">admin_panel_settings</span>
                     <span>Admin</span>
                   </a>
@@ -103,6 +103,7 @@
                               <th class="py-4 px-6">ID</th>
                               <th class="py-4 px-6">Action</th>
                               <th class="py-4 px-6">User</th>
+                              <th class="py-4 px-6">Details</th>
                               <th class="py-4 px-6">Timestamp</th>
                           </tr>
                       </thead>
@@ -198,7 +199,7 @@
             loadingElement.style.display = 'flex';
             tableBody.innerHTML = ''; // Clear existing content
             
-            const response = await fetch('http://localhost/vir-data/backend/api/activity_logs.php');
+            const response = await fetch('http://localhost/VIR/backend/api/activity_logs.php');
             console.log('Activity Logs Response:', response); // Debug log
             
             if (!response.ok) {
@@ -212,7 +213,7 @@
                 if (data.logs.length === 0) {
                     tableBody.innerHTML = `
                         <tr>
-                            <td colspan="4" class="py-4 px-6 text-center text-gray-500">
+                            <td colspan="5" class="py-4 px-6 text-center text-gray-500">
                                 No activity logs found
                             </td>
                         </tr>
@@ -259,6 +260,9 @@
                             </div>
                         </td>
                         <td class="py-4 px-6">${log.user}</td>
+                        <td class="py-4 px-6">
+                            <span class="text-sm text-gray-600">${log.details || 'No details available'}</span>
+                        </td>
                         <td class="py-4 px-6">${formatTimestamp(log.timestamp)}</td>
                     `;
                     tableBody.appendChild(row);
@@ -270,7 +274,7 @@
             console.error('Error fetching logs:', error);
             tableBody.innerHTML = `
                 <tr>
-                    <td colspan="4" class="py-4 px-6 text-center text-red-500">
+                    <td colspan="5" class="py-4 px-6 text-center text-red-500">
                         Failed to load activity logs. Error: ${error.message}
                     </td>
                 </tr>
@@ -305,7 +309,7 @@
     // Function to fetch and display users
     async function fetchUsers() {
         try {
-            const response = await fetch('http://localhost/vir-data/backend/api/users.php');
+            const response = await fetch('http://localhost/VIR/backend/api/users.php');
             const data = await response.json();
             
             if (data.status === 'success') {
@@ -370,7 +374,7 @@
         }
 
         try {
-            const response = await fetch(`http://localhost/vir-data/backend/api/users.php?id=${id}`, {
+            const response = await fetch(`http://localhost/VIR/backend/api/users.php?id=${id}`, {
                 method: 'DELETE'
             });
             const data = await response.json();
@@ -391,7 +395,7 @@
     // Function to register user
     async function registerUser(userData) {
         try {
-            const response = await fetch('http://localhost/vir-data/backend/api/register.php', {
+            const response = await fetch('http://localhost/VIR/backend/api/register.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -436,7 +440,7 @@
 
     async function handleLogout() {
         try {
-            const response = await fetch('http://localhost/vir-data/backend/api/logout.php', {
+            const response = await fetch('http://localhost/VIR/backend/api/logout.php', {
                 method: 'POST',
                 credentials: 'include' // Include cookies/session
             });

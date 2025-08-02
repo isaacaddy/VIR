@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,16 +8,22 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
-   
         .logo {
-            width: 130px; /* Increased width */
-            height: 75px; /* Adjusted height to maintain aspect ratio */
-            border-radius: 50%; /* Circular logo */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow */
-            transition: transform 0.3s; /* Smooth scaling on hover */
+            width: 130px;
+            /* Increased width */
+            height: 75px;
+            /* Adjusted height to maintain aspect ratio */
+            border-radius: 50%;
+            /* Circular logo */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            /* Subtle shadow */
+            transition: transform 0.3s;
+            /* Smooth scaling on hover */
         }
+
         .logo:hover {
-            transform: scale(1.1); /* Slightly enlarge on hover */
+            transform: scale(1.1);
+            /* Slightly enlarge on hover */
         }
 
         /* Modal styles */
@@ -34,17 +41,47 @@
             -webkit-backdrop-filter: blur(8px);
         }
 
-        /* Add these styles to your existing styles */
-        #successPopup {
+        /* Modal styles */
+        #successModal,
+        #errorModal {
             transition: all 0.3s ease-in-out;
         }
 
-        #successPopup.show {
-            transform: translateY(0);
-            opacity: 1
+        #successModal.show,
+        #errorModal.show {
+            display: block !important;
+        }
+
+        #successModal .bg-white,
+        #errorModal .bg-white {
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                transform: translate(-50%, -60%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translate(-50%, -50%);
+                opacity: 1;
+            }
+        }
+
+        /* Close modal when clicking outside */
+        #successModal,
+        #errorModal {
+            cursor: pointer;
+        }
+
+        #successModal .bg-white,
+        #errorModal .bg-white {
+            cursor: default;
         }
     </style>
 </head>
+
 <body class="bg-gradient-to-br from-green-50 to-blue-50 min-h-screen flex items-center justify-center">
     <div class="flex min-h-screen w-full">
         <!-- Sidebar -->
@@ -60,26 +97,31 @@
                     </div>
                 </div>
                 <nav>
-                    <a href="dashboard.html" class="flex items-center p-3 mb-2 hover:bg-green-500 rounded-lg transition duration-200">
+                    <a href="dashboard.html"
+                        class="flex items-center p-3 mb-2 hover:bg-green-500 rounded-lg transition duration-200">
                         <span class="material-icons mr-3">dashboard</span>
                         <span>Dashboard</span>
-                    <a href="records.html" class="flex items-center p-3 mb-2 bg-green-600 rounded-lg hover:bg-green-500 transition duration-200">
-                        <span class="material-icons mr-3">search</span>
-                        <span>Search</span>
-                    </a>
-                    <a href="changeowner.html" class="flex items-center p-3 mb-2 hover:bg-green-500 rounded-lg transition duration-200">
-                        <span class="material-icons mr-3">sync_alt</span>
-                        <span>Change Ownership</span>
-                    </a>
-                    <a href="admin.html" class="flex items-center p-3 mb-2 hover:bg-green-500 rounded-lg transition duration-200">
-                        <span class="material-icons mr-3">admin_panel_settings</span>
-                        <span>Admin</span>
-                    </a>
-                    
+                        <a href="records.html"
+                            class="flex items-center p-3 mb-2 bg-green-600 rounded-lg hover:bg-green-500 transition duration-200">
+                            <span class="material-icons mr-3">search</span>
+                            <span>Search</span>
+                        </a>
+                        <a href="changeowner.html"
+                            class="flex items-center p-3 mb-2 hover:bg-green-500 rounded-lg transition duration-200">
+                            <span class="material-icons mr-3">sync_alt</span>
+                            <span>Change Ownership</span>
+                        </a>
+                        <a href="admin.html"
+                            class="flex items-center p-3 mb-2 hover:bg-green-500 rounded-lg transition duration-200">
+                            <span class="material-icons mr-3">admin_panel_settings</span>
+                            <span>Admin</span>
+                        </a>
+
                 </nav>
             </div>
             <div class="mt-auto flex flex-col items-center">
-                <button onclick="handleLogout()" class="flex items-center bg-gradient-to-r from-green-600 to-teal-600 text-white px-5 py-3 rounded-lg shadow-lg hover:from-green-500 hover:to-teal-500 transform hover:scale-105 transition duration-200 ease-in-out mb-4">
+                <button onclick="handleLogout()"
+                    class="flex items-center bg-gradient-to-r from-green-600 to-teal-600 text-white px-5 py-3 rounded-lg shadow-lg hover:from-green-500 hover:to-teal-500 transform hover:scale-105 transition duration-200 ease-in-out mb-4">
                     <span class="material-icons mr-2">logout</span>
                     <span class="font-semibold">Logout</span>
                 </button>
@@ -95,19 +137,15 @@
             <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
                 <div class="flex justify-between items-center mb-6">
                     <div class="flex items-center">
-                        <input 
-                            type="text" 
-                            id="searchInput"
-                            placeholder="Search by chassis or vehicle number..." 
-                            class="w-96 border border-gray-300 rounded-lg p-2 mr-2 focus:outline-none focus:ring-2 focus:ring-green-500" 
-                        />
-                        <button 
-                            onclick="searchRecords()"
+                        <input type="text" id="searchInput" placeholder="Search by chassis or vehicle number..."
+                            class="w-96 border border-gray-300 rounded-lg p-2 mr-2 focus:outline-none focus:ring-2 focus:ring-green-500" />
+                        <button onclick="searchRecords()"
                             class="bg-green-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-green-500 transition duration-200">
                             Search
                         </button>
                     </div>
-                    <button onclick="window.location.href='changeowner.html'" class="bg-green-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-green-500 transition duration-200">
+                    <button onclick="window.location.href='changeowner.html'"
+                        class="bg-green-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-green-500 transition duration-200">
                         Add Record
                     </button>
                 </div>
@@ -159,9 +197,10 @@
     <div id="editModal" class="fixed inset-0 hidden z-50">
         <!-- Overlay with blur effect -->
         <div class="fixed inset-0 bg-black/50 backdrop-blur-sm"></div>
-        
+
         <!-- Modal Content -->
-        <div class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg p-6 w-3/4 max-h-[90vh] overflow-y-auto shadow-2xl">
+        <div
+            class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg p-6 w-3/4 max-h-[90vh] overflow-y-auto shadow-2xl">
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-2xl font-bold text-gray-800">Edit Vehicle Record</h2>
                 <button onclick="closeEditModal()" class="text-gray-600 hover:text-gray-800">
@@ -301,15 +340,18 @@
 
                 <!-- Action Buttons -->
                 <div class="flex justify-end space-x-4 mt-6">
-                    <button type="submit" class="flex items-center px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">
+                    <button type="submit"
+                        class="flex items-center px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">
                         <span class="material-icons mr-2">save</span>
                         Save Changes
                     </button>
-                    <button onclick="savePDF()" class="flex items-center px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition">
+                    <button onclick="savePDF()"
+                        class="flex items-center px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition">
                         <span class="material-icons mr-2">picture_as_pdf</span>
                         Save as PDF
                     </button>
-                    <button type="button" onclick="closeEditModal()" class="flex items-center px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition">
+                    <button type="button" onclick="closeEditModal()"
+                        class="flex items-center px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition">
                         <span class="material-icons mr-2">close</span>
                         Cancel
                     </button>
@@ -318,19 +360,76 @@
         </div>
     </div>
 
-    <!-- Success Popup -->
-    <div id="successPopup" class="fixed top-4 right-4 transform translate-y-[-100%] opacity-0 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg flex items-center transition-all duration-300 z-50">
-        <span class="material-icons mr-2">check_circle</span>
-        <span class="success-message">Changes saved successfully!</span>
+    <!-- Success Modal -->
+    <div id="successModal" class="fixed inset-0 hidden z-50">
+        <!-- Overlay -->
+        <div class="fixed inset-0 bg-black/50 backdrop-blur-sm"></div>
+
+        <!-- Modal Content -->
+        <div
+            class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-2xl p-8 max-w-md w-full mx-4">
+            <div class="text-center">
+                <!-- Success Icon -->
+                <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-4">
+                    <span class="material-icons text-green-600 text-3xl">check_circle</span>
+                </div>
+
+                <!-- Title -->
+                <h3 class="text-xl font-semibold text-gray-900 mb-2" id="successTitle">Success!</h3>
+
+                <!-- Message -->
+                <p class="text-gray-600 mb-6" id="successMessage">Changes saved successfully!</p>
+
+                <!-- Action Buttons -->
+                <div class="flex justify-center space-x-3">
+                    <button onclick="closeSuccessModal()"
+                        class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition duration-200 font-medium">
+                        OK
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Error Modal -->
+    <div id="errorModal" class="fixed inset-0 hidden z-50">
+        <!-- Overlay -->
+        <div class="fixed inset-0 bg-black/50 backdrop-blur-sm"></div>
+
+        <!-- Modal Content -->
+        <div
+            class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-2xl p-8 max-w-md w-full mx-4">
+            <div class="text-center">
+                <!-- Error Icon -->
+                <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-red-100 mb-4">
+                    <span class="material-icons text-red-600 text-3xl">error</span>
+                </div>
+
+                <!-- Title -->
+                <h3 class="text-xl font-semibold text-gray-900 mb-2" id="errorTitle">Error!</h3>
+
+                <!-- Message -->
+                <p class="text-gray-600 mb-6" id="errorMessage">Something went wrong!</p>
+
+                <!-- Action Buttons -->
+                <div class="flex justify-center space-x-3">
+                    <button onclick="closeErrorModal()"
+                        class="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition duration-200 font-medium">
+                        OK
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- View Record Modal -->
     <div id="viewModal" class="fixed inset-0 hidden z-50">
         <!-- Overlay with blur effect -->
         <div class="fixed inset-0 bg-black/50 backdrop-blur-sm"></div>
-        
+
         <!-- Modal Content -->
-        <div class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg p-6 w-3/4 max-h-[90vh] overflow-y-auto shadow-2xl">
+        <div
+            class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg p-6 w-3/4 max-h-[90vh] overflow-y-auto shadow-2xl">
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-2xl font-bold text-gray-800">View Vehicle Record</h2>
                 <button onclick="closeViewModal()" class="text-gray-600 hover:text-gray-800">
@@ -345,19 +444,23 @@
                     <div class="grid grid-cols-2 gap-4">
                         <div>
                             <label class="block text-gray-600 mb-1">Full Name</label>
-                            <input type="text" id="view_co_full_name" class="w-full p-2 border rounded bg-gray-50" readonly>
+                            <input type="text" id="view_co_full_name" class="w-full p-2 border rounded bg-gray-50"
+                                readonly>
                         </div>
                         <div>
                             <label class="block text-gray-600 mb-1">Postal Address</label>
-                            <input type="text" id="view_co_postal_address" class="w-full p-2 border rounded bg-gray-50" readonly>
+                            <input type="text" id="view_co_postal_address" class="w-full p-2 border rounded bg-gray-50"
+                                readonly>
                         </div>
                         <div>
                             <label class="block text-gray-600 mb-1">Residential Address</label>
-                            <input type="text" id="view_co_residential_address" class="w-full p-2 border rounded bg-gray-50" readonly>
+                            <input type="text" id="view_co_residential_address"
+                                class="w-full p-2 border rounded bg-gray-50" readonly>
                         </div>
                         <div>
                             <label class="block text-gray-600 mb-1">Contact</label>
-                            <input type="text" id="view_co_contact" class="w-full p-2 border rounded bg-gray-50" readonly>
+                            <input type="text" id="view_co_contact" class="w-full p-2 border rounded bg-gray-50"
+                                readonly>
                         </div>
                         <div>
                             <label class="block text-gray-600 mb-1">Email</label>
@@ -376,19 +479,23 @@
                     <div class="grid grid-cols-2 gap-4">
                         <div>
                             <label class="block text-gray-600 mb-1">Full Name</label>
-                            <input type="text" id="view_po_full_name" class="w-full p-2 border rounded bg-gray-50" readonly>
+                            <input type="text" id="view_po_full_name" class="w-full p-2 border rounded bg-gray-50"
+                                readonly>
                         </div>
                         <div>
                             <label class="block text-gray-600 mb-1">Postal Address</label>
-                            <input type="text" id="view_po_postal_address" class="w-full p-2 border rounded bg-gray-50" readonly>
+                            <input type="text" id="view_po_postal_address" class="w-full p-2 border rounded bg-gray-50"
+                                readonly>
                         </div>
                         <div>
                             <label class="block text-gray-600 mb-1">Residential Address</label>
-                            <input type="text" id="view_po_residential_address" class="w-full p-2 border rounded bg-gray-50" readonly>
+                            <input type="text" id="view_po_residential_address"
+                                class="w-full p-2 border rounded bg-gray-50" readonly>
                         </div>
                         <div>
                             <label class="block text-gray-600 mb-1">Contact</label>
-                            <input type="text" id="view_po_contact" class="w-full p-2 border rounded bg-gray-50" readonly>
+                            <input type="text" id="view_po_contact" class="w-full p-2 border rounded bg-gray-50"
+                                readonly>
                         </div>
                         <div>
                             <label class="block text-gray-600 mb-1">Email</label>
@@ -407,23 +514,28 @@
                     <div class="grid grid-cols-3 gap-4">
                         <div>
                             <label class="block text-gray-600 mb-1">Vehicle Make</label>
-                            <input type="text" id="view_vehicle_make" class="w-full p-2 border rounded bg-gray-50" readonly>
+                            <input type="text" id="view_vehicle_make" class="w-full p-2 border rounded bg-gray-50"
+                                readonly>
                         </div>
                         <div>
                             <label class="block text-gray-600 mb-1">Model Name</label>
-                            <input type="text" id="view_model_name" class="w-full p-2 border rounded bg-gray-50" readonly>
+                            <input type="text" id="view_model_name" class="w-full p-2 border rounded bg-gray-50"
+                                readonly>
                         </div>
                         <div>
                             <label class="block text-gray-600 mb-1">Chassis Number</label>
-                            <input type="text" id="view_chassis_number" class="w-full p-2 border rounded bg-gray-50" readonly>
+                            <input type="text" id="view_chassis_number" class="w-full p-2 border rounded bg-gray-50"
+                                readonly>
                         </div>
                         <div>
                             <label class="block text-gray-600 mb-1">Year of Manufacture</label>
-                            <input type="text" id="view_year_of_manufacture" class="w-full p-2 border rounded bg-gray-50" readonly>
+                            <input type="text" id="view_year_of_manufacture"
+                                class="w-full p-2 border rounded bg-gray-50" readonly>
                         </div>
                         <div>
                             <label class="block text-gray-600 mb-1">Body Type</label>
-                            <input type="text" id="view_body_type" class="w-full p-2 border rounded bg-gray-50" readonly>
+                            <input type="text" id="view_body_type" class="w-full p-2 border rounded bg-gray-50"
+                                readonly>
                         </div>
                         <div>
                             <label class="block text-gray-600 mb-1">Color</label>
@@ -431,31 +543,38 @@
                         </div>
                         <div>
                             <label class="block text-gray-600 mb-1">Vehicle Use</label>
-                            <input type="text" id="view_vehicle_use" class="w-full p-2 border rounded bg-gray-50" readonly>
+                            <input type="text" id="view_vehicle_use" class="w-full p-2 border rounded bg-gray-50"
+                                readonly>
                         </div>
                         <div>
                             <label class="block text-gray-600 mb-1">Fuel Type</label>
-                            <input type="text" id="view_fuel_type" class="w-full p-2 border rounded bg-gray-50" readonly>
+                            <input type="text" id="view_fuel_type" class="w-full p-2 border rounded bg-gray-50"
+                                readonly>
                         </div>
                         <div>
                             <label class="block text-gray-600 mb-1">Engine Number</label>
-                            <input type="text" id="view_engine_number" class="w-full p-2 border rounded bg-gray-50" readonly>
+                            <input type="text" id="view_engine_number" class="w-full p-2 border rounded bg-gray-50"
+                                readonly>
                         </div>
                         <div>
                             <label class="block text-gray-600 mb-1">Cubic Capacity</label>
-                            <input type="text" id="view_cubic_capacity" class="w-full p-2 border rounded bg-gray-50" readonly>
+                            <input type="text" id="view_cubic_capacity" class="w-full p-2 border rounded bg-gray-50"
+                                readonly>
                         </div>
                         <div>
                             <label class="block text-gray-600 mb-1">Number of Cylinders</label>
-                            <input type="text" id="view_number_of_cylinders" class="w-full p-2 border rounded bg-gray-50" readonly>
+                            <input type="text" id="view_number_of_cylinders"
+                                class="w-full p-2 border rounded bg-gray-50" readonly>
                         </div>
                         <div>
                             <label class="block text-gray-600 mb-1">Registration Date</label>
-                            <input type="text" id="view_created_at" class="w-full p-2 border rounded bg-gray-50" readonly>
+                            <input type="text" id="view_created_at" class="w-full p-2 border rounded bg-gray-50"
+                                readonly>
                         </div>
                         <div>
                             <label class="block text-gray-600 mb-1">Vehicle Number</label>
-                            <input type="text" id="view_vehicle_number" class="w-full p-2 border rounded bg-gray-50" readonly>
+                            <input type="text" id="view_vehicle_number" class="w-full p-2 border rounded bg-gray-50"
+                                readonly>
                         </div>
                     </div>
                 </div>
@@ -463,11 +582,13 @@
 
             <!-- Action Buttons -->
             <div class="flex justify-end space-x-4 mt-6">
-                <button onclick="printViewRecord()" class="flex items-center px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition">
+                <button onclick="printViewRecord()"
+                    class="flex items-center px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition">
                     <span class="material-icons mr-2">print</span>
                     Print
                 </button>
-                <button onclick="closeViewModal()" class="flex items-center px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition">
+                <button onclick="closeViewModal()"
+                    class="flex items-center px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition">
                     <span class="material-icons mr-2">close</span>
                     Close
                 </button>
@@ -477,7 +598,7 @@
 
     <script>
         // Add this before your other JavaScript code
-        const API_URL = 'http://localhost/vir-data/backend/api/get_record.php';
+        const API_URL = 'http://localhost/VIR/backend/api/get_record.php';
 
         async function testConnection() {
             try {
@@ -491,106 +612,535 @@
 
         // Test the connection when page loads
         document.addEventListener('DOMContentLoaded', () => {
+            console.log('🚀 Page loaded, starting initialization...');
             testConnection();
             loadRecords();
         });
 
-        // Replace the static members array with localStorage data or default to empty array
-        let members = JSON.parse(localStorage.getItem('vehicleRecords')) || [];
+        // Global variables
+        let allRecords = [];
 
-        function renderMembers() {
-            const tbody = document.querySelector('#recordsList');
-            tbody.innerHTML = members.map((member, index) => `
-                <tr class="border-b hover:bg-gray-50 transition duration-200">
-                    <td class="py-4 px-4 text-center">${index + 1}</td>
-                    <td class="flex items-center gap-3 px-4 py-4">
-                        <div class="w-10 h-10 rounded-full bg-green-600 flex items-center justify-center text-white shadow-md font-semibold">
-                            ${member.fullName?.charAt(0) || 'U'}
-                        </div>
-                        <div>
-                            <span class="font-medium">${member.fullName || 'Unknown'}</span>
-                            <p class="text-sm text-gray-500">${member.email || 'No email'}</p>
-                        </div>
-                    </td>
-                    <td class="text-center px-4">${member.chassisNumber || 'N/A'}</td>
-                    <td class="text-center px-4">${member.vehicleMake || 'N/A'}</td>
-                    <td class="text-center px-4">${member.contact || 'N/A'}</td>
-                    <td class="flex justify-center space-x-2 py-4">
-                        <button onclick="editRecord(${index})" class="text-blue-500 hover:text-blue-700 transition">
-                            <span class="material-icons">edit</span>
-                        </button>
-                        <button onclick="deleteRecord(${index})" class="text-red-500 hover:text-red-700 transition">
-                            <span class="material-icons">delete</span>
-                        </button>
-                        <button onclick="printRecord(${index})" class="text-green-500 hover:text-green-700 transition">
-                            <span class="material-icons">print</span>
-                        </button>
-                    </td>
-                </tr>
-            `).join('');
+        // Function to load all records from the API
+        async function loadRecords() {
+            console.log('🔄 Starting loadRecords function...');
+            const loadingState = document.getElementById('loadingState');
+            const errorState = document.getElementById('errorState');
+            const recordsList = document.getElementById('recordsList');
+
+            try {
+                console.log('📡 Showing loading state...');
+                loadingState.classList.remove('hidden');
+                errorState.classList.add('hidden');
+
+                console.log('📡 Fetching from API: http://localhost/VIR/backend/api/get_record.php');
+                const response = await fetch('http://localhost/VIR/backend/api/get_record.php');
+                console.log('📡 Response status:', response.status);
+                console.log('📡 Response ok:', response.ok);
+
+                const result = await response.json();
+                console.log('📡 API Response:', result);
+
+                if (result.status === 'success') {
+                    console.log('✅ API call successful!');
+                    allRecords = result.data || [];
+                    console.log('📊 Records received:', allRecords.length);
+                    console.log('📊 Sample record:', allRecords[0]);
+                    recordsList.innerHTML = '';
+
+                    if (allRecords.length === 0) {
+                        console.log('⚠️ No records found in database');
+                        recordsList.innerHTML = `
+                            <tr>
+                                <td colspan="8" class="p-4 text-center text-gray-500">
+                                    No records found
+                                </td>
+                            </tr>
+                        `;
+                        return;
+                    }
+
+                    console.log('🔄 Building table rows...');
+                    allRecords.forEach((record, index) => {
+                        console.log(`📝 Processing record ${index + 1}:`, record.co_full_name);
+                        const row = document.createElement('tr');
+                        row.className = 'border-b hover:bg-gray-50';
+                        row.innerHTML = `
+                            <td class="p-4">${index + 1}</td>
+                            <td class="p-4">${record.co_full_name || 'N/A'}</td>
+                            <td class="p-4">${record.co_contact || 'N/A'}</td>
+                            <td class="p-4">${record.co_email || 'N/A'}</td>
+                            <td class="p-4">${record.vehicle_make || 'N/A'}</td>
+                            <td class="p-4">${record.chassis_number || 'N/A'}</td>
+                            <td class="p-4">${new Date(record.created_at).toLocaleDateString()}</td>
+                            <td class="p-4">
+                                <div class="flex space-x-2 justify-center">
+                                    <button onclick="viewRecord(${record.id})" 
+                                        class="p-1 rounded-full hover:bg-gray-100 transition-colors">
+                                        <span class="material-icons text-blue-600">visibility</span>
+                                    </button>
+                                    <button onclick="editRecord(${record.id})" 
+                                        class="p-1 rounded-full hover:bg-gray-100 transition-colors">
+                                        <span class="material-icons text-green-600">edit</span>
+                                    </button>
+                                    <button onclick="deleteRecord(${record.id})" 
+                                        class="p-1 rounded-full hover:bg-gray-100 transition-colors">
+                                        <span class="material-icons text-red-600">delete</span>
+                                    </button>
+                                </div>
+                            </td>
+                        `;
+                        recordsList.appendChild(row);
+                    });
+                    console.log('✅ Table rows built successfully!');
+                } else {
+                    console.error('❌ API returned error:', result.message);
+                    throw new Error(result.message || 'Failed to fetch records');
+                }
+            } catch (error) {
+                console.error('❌ Error in loadRecords:', error);
+                errorState.classList.remove('hidden');
+                errorState.innerHTML = `Error loading records: ${error.message}`;
+            } finally {
+                console.log('🏁 Hiding loading state...');
+                loadingState.classList.add('hidden');
+            }
         }
 
         function deleteRecord(id) {
             if (confirm('Are you sure you want to delete this record?')) {
-                fetch('http://localhost/vir-data/backend/api/delete_record.php', {
+                fetch('http://localhost/VIR/backend/api/delete_record.php', {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({ id: id })
                 })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            // Refresh the records table
+                            loadRecords();
+
+                            // Show success modal
+                            showSuccessModal('Record Deleted!', 'Vehicle record has been deleted successfully.');
+                        } else {
+                            throw new Error(data.message || 'Failed to delete record');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        showErrorModal('Delete Failed', 'Failed to delete the record. Please try again.');
+                    });
+            }
+        }
+
+        // Function to view record details
+        function viewRecord(id) {
+            console.log('View record clicked:', id);
+
+            // Get the modal
+            const modal = document.getElementById('viewModal');
+            if (!modal) {
+                console.error('View modal not found!');
+                return;
+            }
+
+            // Show modal
+            modal.classList.remove('hidden');
+
+            // Fetch record details
+            fetch(`http://localhost/VIR/backend/api/get_record.php?id=${id}`)
                 .then(response => response.json())
                 .then(data => {
                     if (data.status === 'success') {
-                        // Refresh the records table
-                        fetchRecords();
-                        
-                        // Show success message
-                        const successPopup = document.getElementById('successPopup');
-                        successPopup.textContent = 'Record deleted successfully!';
-                        successPopup.classList.remove('hidden');
-                        successPopup.classList.add('show');
+                        const record = data.data;
 
-                        setTimeout(() => {
-                            successPopup.classList.remove('show');
-                            setTimeout(() => {
-                                successPopup.classList.add('hidden');
-                            }, 300);
-                        }, 3000);
-                    } else {
-                        throw new Error(data.message || 'Failed to delete record');
+                        // Populate view fields
+                        document.getElementById('view_co_full_name').value = record.co_full_name || '';
+                        document.getElementById('view_co_postal_address').value = record.co_postal_address || '';
+                        document.getElementById('view_co_residential_address').value = record.co_residential_address || '';
+                        document.getElementById('view_co_contact').value = record.co_contact || '';
+                        document.getElementById('view_co_email').value = record.co_email || '';
+                        document.getElementById('view_co_tin').value = record.co_tin || '';
+
+                        document.getElementById('view_po_full_name').value = record.po_full_name || '';
+                        document.getElementById('view_po_postal_address').value = record.po_postal_address || '';
+                        document.getElementById('view_po_residential_address').value = record.po_residential_address || '';
+                        document.getElementById('view_po_contact').value = record.po_contact || '';
+                        document.getElementById('view_po_email').value = record.po_email || '';
+                        document.getElementById('view_po_tin').value = record.po_tin || '';
+
+                        document.getElementById('view_vehicle_make').value = record.vehicle_make || '';
+                        document.getElementById('view_model_name').value = record.model_name || '';
+                        document.getElementById('view_chassis_number').value = record.chassis_number || '';
+                        document.getElementById('view_year_of_manufacture').value = record.year_of_manufacture || '';
+                        document.getElementById('view_body_type').value = record.body_type || '';
+                        document.getElementById('view_color').value = record.color || '';
+                        document.getElementById('view_vehicle_use').value = record.vehicle_use || '';
+                        document.getElementById('view_fuel_type').value = record.fuel_type || '';
+                        document.getElementById('view_engine_number').value = record.engine_number || '';
+                        document.getElementById('view_cubic_capacity').value = record.cubic_capacity || '';
+                        document.getElementById('view_number_of_cylinders').value = record.number_of_cylinders || '';
+                        document.getElementById('view_vehicle_number').value = record.vehicle_number || '';
+                        document.getElementById('view_created_at').value = record.created_at ? new Date(record.created_at).toLocaleDateString() : '';
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    alert('Failed to delete record');
+                    alert('Failed to load record details');
                 });
+        }
+
+        // Function to close view modal
+        function closeViewModal() {
+            const modal = document.getElementById('viewModal');
+            if (modal) {
+                modal.classList.add('hidden');
             }
+        }
+
+        // Function to print view record
+        function printViewRecord() {
+            // Get the current record data from the view modal
+            const record = {
+                co_full_name: document.getElementById('view_co_full_name').value,
+                co_postal_address: document.getElementById('view_co_postal_address').value,
+                co_residential_address: document.getElementById('view_co_residential_address').value,
+                co_contact: document.getElementById('view_co_contact').value,
+                co_email: document.getElementById('view_co_email').value,
+                co_tin: document.getElementById('view_co_tin').value,
+                po_full_name: document.getElementById('view_po_full_name').value,
+                po_postal_address: document.getElementById('view_po_postal_address').value,
+                po_residential_address: document.getElementById('view_po_residential_address').value,
+                po_contact: document.getElementById('view_po_contact').value,
+                po_email: document.getElementById('view_po_email').value,
+                po_tin: document.getElementById('view_po_tin').value,
+                vehicle_make: document.getElementById('view_vehicle_make').value,
+                model_name: document.getElementById('view_model_name').value,
+                chassis_number: document.getElementById('view_chassis_number').value,
+                year_of_manufacture: document.getElementById('view_year_of_manufacture').value,
+                body_type: document.getElementById('view_body_type').value,
+                color: document.getElementById('view_color').value,
+                vehicle_use: document.getElementById('view_vehicle_use').value,
+                fuel_type: document.getElementById('view_fuel_type').value,
+                engine_number: document.getElementById('view_engine_number').value,
+                cubic_capacity: document.getElementById('view_cubic_capacity').value,
+                number_of_cylinders: document.getElementById('view_number_of_cylinders').value,
+                vehicle_number: document.getElementById('view_vehicle_number').value,
+                created_at: document.getElementById('view_created_at').value
+            };
+
+            // Use the existing print function
+            printRecordData(record);
+        }
+
+        // Updated print function to work with record data
+        function printRecordData(record) {
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Vehicle Ownership Record</title>
+                    <style>
+                        @page {
+                            margin: 0.5in;
+                            size: A4;
+                        }
+                        
+                        body {
+                            font-family: 'Arial', sans-serif;
+                            line-height: 1.4;
+                            color: #333;
+                            margin: 0;
+                            padding: 0;
+                        }
+                        
+                        .header {
+                            text-align: center;
+                            border-bottom: 3px solid #16a085;
+                            padding-bottom: 20px;
+                            margin-bottom: 30px;
+                        }
+                        
+                        .logo {
+                            width: 80px;
+                            height: 80px;
+                            border-radius: 50%;
+                            margin: 0 auto 15px;
+                            display: block;
+                        }
+                        
+                        .org-name {
+                            font-size: 24px;
+                            font-weight: bold;
+                            color: #16a085;
+                            margin: 10px 0 5px;
+                        }
+                        
+                        .org-subtitle {
+                            font-size: 14px;
+                            color: #666;
+                            margin-bottom: 15px;
+                        }
+                        
+                        .document-title {
+                            font-size: 20px;
+                            font-weight: bold;
+                            color: #2c3e50;
+                            margin: 0;
+                        }
+                        
+                        .section {
+                            margin-bottom: 25px;
+                            page-break-inside: avoid;
+                        }
+                        
+                        .section-title {
+                            font-size: 16px;
+                            font-weight: bold;
+                            color: #16a085;
+                            border-bottom: 2px solid #ecf0f1;
+                            padding-bottom: 5px;
+                            margin-bottom: 15px;
+                        }
+                        
+                        .info-grid {
+                            display: grid;
+                            grid-template-columns: 1fr 1fr;
+                            gap: 15px;
+                            margin-bottom: 15px;
+                        }
+                        
+                        .info-item {
+                            display: flex;
+                            flex-direction: column;
+                        }
+                        
+                        .info-label {
+                            font-weight: bold;
+                            color: #2c3e50;
+                            font-size: 12px;
+                            margin-bottom: 3px;
+                        }
+                        
+                        .info-value {
+                            color: #34495e;
+                            font-size: 14px;
+                            padding: 5px 0;
+                            border-bottom: 1px solid #ecf0f1;
+                        }
+                        
+                        .footer {
+                            margin-top: 40px;
+                            padding-top: 20px;
+                            border-top: 1px solid #ecf0f1;
+                            text-align: center;
+                            font-size: 12px;
+                            color: #7f8c8d;
+                        }
+                        
+                        .print-date {
+                            text-align: right;
+                            font-size: 12px;
+                            color: #7f8c8d;
+                            margin-bottom: 20px;
+                        }
+                        
+                        @media print {
+                            body { print-color-adjust: exact; }
+                            .section { page-break-inside: avoid; }
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="print-date">
+                        Printed on: ${new Date().toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            })}
+                    </div>
+                    
+                    <div class="header">
+                        <img src="./images/oop.png" alt="DVLA Logo" class="logo">
+                        <div class="org-name">DVLA</div>
+                        <div class="org-subtitle">Driver and Vehicle Licensing Authority</div>
+                        <div class="document-title">Vehicle Ownership Transfer Record</div>
+                    </div>
+                    
+                    <div class="section">
+                        <div class="section-title">Current Owner Information</div>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <div class="info-label">Full Name</div>
+                                <div class="info-value">${record.co_full_name || 'N/A'}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Contact Number</div>
+                                <div class="info-value">${record.co_contact || 'N/A'}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Email Address</div>
+                                <div class="info-value">${record.co_email || 'N/A'}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">TIN Number</div>
+                                <div class="info-value">${record.co_tin || 'N/A'}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Postal Address</div>
+                                <div class="info-value">${record.co_postal_address || 'N/A'}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Residential Address</div>
+                                <div class="info-value">${record.co_residential_address || 'N/A'}</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="section">
+                        <div class="section-title">Previous Owner Information</div>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <div class="info-label">Full Name</div>
+                                <div class="info-value">${record.po_full_name || 'N/A'}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Contact Number</div>
+                                <div class="info-value">${record.po_contact || 'N/A'}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Email Address</div>
+                                <div class="info-value">${record.po_email || 'N/A'}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">TIN Number</div>
+                                <div class="info-value">${record.po_tin || 'N/A'}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Postal Address</div>
+                                <div class="info-value">${record.po_postal_address || 'N/A'}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Residential Address</div>
+                                <div class="info-value">${record.po_residential_address || 'N/A'}</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="section">
+                        <div class="section-title">Vehicle Information</div>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <div class="info-label">Vehicle Make</div>
+                                <div class="info-value">${record.vehicle_make || 'N/A'}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Model Name</div>
+                                <div class="info-value">${record.model_name || 'N/A'}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Chassis Number</div>
+                                <div class="info-value">${record.chassis_number || 'N/A'}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Year of Manufacture</div>
+                                <div class="info-value">${record.year_of_manufacture || 'N/A'}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Body Type</div>
+                                <div class="info-value">${record.body_type || 'N/A'}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Color</div>
+                                <div class="info-value">${record.color || 'N/A'}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Vehicle Use</div>
+                                <div class="info-value">${record.vehicle_use || 'N/A'}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Fuel Type</div>
+                                <div class="info-value">${record.fuel_type || 'N/A'}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Cubic Capacity</div>
+                                <div class="info-value">${record.cubic_capacity || 'N/A'}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Engine Number</div>
+                                <div class="info-value">${record.engine_number || 'N/A'}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Number of Cylinders</div>
+                                <div class="info-value">${record.number_of_cylinders || 'N/A'}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Vehicle Number</div>
+                                <div class="info-value">${record.vehicle_number || 'N/A'}</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="section">
+                        <div class="section-title">Transfer Information</div>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <div class="info-label">Record Created</div>
+                                <div class="info-value">${record.created_at || 'N/A'}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Status</div>
+                                <div class="info-value">Active</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="footer">
+                        <p>This is an official document generated by the DVLA Vehicle Registration System.</p>
+                        <p>For verification purposes, please contact DVLA at info@dvla.gov.gh</p>
+                        <p>© ${new Date().getFullYear()} Driver and Vehicle Licensing Authority. All rights reserved.</p>
+                    </div>
+                </body>
+                </html>
+            `);
+
+            printWindow.document.close();
+            printWindow.focus();
+
+            // Wait for images to load before printing
+            setTimeout(() => {
+                printWindow.print();
+                printWindow.close();
+            }, 500);
         }
 
         function editRecord(id) {
             console.log('Edit record clicked:', id);
-            
+
             // Get the modal
             const modal = document.getElementById('editModal');
             if (!modal) {
                 console.error('Edit modal not found!');
                 return;
             }
-            
+
             // Show modal with flex display
             modal.style.display = 'flex';
             modal.classList.remove('hidden');
-            
+
             // Fetch record details
-            fetch(`http://localhost/vir-data/backend/api/get_record.php?id=${id}`)
+            fetch(`http://localhost/VIR/backend/api/get_record.php?id=${id}`)
                 .then(response => response.json())
                 .then(data => {
                     if (data.status === 'success') {
                         const record = data.data;
                         // Populate form fields
                         document.getElementById('edit_record_id').value = record.id;
-                        
+
                         // Current Owner fields
                         document.getElementById('edit_co_full_name').value = record.co_full_name || '';
                         document.getElementById('edit_co_postal_address').value = record.co_postal_address || '';
@@ -598,7 +1148,7 @@
                         document.getElementById('edit_co_contact').value = record.co_contact || '';
                         document.getElementById('edit_co_email').value = record.co_email || '';
                         document.getElementById('edit_co_tin').value = record.co_tin || '';
-                        
+
                         // Previous Owner fields
                         document.getElementById('edit_po_full_name').value = record.po_full_name || '';
                         document.getElementById('edit_po_postal_address').value = record.po_postal_address || '';
@@ -606,7 +1156,7 @@
                         document.getElementById('edit_po_contact').value = record.po_contact || '';
                         document.getElementById('edit_po_email').value = record.po_email || '';
                         document.getElementById('edit_po_tin').value = record.po_tin || '';
-                        
+
                         // Vehicle Information fields
                         document.getElementById('edit_vehicle_make').value = record.vehicle_make || '';
                         document.getElementById('edit_model_name').value = record.model_name || '';
@@ -638,19 +1188,19 @@
         }
 
         // Add this to ensure proper modal setup
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             // Close modal when clicking outside
             const modal = document.getElementById('editModal');
             if (modal) {
-                modal.addEventListener('click', function(event) {
+                modal.addEventListener('click', function (event) {
                     if (event.target === this) {
                         closeEditModal();
                     }
                 });
             }
-            
+
             // Close modal with Escape key
-            document.addEventListener('keydown', function(event) {
+            document.addEventListener('keydown', function (event) {
                 if (event.key === 'Escape') {
                     closeEditModal();
                 }
@@ -659,7 +1209,7 @@
 
         function saveEditChanges(event) {
             event.preventDefault();
-            
+
             const formData = {
                 id: document.getElementById('edit_record_id').value,
                 co_full_name: document.getElementById('edit_co_full_name').value,
@@ -688,120 +1238,624 @@
                 vehicle_number: document.getElementById('edit_vehicle_number').value
             };
 
+            console.log('🔄 Saving record changes...', formData);
+
             // Save changes
-            fetch('http://localhost/vir-data/backend/api/update_record.php', {
+            fetch('http://localhost/VIR/backend/api/update_record.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(formData)
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    closeEditModal();
-                    fetchRecords(); // Refresh the records list
-                    
-                    // Show success message
-                    const successPopup = document.getElementById('successPopup');
-                    successPopup.classList.remove('hidden');
-                    successPopup.classList.add('flex');
-                    
-                    setTimeout(() => {
-                        successPopup.classList.remove('flex');
-                        successPopup.classList.add('hidden');
-                    }, 3000);
-                } else {
-                    throw new Error(data.message || 'Failed to update record');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Update record: ' + error.message);
-            });
+                .then(response => {
+                    console.log('📡 Response status:', response.status);
+                    console.log('📡 Response ok:', response.ok);
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.text();
+                })
+                .then(text => {
+                    console.log('📡 Raw response:', text);
+
+                    // Check if response is empty
+                    if (!text.trim()) {
+                        throw new Error('Server returned empty response');
+                    }
+
+                    try {
+                        const data = JSON.parse(text);
+                        console.log('✅ Parsed response:', data);
+
+                        if (data.status === 'success') {
+                            console.log('✅ Update successful!');
+                            closeEditModal();
+                            loadRecords(); // Refresh the records list
+
+                            // Show success modal
+                            showSuccessModal('Record Updated!', 'Vehicle record has been updated successfully.');
+                        } else {
+                            console.error('❌ Server returned error:', data.message);
+                            throw new Error(data.message || 'Failed to update record');
+                        }
+                    } catch (parseError) {
+                        console.error('❌ JSON Parse Error:', parseError);
+                        console.error('❌ Raw response that failed to parse:', text);
+
+                        // Check if the response contains HTML (error page)
+                        if (text.includes('<html>') || text.includes('<!DOCTYPE')) {
+                            throw new Error('Server returned an error page instead of JSON. Check if the API endpoint is correct.');
+                        } else {
+                            throw new Error(`Invalid JSON response: ${text.substring(0, 100)}...`);
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('❌ Final error:', error);
+                    showErrorModal('Update Failed', error.message);
+                });
         }
 
-        function printRecord() {
-            const printContent = document.getElementById('editForm').innerHTML;
-            const originalContent = document.body.innerHTML;
-            document.body.innerHTML = `
-                <div style="padding: 20px;">
-                    <h1 style="text-align: center; margin-bottom: 20px;">Vehicle Record</h1>
-                    ${printContent}
-                </div>
-            `;
-            window.print();
-            document.body.innerHTML = originalContent;
-            location.reload();
+        // Function to print record by index (for backward compatibility)
+        function printRecord(index) {
+            const record = allRecords[index];
+            if (!record) return;
+            printRecordData(record);
         }
 
         async function savePDF() {
-            // You'll need to include the html2pdf library
-            const script = document.createElement('script');
-            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
-            document.head.appendChild(script);
-
-            script.onload = () => {
-                const element = document.getElementById('editForm');
-                const opt = {
-                    margin: 1,
-                    filename: 'vehicle-record.pdf',
-                    image: { type: 'jpeg', quality: 0.98 },
-                    html2canvas: { scale: 2 },
-                    jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-                };
-
-                html2pdf().set(opt).from(element).save();
-            };
-        }
-
-        // Function to fetch and display records
-        async function fetchRecords() {
             try {
-                const response = await fetch('http://localhost/vir-data/backend/api/get_record.php');
-                const data = await response.json();
-                
-                if (data.status === 'success') {
-                    const tbody = document.querySelector('#recordsList');
-                    tbody.innerHTML = data.data.map((record, index) => `
-                        <tr class="border-b hover:bg-gray-50">
-                            <td class="p-4">${index + 1}</td>
-                            <td class="p-4">${record.co_full_name || 'N/A'}</td>
-                            <td class="p-4">${record.co_contact || 'N/A'}</td>
-                            <td class="p-4">${record.co_email || 'N/A'}</td>
-                            <td class="p-4">${record.vehicle_make || 'N/A'}</td>
-                            <td class="p-4">${record.chassis_number || 'N/A'}</td>
-                            <td class="p-4">${new Date(record.created_at).toLocaleDateString()}</td>
-                            <td class="p-4">
-                                <div class="flex space-x-2 justify-center">
-                                    <button type="button" 
-                                        onclick="viewRecord(${record.id})" 
-                                        class="p-1 rounded-full hover:bg-gray-100 transition-colors">
-                                        <span class="material-icons text-blue-600">visibility</span>
-                                    </button>
-                                    <button type="button" 
-                                        onclick="console.log('Edit clicked:', ${record.id}); editRecord(${record.id});" 
-                                        class="p-1 rounded-full hover:bg-gray-100 transition-colors">
-                                        <span class="material-icons text-green-600">edit</span>
-                                    </button>
-                                    <button type="button" 
-                                        onclick="deleteRecord(${record.id})" 
-                                        class="p-1 rounded-full hover:bg-gray-100 transition-colors">
-                                        <span class="material-icons text-red-600">delete</span>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                    `).join('');
+                // Get the record ID from the edit form
+                const recordId = document.getElementById('edit_record_id').value;
+
+                if (!recordId) {
+                    showErrorModal('PDF Generation Failed', 'No record ID found. Please close and reopen the edit modal.');
+                    return;
                 }
+
+                console.log('🔄 Starting PDF generation for record:', recordId);
+
+                // Use the working simple PDF generator
+                await generateWorkingPDF(recordId);
+                
+                // Show success modal
+                showSuccessModal('PDF Generated!', 'Vehicle record has been saved as PDF successfully.');
+
             } catch (error) {
-                console.error('Error:', error);
-                document.getElementById('errorState').classList.remove('hidden');
+                console.error('❌ PDF generation failed:', error);
+                showErrorModal('PDF Generation Failed', error.message);
             }
         }
 
-        // Call this when page loads
-        document.addEventListener('DOMContentLoaded', fetchRecords);
+        // Working PDF generation function (based on the simple generator)
+        async function generateWorkingPDF(recordId) {
+            console.log('🔄 Starting working PDF generation for record:', recordId);
+            
+            // 1. Load html2pdf library
+            await loadHTML2PDFLibrary();
+            
+            // 2. Fetch record data
+            const record = await fetchRecordForPDF(recordId);
+            console.log('✅ Record fetched:', record);
+            
+            // 3. Create HTML content with embedded logo
+            const htmlContent = await createPDFHTML(record);
+            console.log('✅ HTML created with embedded logo, length:', htmlContent.length);
+            
+            // 4. Generate PDF using working method
+            await generatePDFFromWorkingHTML(htmlContent, record);
+        }
+
+        // Load html2pdf library
+        function loadHTML2PDFLibrary() {
+            return new Promise((resolve, reject) => {
+                if (typeof html2pdf !== 'undefined') {
+                    console.log('✅ html2pdf already loaded');
+                    resolve();
+                    return;
+                }
+                
+                console.log('🔄 Loading html2pdf library...');
+                const script = document.createElement('script');
+                script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
+                script.onload = () => {
+                    console.log('✅ html2pdf loaded successfully');
+                    resolve();
+                };
+                script.onerror = () => {
+                    console.error('❌ Failed to load html2pdf');
+                    reject(new Error('Failed to load PDF library'));
+                };
+                document.head.appendChild(script);
+            });
+        }
+
+        // Fetch record from API
+        async function fetchRecordForPDF(recordId) {
+            const response = await fetch(`http://localhost/VIR/backend/api/get_record.php?id=${recordId}`);
+            const result = await response.json();
+            
+            if (result.status === 'success' && result.data) {
+                return result.data;
+            } else {
+                throw new Error(result.message || 'Failed to fetch record');
+            }
+        }
+
+        // Format date for PDF
+        function formatDateForPDF(dateString) {
+            if (!dateString) return 'N/A';
+            try {
+                return new Date(dateString).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+            } catch (e) {
+                return dateString;
+            }
+        }
+
+        // Convert image to base64 for PDF embedding
+        function getLogoBase64() {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.crossOrigin = 'anonymous';
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    canvas.width = this.width;
+                    canvas.height = this.height;
+                    ctx.drawImage(this, 0, 0);
+                    const dataURL = canvas.toDataURL('image/png');
+                    resolve(dataURL);
+                };
+                img.onerror = function() {
+                    console.warn('Could not load logo image, using placeholder');
+                    resolve(''); // Return empty string if image fails to load
+                };
+                img.src = './images/oop.png';
+            });
+        }
+
+        // Create HTML content for PDF
+        async function createPDFHTML(record) {
+            // Get logo as base64
+            const logoBase64 = await getLogoBase64();
+            const logoImg = logoBase64 ? `<img src="${logoBase64}" alt="DVLA Logo" class="logo">` : '';
+            
+            return `
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Vehicle Ownership Transfer Record</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            color: #333;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .header {
+            text-align: center;
+            border-bottom: 3px solid #16a085;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        .logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            display: block;
+        }
+        .org-name {
+            font-size: 24px;
+            font-weight: bold;
+            color: #16a085;
+            margin: 10px 0;
+        }
+        .org-subtitle {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 15px;
+        }
+        .document-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        .section {
+            margin-bottom: 25px;
+            page-break-inside: avoid;
+        }
+        .section-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #16a085;
+            border-bottom: 2px solid #ecf0f1;
+            padding-bottom: 5px;
+            margin-bottom: 15px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+        }
+        td {
+            padding: 8px;
+            border-bottom: 1px solid #eee;
+            vertical-align: top;
+        }
+        .label {
+            font-weight: bold;
+            color: #555;
+            width: 30%;
+        }
+        .value {
+            color: #333;
+        }
+        .two-columns {
+            display: table;
+            width: 100%;
+        }
+        .column {
+            display: table-cell;
+            width: 50%;
+            padding-right: 20px;
+            vertical-align: top;
+        }
+        .footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #ccc;
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+        }
+        .print-date {
+            text-align: right;
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="print-date">
+        Generated on: ${new Date().toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        })}
+    </div>
+    
+    <div class="header">
+        ${logoImg}
+        <div class="org-name">DVLA</div>
+        <div class="org-subtitle">Driver and Vehicle Licensing Authority</div>
+        <div class="document-title">Vehicle Ownership Transfer Record</div>
+    </div>
+    
+    <div class="two-columns">
+        <div class="column">
+            <div class="section">
+                <div class="section-title">Current Owner Information</div>
+                <table>
+                    <tr><td class="label">Full Name:</td><td class="value">${record.co_full_name || 'N/A'}</td></tr>
+                    <tr><td class="label">Contact:</td><td class="value">${record.co_contact || 'N/A'}</td></tr>
+                    <tr><td class="label">Email:</td><td class="value">${record.co_email || 'N/A'}</td></tr>
+                    <tr><td class="label">TIN:</td><td class="value">${record.co_tin || 'N/A'}</td></tr>
+                    <tr><td class="label">Postal Address:</td><td class="value">${record.co_postal_address || 'N/A'}</td></tr>
+                    <tr><td class="label">Residential Address:</td><td class="value">${record.co_residential_address || 'N/A'}</td></tr>
+                </table>
+            </div>
+        </div>
+        
+        <div class="column">
+            <div class="section">
+                <div class="section-title">Previous Owner Information</div>
+                <table>
+                    <tr><td class="label">Full Name:</td><td class="value">${record.po_full_name || 'N/A'}</td></tr>
+                    <tr><td class="label">Contact:</td><td class="value">${record.po_contact || 'N/A'}</td></tr>
+                    <tr><td class="label">Email:</td><td class="value">${record.po_email || 'N/A'}</td></tr>
+                    <tr><td class="label">TIN:</td><td class="value">${record.po_tin || 'N/A'}</td></tr>
+                    <tr><td class="label">Postal Address:</td><td class="value">${record.po_postal_address || 'N/A'}</td></tr>
+                    <tr><td class="label">Residential Address:</td><td class="value">${record.po_residential_address || 'N/A'}</td></tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <div class="section">
+        <div class="section-title">Vehicle Information</div>
+        <table>
+            <tr>
+                <td class="label">Vehicle Make:</td><td class="value">${record.vehicle_make || 'N/A'}</td>
+                <td class="label">Model Name:</td><td class="value">${record.model_name || 'N/A'}</td>
+            </tr>
+            <tr>
+                <td class="label">Chassis Number:</td><td class="value">${record.chassis_number || 'N/A'}</td>
+                <td class="label">Year:</td><td class="value">${record.year_of_manufacture || 'N/A'}</td>
+            </tr>
+            <tr>
+                <td class="label">Body Type:</td><td class="value">${record.body_type || 'N/A'}</td>
+                <td class="label">Color:</td><td class="value">${record.color || 'N/A'}</td>
+            </tr>
+            <tr>
+                <td class="label">Vehicle Use:</td><td class="value">${record.vehicle_use || 'N/A'}</td>
+                <td class="label">Fuel Type:</td><td class="value">${record.fuel_type || 'N/A'}</td>
+            </tr>
+            <tr>
+                <td class="label">Cubic Capacity:</td><td class="value">${record.cubic_capacity || 'N/A'}</td>
+                <td class="label">Engine Number:</td><td class="value">${record.engine_number || 'N/A'}</td>
+            </tr>
+            <tr>
+                <td class="label">Cylinders:</td><td class="value">${record.number_of_cylinders || 'N/A'}</td>
+                <td class="label">Vehicle Number:</td><td class="value">${record.vehicle_number || 'N/A'}</td>
+            </tr>
+        </table>
+    </div>
+    
+    <div class="section">
+        <div class="section-title">Transfer Information</div>
+        <table>
+            <tr>
+                <td class="label">Transfer Date:</td><td class="value">${formatDateForPDF(record.transfer_date)}</td>
+                <td class="label">Record Created:</td><td class="value">${formatDateForPDF(record.created_at)}</td>
+            </tr>
+            <tr>
+                <td class="label">Last Updated:</td><td class="value">${formatDateForPDF(record.updated_at)}</td>
+                <td class="label">Status:</td><td class="value">${record.status || 'Active'}</td>
+            </tr>
+            <tr>
+                <td class="label">Remarks:</td><td class="value">${record.remarks || 'None'}</td>
+                <td class="label">Record ID:</td><td class="value">${record.id || 'N/A'}</td>
+            </tr>
+        </table>
+    </div>
+    
+    <div class="footer">
+        <p><strong>This is an official document generated by the DVLA Vehicle Registration System.</strong></p>
+        <p>For verification purposes, please contact DVLA at info@dvla.gov.gh</p>
+        <p>Document ID: VOR-${Date.now()}</p>
+        <p>© ${new Date().getFullYear()} Driver and Vehicle Licensing Authority. All rights reserved.</p>
+    </div>
+</body>
+</html>`;
+        }
+
+        // Generate PDF using the working method
+        async function generatePDFFromWorkingHTML(htmlContent, record) {
+            console.log('🔄 Converting HTML to PDF using working method...');
+            
+            // Create a temporary container that's visible but doesn't interfere
+            const container = document.createElement('div');
+            container.style.position = 'fixed';
+            container.style.top = '0';
+            container.style.left = '0';
+            container.style.width = '210mm';
+            container.style.height = '297mm';
+            container.style.backgroundColor = 'white';
+            container.style.zIndex = '-1000';
+            container.style.opacity = '0.01'; // Almost invisible but still rendered
+            container.style.overflow = 'hidden';
+            container.style.pointerEvents = 'none';
+            
+            // Create the content element
+            const element = document.createElement('div');
+            element.innerHTML = htmlContent;
+            element.style.width = '100%';
+            element.style.height = 'auto';
+            element.style.padding = '20px';
+            element.style.boxSizing = 'border-box';
+            
+            container.appendChild(element);
+            document.body.appendChild(container);
+            
+            console.log('📄 Element added to DOM, waiting for render...');
+            
+            // Wait for DOM to render
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            const options = {
+                margin: [0.5, 0.5, 0.5, 0.5],
+                filename: `vehicle-record-${record.chassis_number || 'unknown'}-${Date.now()}.pdf`,
+                image: { 
+                    type: 'jpeg', 
+                    quality: 0.95 
+                },
+                html2canvas: { 
+                    scale: 1.5,
+                    logging: false,
+                    useCORS: true,
+                    allowTaint: true,
+                    backgroundColor: '#ffffff',
+                    width: container.offsetWidth,
+                    height: container.offsetHeight
+                },
+                jsPDF: { 
+                    unit: 'in', 
+                    format: 'a4', 
+                    orientation: 'portrait' 
+                }
+            };
+            
+            try {
+                console.log('🔄 Generating PDF with working options...');
+                console.log('📏 Container dimensions:', container.offsetWidth, 'x', container.offsetHeight);
+                
+                const pdf = html2pdf().set(options).from(element);
+                await pdf.save();
+                
+                console.log('✅ PDF saved successfully');
+            } catch (error) {
+                console.error('❌ PDF generation error:', error);
+                throw error;
+            } finally {
+                // Clean up
+                console.log('🧹 Cleaning up DOM elements...');
+                if (document.body.contains(container)) {
+                    document.body.removeChild(container);
+                }
+            }
+        }
+
+        function generatePDF(record) {
+            // Create the same HTML content as the print function
+            let htmlContent = '<!DOCTYPE html><html><head>';
+            htmlContent += '<title>Vehicle Ownership Transfer Record</title>';
+            htmlContent += '<style>';
+            htmlContent += 'body { font-family: Arial, sans-serif; margin: 15px; color: #333; font-size: 12px; }';
+            htmlContent += '.header { text-align: center; border-bottom: 2px solid #16a085; padding-bottom: 15px; margin-bottom: 20px; }';
+            htmlContent += '.logo { width: 50px; height: 50px; margin: 0 auto 8px; display: block; }';
+            htmlContent += '.org-name { font-size: 18px; font-weight: bold; color: #16a085; margin: 5px 0; }';
+            htmlContent += '.document-title { font-size: 14px; font-weight: bold; margin-top: 8px; }';
+            htmlContent += '.main-content { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 15px; }';
+            htmlContent += '.section { margin-bottom: 15px; }';
+            htmlContent += '.section-title { font-size: 13px; font-weight: bold; color: #16a085; border-bottom: 1px solid #ccc; padding-bottom: 3px; margin-bottom: 8px; }';
+            htmlContent += '.info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }';
+            htmlContent += '.info-item { margin-bottom: 6px; }';
+            htmlContent += '.info-label { font-weight: bold; font-size: 11px; color: #555; }';
+            htmlContent += '.info-value { font-size: 12px; margin-top: 2px; padding-bottom: 3px; border-bottom: 1px dotted #ccc; }';
+            htmlContent += '.vehicle-section { grid-column: 1 / -1; }';
+            htmlContent += '.vehicle-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }';
+            htmlContent += '.footer { margin-top: 20px; text-align: center; font-size: 10px; color: #666; border-top: 1px solid #ccc; padding-top: 10px; }';
+            htmlContent += '@media print { body { margin: 10px; } .main-content { page-break-inside: avoid; } }';
+            htmlContent += '</style></head><body>';
+
+            // Add print date style
+            htmlContent += '.print-date { text-align: right; font-size: 10px; color: #666; margin-bottom: 15px; }';
+
+            // Header
+            htmlContent += '<div class="print-date">';
+            htmlContent += 'Generated on: ' + new Date().toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            htmlContent += '</div>';
+
+            htmlContent += '<div class="header">';
+            htmlContent += '<div class="org-name">DVLA</div>';
+            htmlContent += '<div>Driver and Vehicle Licensing Authority</div>';
+            htmlContent += '<div class="document-title">Vehicle Ownership Transfer Record</div>';
+            htmlContent += '</div>';
+
+            // Main content in two-column layout
+            htmlContent += '<div class="main-content">';
+
+            // Left Column - Current Owner
+            htmlContent += '<div class="section">';
+            htmlContent += '<div class="section-title">Current Owner Information</div>';
+            htmlContent += '<div class="info-grid">';
+            htmlContent += '<div class="info-item"><div class="info-label">Full Name</div><div class="info-value">' + (record.co_full_name || 'N/A') + '</div></div>';
+            htmlContent += '<div class="info-item"><div class="info-label">Contact</div><div class="info-value">' + (record.co_contact || 'N/A') + '</div></div>';
+            htmlContent += '<div class="info-item"><div class="info-label">Email</div><div class="info-value">' + (record.co_email || 'N/A') + '</div></div>';
+            htmlContent += '<div class="info-item"><div class="info-label">TIN</div><div class="info-value">' + (record.co_tin || 'N/A') + '</div></div>';
+            htmlContent += '<div class="info-item"><div class="info-label">Postal Address</div><div class="info-value">' + (record.co_postal_address || 'N/A') + '</div></div>';
+            htmlContent += '<div class="info-item"><div class="info-label">Residential Address</div><div class="info-value">' + (record.co_residential_address || 'N/A') + '</div></div>';
+            htmlContent += '</div></div>';
+
+            // Right Column - Previous Owner
+            htmlContent += '<div class="section">';
+            htmlContent += '<div class="section-title">Previous Owner Information</div>';
+            htmlContent += '<div class="info-grid">';
+            htmlContent += '<div class="info-item"><div class="info-label">Full Name</div><div class="info-value">' + (record.po_full_name || 'N/A') + '</div></div>';
+            htmlContent += '<div class="info-item"><div class="info-label">Contact</div><div class="info-value">' + (record.po_contact || 'N/A') + '</div></div>';
+            htmlContent += '<div class="info-item"><div class="info-label">Email</div><div class="info-value">' + (record.po_email || 'N/A') + '</div></div>';
+            htmlContent += '<div class="info-item"><div class="info-label">TIN</div><div class="info-value">' + (record.po_tin || 'N/A') + '</div></div>';
+            htmlContent += '<div class="info-item"><div class="info-label">Postal Address</div><div class="info-value">' + (record.po_postal_address || 'N/A') + '</div></div>';
+            htmlContent += '<div class="info-item"><div class="info-label">Residential Address</div><div class="info-value">' + (record.po_residential_address || 'N/A') + '</div></div>';
+            htmlContent += '</div></div>';
+
+            htmlContent += '</div>'; // End main-content
+
+            // Vehicle Information Section (Full Width)
+            htmlContent += '<div class="section vehicle-section">';
+            htmlContent += '<div class="section-title">Vehicle Information</div>';
+            htmlContent += '<div class="vehicle-grid">';
+            htmlContent += '<div class="info-item"><div class="info-label">Vehicle Make</div><div class="info-value">' + (record.vehicle_make || 'N/A') + '</div></div>';
+            htmlContent += '<div class="info-item"><div class="info-label">Model Name</div><div class="info-value">' + (record.model_name || 'N/A') + '</div></div>';
+            htmlContent += '<div class="info-item"><div class="info-label">Chassis Number</div><div class="info-value">' + (record.chassis_number || 'N/A') + '</div></div>';
+            htmlContent += '<div class="info-item"><div class="info-label">Year</div><div class="info-value">' + (record.year_of_manufacture || 'N/A') + '</div></div>';
+            htmlContent += '<div class="info-item"><div class="info-label">Body Type</div><div class="info-value">' + (record.body_type || 'N/A') + '</div></div>';
+            htmlContent += '<div class="info-item"><div class="info-label">Color</div><div class="info-value">' + (record.color || 'N/A') + '</div></div>';
+            htmlContent += '<div class="info-item"><div class="info-label">Vehicle Use</div><div class="info-value">' + (record.vehicle_use || 'N/A') + '</div></div>';
+            htmlContent += '<div class="info-item"><div class="info-label">Fuel Type</div><div class="info-value">' + (record.fuel_type || 'N/A') + '</div></div>';
+            htmlContent += '<div class="info-item"><div class="info-label">Cubic Capacity</div><div class="info-value">' + (record.cubic_capacity || 'N/A') + '</div></div>';
+            htmlContent += '<div class="info-item"><div class="info-label">Engine Number</div><div class="info-value">' + (record.engine_number || 'N/A') + '</div></div>';
+            htmlContent += '<div class="info-item"><div class="info-label">Cylinders</div><div class="info-value">' + (record.number_of_cylinders || 'N/A') + '</div></div>';
+            htmlContent += '<div class="info-item"><div class="info-label">Vehicle Number</div><div class="info-value">' + (record.vehicle_number || 'N/A') + '</div></div>';
+            htmlContent += '</div></div>';
+
+            // Transfer Information Section (Compact)
+            htmlContent += '<div class="section">';
+            htmlContent += '<div class="section-title">Transfer Information</div>';
+            htmlContent += '<div class="info-grid">';
+            htmlContent += '<div class="info-item"><div class="info-label">Transfer Date</div><div class="info-value">' + (record.transfer_date ? new Date(record.transfer_date).toLocaleDateString() : 'N/A') + '</div></div>';
+            htmlContent += '<div class="info-item"><div class="info-label">Record Created</div><div class="info-value">' + (record.created_at ? new Date(record.created_at).toLocaleDateString() : 'N/A') + '</div></div>';
+            htmlContent += '<div class="info-item"><div class="info-label">Remarks</div><div class="info-value">' + (record.remarks || 'None') + '</div></div>';
+            htmlContent += '<div class="info-item"><div class="info-label">Status</div><div class="info-value">Active</div></div>';
+            htmlContent += '</div></div>';
+
+            // Footer
+            htmlContent += '<div class="footer">';
+            htmlContent += '<p><strong>This is an official document generated by the DVLA Vehicle Registration System.</strong></p>';
+            htmlContent += '<p>For verification purposes, please contact DVLA at info@dvla.gov.gh</p>';
+            htmlContent += '<p>Document ID: VOR-' + Date.now() + '</p>';
+            htmlContent += '<p>© ' + new Date().getFullYear() + ' Driver and Vehicle Licensing Authority. All rights reserved.</p>';
+            htmlContent += '</div>';
+
+            htmlContent += '</body></html>';
+
+            // Create a temporary element to hold the HTML content
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = htmlContent;
+            tempDiv.style.position = 'absolute';
+            tempDiv.style.left = '-9999px';
+            tempDiv.style.top = '-9999px';
+            document.body.appendChild(tempDiv);
+
+            // PDF generation options
+            const opt = {
+                margin: 0.5,
+                filename: `vehicle-record-${record.chassis_number || 'unknown'}-${Date.now()}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: {
+                    scale: 2,
+                    useCORS: true,
+                    allowTaint: true
+                },
+                jsPDF: {
+                    unit: 'in',
+                    format: 'a4',
+                    orientation: 'portrait'
+                }
+            };
+
+            // Generate PDF
+            html2pdf().set(opt).from(tempDiv).save().then(() => {
+                // Clean up temporary element
+                document.body.removeChild(tempDiv);
+
+                // Show success message
+                showSuccessModal('PDF Generated!', 'Vehicle record has been saved as PDF successfully.');
+            }).catch((error) => {
+                console.error('PDF generation error:', error);
+                document.body.removeChild(tempDiv);
+                showErrorModal('PDF Generation Failed', 'Failed to generate PDF. Please try again.');
+            });
+        }
+
+
 
         function handleLogout() {
             localStorage.clear();
@@ -809,64 +1863,63 @@
             window.location.href = 'login.html';
         }
 
-        // Add this after your existing script tag
-        async function fetchRecords() {
-            try {
-                const response = await fetch('http://localhost/vir-data/backend/api/get_record.php');
-                const data = await response.json();
-                
-                if (data.status === 'success') {
-                    const tbody = document.querySelector('#recordsList');
-                    tbody.innerHTML = data.data.map((record, index) => `
-                        <tr class="border-b hover:bg-gray-50">
-                            <td class="p-4">${index + 1}</td>
-                            <td class="p-4">${record.co_full_name || 'N/A'}</td>
-                            <td class="p-4">${record.co_contact || 'N/A'}</td>
-                            <td class="p-4">${record.co_email || 'N/A'}</td>
-                            <td class="p-4">${record.vehicle_make || 'N/A'}</td>
-                            <td class="p-4">${record.chassis_number || 'N/A'}</td>
-                            <td class="p-4">${new Date(record.created_at).toLocaleDateString()}</td>
-                            <td class="p-4">
-                                <div class="flex space-x-2 justify-center">
-                                    <button type="button" 
-                                        onclick="viewRecord(${record.id})" 
-                                        class="p-1 rounded-full hover:bg-gray-100 transition-colors">
-                                        <span class="material-icons text-blue-600">visibility</span>
-                                    </button>
-                                    <button type="button" 
-                                        onclick="console.log('Edit clicked:', ${record.id}); editRecord(${record.id});" 
-                                        class="p-1 rounded-full hover:bg-gray-100 transition-colors">
-                                        <span class="material-icons text-green-600">edit</span>
-                                    </button>
-                                    <button type="button" 
-                                        onclick="deleteRecord(${record.id})" 
-                                        class="p-1 rounded-full hover:bg-gray-100 transition-colors">
-                                        <span class="material-icons text-red-600">delete</span>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                    `).join('');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                document.getElementById('errorState').classList.remove('hidden');
-            }
+        // Success Modal Functions
+        function showSuccessModal(title = 'Success!', message = 'Operation completed successfully!') {
+            const modal = document.getElementById('successModal');
+            const titleElement = document.getElementById('successTitle');
+            const messageElement = document.getElementById('successMessage');
+
+            titleElement.textContent = title;
+            messageElement.textContent = message;
+
+            modal.classList.remove('hidden');
+            modal.classList.add('show');
         }
 
-        // Add record viewing function
+        function closeSuccessModal() {
+            const modal = document.getElementById('successModal');
+            modal.classList.remove('show');
+            modal.classList.add('hidden');
+        }
+
+        // Error Modal Functions
+        function showErrorModal(title = 'Error!', message = 'Something went wrong!') {
+            const modal = document.getElementById('errorModal');
+            const titleElement = document.getElementById('errorTitle');
+            const messageElement = document.getElementById('errorMessage');
+
+            titleElement.textContent = title;
+            messageElement.textContent = message;
+
+            modal.classList.remove('hidden');
+            modal.classList.add('show');
+        }
+
+        function closeErrorModal() {
+            const modal = document.getElementById('errorModal');
+            modal.classList.remove('show');
+            modal.classList.add('hidden');
+        }
+
+        // Global variable to store current viewed record for printing
+        let currentViewedRecord = null;
+
         function viewRecord(id) {
             // Show modal
             const modal = document.getElementById('viewModal');
             modal.classList.remove('hidden');
-            
+
             // Fetch record details
-            fetch(`http://localhost/vir-data/backend/api/get_record.php?id=${id}`)
+            fetch(`http://localhost/VIR/backend/api/get_record.php?id=${id}`)
                 .then(response => response.json())
                 .then(data => {
                     if (data.status === 'success') {
                         const record = data.data;
-                        
+
+                        // Store record data for printing
+                        currentViewedRecord = record;
+                        console.log('Stored record for printing:', currentViewedRecord);
+
                         // Current Owner fields
                         document.getElementById('view_co_full_name').value = record.co_full_name || 'N/A';
                         document.getElementById('view_co_postal_address').value = record.co_postal_address || 'N/A';
@@ -874,7 +1927,7 @@
                         document.getElementById('view_co_contact').value = record.co_contact || 'N/A';
                         document.getElementById('view_co_email').value = record.co_email || 'N/A';
                         document.getElementById('view_co_tin').value = record.co_tin || 'N/A';
-                        
+
                         // Previous Owner fields
                         document.getElementById('view_po_full_name').value = record.po_full_name || 'N/A';
                         document.getElementById('view_po_postal_address').value = record.po_postal_address || 'N/A';
@@ -882,7 +1935,7 @@
                         document.getElementById('view_po_contact').value = record.po_contact || 'N/A';
                         document.getElementById('view_po_email').value = record.po_email || 'N/A';
                         document.getElementById('view_po_tin').value = record.po_tin || 'N/A';
-                        
+
                         // Vehicle fields
                         document.getElementById('view_vehicle_make').value = record.vehicle_make || 'N/A';
                         document.getElementById('view_model_name').value = record.model_name || 'N/A';
@@ -912,113 +1965,242 @@
         }
 
         function printViewRecord() {
-            window.print();
-        }
-
-        // Close modal when clicking outside
-        document.getElementById('viewModal').addEventListener('click', function(event) {
-            if (event.target === this) {
-                closeViewModal();
-            }
-        });
-
-        // Add search functionality
-        document.querySelector('button.bg-green-600').addEventListener('click', async () => {
-            const searchTerm = document.querySelector('input[type="text"]').value;
-            try {
-                const response = await fetch(`http://localhost/vir-data/backend/api/search_records.php?search=${searchTerm}`);
-                const data = await response.json();
-                if (data.status === 'success') {
-                    // Update the table with search results
-                    const tbody = document.querySelector('#recordsList');
-                    // Use the same rendering logic as fetchRecords
-                    // ... (same table row generation code as above)
-                }
-            } catch (error) {
-                console.error('Error searching records:', error);
-            }
-        });
-
-        async function loadRecords() {
-            const loadingState = document.getElementById('loadingState');
-            const errorState = document.getElementById('errorState');
-            const recordsList = document.getElementById('recordsList');
-            
-            try {
-                loadingState.classList.remove('hidden');
-                errorState.classList.add('hidden');
-                
-                const response = await fetch('http://localhost/vir-data/backend/api/get_record.php');
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const result = await response.json();
-                console.log('API Response:', result); // Debug log
-                
-                if (result.status === 'success') {
-                    recordsList.innerHTML = '';
-                    
-                    if (!result.data || result.data.length === 0) {
-                        recordsList.innerHTML = `
-                            <tr>
-                                <td colspan="8" class="p-4 text-center text-gray-500">
-                                    No records found in database
-                                </td>
-                            </tr>
-                        `;
-                        return;
-                    }
-                    
-                    result.data.forEach((record, index) => {
-                        const row = document.createElement('tr');
-                        row.className = 'border-b hover:bg-gray-50';
-                        row.innerHTML = `
-                            <td class="p-4">${index + 1}</td>
-                            <td class="p-4">${record.co_full_name || 'N/A'}</td>
-                            <td class="p-4">${record.co_contact || 'N/A'}</td>
-                            <td class="p-4">${record.co_email || 'N/A'}</td>
-                            <td class="p-4">${record.vehicle_make || 'N/A'}</td>
-                            <td class="p-4">${record.chassis_number || 'N/A'}</td>
-                            <td class="p-4">${new Date(record.created_at).toLocaleDateString()}</td>
-                            <td class="p-4">
-                                <div class="flex space-x-2 justify-center">
-                                    <button onclick="viewRecord(${record.id})" 
-                                        class="p-1 rounded-full hover:bg-gray-100 transition-colors">
-                                        <span class="material-icons text-blue-600">visibility</span>
-                                    </button>
-                                    <button onclick="editRecord(${record.id})" 
-                                        class="p-1 rounded-full hover:bg-gray-100 transition-colors">
-                                        <span class="material-icons text-green-600">edit</span>
-                                    </button>
-                                    <button onclick="deleteRecord(${record.id})" 
-                                        class="p-1 rounded-full hover:bg-gray-100 transition-colors">
-                                        <span class="material-icons text-red-600">delete</span>
-                                    </button>
-                                </div>
-                            </td>
-                        `;
-                        recordsList.appendChild(row);
-                    });
+            // Use the stored record data directly instead of extracting from modal
+            if (currentViewedRecord) {
+                console.log('Printing with stored record data:', currentViewedRecord);
+                printRecordData(currentViewedRecord);
+            } else {
+                // Fallback: extract from modal if no stored data
+                console.log('No stored record, extracting from modal');
+                const modal = document.getElementById('viewModal');
+                if (!modal.classList.contains('hidden')) {
+                    const recordData = extractRecordDataFromModal();
+                    printRecordData(recordData);
                 } else {
-                    throw new Error(result.message || 'Failed to fetch records');
+                    alert('No record data available for printing');
                 }
-            } catch (error) {
-                console.error('Error:', error);
-                errorState.classList.remove('hidden');
-                errorState.innerHTML = `Error loading records: ${error.message}`;
-            } finally {
-                loadingState.classList.add('hidden');
             }
         }
 
-        // Call loadRecords when the page loads
-        document.addEventListener('DOMContentLoaded', loadRecords);
+        function extractRecordDataFromModal() {
+            // Extract data from the view modal using the input field IDs
+            const getValue = (id) => {
+                const element = document.getElementById(id);
+                return element ? element.value.trim() : 'N/A';
+            };
 
-        // Add click outside listener to close modal
-        document.getElementById('editModal').addEventListener('click', function(event) {
-            if (event.target === this) {
-                closeEditModal();
+            return {
+                // Current Owner Information
+                co_full_name: getValue('view_co_full_name'),
+                co_postal_address: getValue('view_co_postal_address'),
+                co_residential_address: getValue('view_co_residential_address'),
+                co_contact: getValue('view_co_contact'),
+                co_email: getValue('view_co_email'),
+                co_tin: getValue('view_co_tin'),
+
+                // Previous Owner Information
+                po_full_name: getValue('view_po_full_name'),
+                po_postal_address: getValue('view_po_postal_address'),
+                po_residential_address: getValue('view_po_residential_address'),
+                po_contact: getValue('view_po_contact'),
+                po_email: getValue('view_po_email'),
+                po_tin: getValue('view_po_tin'),
+
+                // Vehicle Information
+                vehicle_make: getValue('view_vehicle_make'),
+                model_name: getValue('view_model_name'),
+                chassis_number: getValue('view_chassis_number'),
+                year_of_manufacture: getValue('view_year_of_manufacture'),
+                body_type: getValue('view_body_type'),
+                color: getValue('view_color'),
+                vehicle_use: getValue('view_vehicle_use'),
+                fuel_type: getValue('view_fuel_type'),
+                engine_number: getValue('view_engine_number'),
+                cubic_capacity: getValue('view_cubic_capacity'),
+                number_of_cylinders: getValue('view_number_of_cylinders'),
+                vehicle_number: getValue('view_vehicle_number'),
+                created_at: getValue('view_created_at'),
+
+                // Additional fields that might be available
+                transfer_date: getValue('view_transfer_date') || 'N/A',
+                remarks: getValue('view_remarks') || 'None'
+            };
+        }
+
+        function printRecordData(record) {
+            console.log('=== PRINTING RECORD DATA ===');
+            console.log('Record object:', record);
+            console.log('Current Owner Name:', record.co_full_name);
+            console.log('Vehicle Make:', record.vehicle_make);
+            console.log('================================');
+
+            // Create a new window for printing
+            const printWindow = window.open('', '_blank', 'width=800,height=600');
+
+            // Build the HTML content step by step
+            let htmlContent = '<!DOCTYPE html><html><head>';
+            htmlContent += '<title>Vehicle Ownership Transfer Record</title>';
+            htmlContent += '<style>';
+            htmlContent += 'body { font-family: Arial, sans-serif; margin: 15px; color: #333; font-size: 12px; }';
+            htmlContent += '.header { text-align: center; border-bottom: 2px solid #16a085; padding-bottom: 15px; margin-bottom: 20px; }';
+            htmlContent += '.logo { width: 50px; height: 50px; margin: 0 auto 8px; display: block; }';
+            htmlContent += '.org-name { font-size: 18px; font-weight: bold; color: #16a085; margin: 5px 0; }';
+            htmlContent += '.document-title { font-size: 14px; font-weight: bold; margin-top: 8px; }';
+            htmlContent += '.main-content { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 15px; }';
+            htmlContent += '.section { margin-bottom: 15px; }';
+            htmlContent += '.section-title { font-size: 13px; font-weight: bold; color: #16a085; border-bottom: 1px solid #ccc; padding-bottom: 3px; margin-bottom: 8px; }';
+            htmlContent += '.info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }';
+            htmlContent += '.info-item { margin-bottom: 6px; }';
+            htmlContent += '.info-label { font-weight: bold; font-size: 11px; color: #555; }';
+            htmlContent += '.info-value { font-size: 12px; margin-top: 2px; padding-bottom: 3px; border-bottom: 1px dotted #ccc; }';
+            htmlContent += '.vehicle-section { grid-column: 1 / -1; }';
+            htmlContent += '.vehicle-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }';
+            htmlContent += '.footer { margin-top: 20px; text-align: center; font-size: 10px; color: #666; border-top: 1px solid #ccc; padding-top: 10px; }';
+            htmlContent += '@media print { body { margin: 10px; } .main-content { page-break-inside: avoid; } }';
+            htmlContent += '</style></head><body>';
+
+            // Header
+            htmlContent += '<div class="header">';
+            htmlContent += '<img src="./images/oop.png" alt="DVLA Logo" class="logo">';
+            htmlContent += '<div class="org-name">DVLA</div>';
+            htmlContent += '<div>Driver and Vehicle Licensing Authority</div>';
+            htmlContent += '<div class="document-title">Vehicle Ownership Transfer Record</div>';
+            htmlContent += '</div>';
+
+            // Main content in two-column layout
+            htmlContent += '<div class="main-content">';
+
+            // Left Column - Current Owner
+            htmlContent += '<div class="section">';
+            htmlContent += '<div class="section-title">Current Owner Information</div>';
+            htmlContent += '<div class="info-grid">';
+            htmlContent += '<div class="info-item"><div class="info-label">Full Name</div><div class="info-value">' + (record.co_full_name || 'N/A') + '</div></div>';
+            htmlContent += '<div class="info-item"><div class="info-label">Contact</div><div class="info-value">' + (record.co_contact || 'N/A') + '</div></div>';
+            htmlContent += '<div class="info-item"><div class="info-label">Email</div><div class="info-value">' + (record.co_email || 'N/A') + '</div></div>';
+            htmlContent += '<div class="info-item"><div class="info-label">TIN</div><div class="info-value">' + (record.co_tin || 'N/A') + '</div></div>';
+            htmlContent += '<div class="info-item"><div class="info-label">Postal Address</div><div class="info-value">' + (record.co_postal_address || 'N/A') + '</div></div>';
+            htmlContent += '<div class="info-item"><div class="info-label">Residential Address</div><div class="info-value">' + (record.co_residential_address || 'N/A') + '</div></div>';
+            htmlContent += '</div></div>';
+
+            // Right Column - Previous Owner
+            htmlContent += '<div class="section">';
+            htmlContent += '<div class="section-title">Previous Owner Information</div>';
+            htmlContent += '<div class="info-grid">';
+            htmlContent += '<div class="info-item"><div class="info-label">Full Name</div><div class="info-value">' + (record.po_full_name || 'N/A') + '</div></div>';
+            htmlContent += '<div class="info-item"><div class="info-label">Contact</div><div class="info-value">' + (record.po_contact || 'N/A') + '</div></div>';
+            htmlContent += '<div class="info-item"><div class="info-label">Email</div><div class="info-value">' + (record.po_email || 'N/A') + '</div></div>';
+            htmlContent += '<div class="info-item"><div class="info-label">TIN</div><div class="info-value">' + (record.po_tin || 'N/A') + '</div></div>';
+            htmlContent += '<div class="info-item"><div class="info-label">Postal Address</div><div class="info-value">' + (record.po_postal_address || 'N/A') + '</div></div>';
+            htmlContent += '<div class="info-item"><div class="info-label">Residential Address</div><div class="info-value">' + (record.po_residential_address || 'N/A') + '</div></div>';
+            htmlContent += '</div></div>';
+
+            htmlContent += '</div>'; // End main-content
+
+            // Vehicle Information Section (Full Width)
+            htmlContent += '<div class="section vehicle-section">';
+            htmlContent += '<div class="section-title">Vehicle Information</div>';
+            htmlContent += '<div class="vehicle-grid">';
+            htmlContent += '<div class="info-item"><div class="info-label">Vehicle Make</div><div class="info-value">' + (record.vehicle_make || 'N/A') + '</div></div>';
+            htmlContent += '<div class="info-item"><div class="info-label">Model Name</div><div class="info-value">' + (record.model_name || 'N/A') + '</div></div>';
+            htmlContent += '<div class="info-item"><div class="info-label">Chassis Number</div><div class="info-value">' + (record.chassis_number || 'N/A') + '</div></div>';
+            htmlContent += '<div class="info-item"><div class="info-label">Year</div><div class="info-value">' + (record.year_of_manufacture || 'N/A') + '</div></div>';
+            htmlContent += '<div class="info-item"><div class="info-label">Body Type</div><div class="info-value">' + (record.body_type || 'N/A') + '</div></div>';
+            htmlContent += '<div class="info-item"><div class="info-label">Color</div><div class="info-value">' + (record.color || 'N/A') + '</div></div>';
+            htmlContent += '<div class="info-item"><div class="info-label">Vehicle Use</div><div class="info-value">' + (record.vehicle_use || 'N/A') + '</div></div>';
+            htmlContent += '<div class="info-item"><div class="info-label">Fuel Type</div><div class="info-value">' + (record.fuel_type || 'N/A') + '</div></div>';
+            htmlContent += '<div class="info-item"><div class="info-label">Cubic Capacity</div><div class="info-value">' + (record.cubic_capacity || 'N/A') + '</div></div>';
+            htmlContent += '<div class="info-item"><div class="info-label">Engine Number</div><div class="info-value">' + (record.engine_number || 'N/A') + '</div></div>';
+            htmlContent += '<div class="info-item"><div class="info-label">Cylinders</div><div class="info-value">' + (record.number_of_cylinders || 'N/A') + '</div></div>';
+            htmlContent += '<div class="info-item"><div class="info-label">Vehicle Number</div><div class="info-value">' + (record.vehicle_number || 'N/A') + '</div></div>';
+            htmlContent += '</div></div>';
+
+            // Transfer Information Section (Compact)
+            htmlContent += '<div class="section">';
+            htmlContent += '<div class="section-title">Transfer Information</div>';
+            htmlContent += '<div class="info-grid">';
+            htmlContent += '<div class="info-item"><div class="info-label">Transfer Date</div><div class="info-value">' + (record.transfer_date ? new Date(record.transfer_date).toLocaleDateString() : 'N/A') + '</div></div>';
+            htmlContent += '<div class="info-item"><div class="info-label">Record Created</div><div class="info-value">' + (record.created_at ? new Date(record.created_at).toLocaleDateString() : 'N/A') + '</div></div>';
+            htmlContent += '<div class="info-item"><div class="info-label">Remarks</div><div class="info-value">' + (record.remarks || 'None') + '</div></div>';
+            htmlContent += '<div class="info-item"><div class="info-label">Status</div><div class="info-value">Active</div></div>';
+            htmlContent += '</div></div>';
+
+            // Footer
+            htmlContent += '<div class="footer">';
+            htmlContent += '<p><strong>This is an official document generated by the DVLA Vehicle Registration System.</strong></p>';
+            htmlContent += '<p>For verification purposes, please contact DVLA at info@dvla.gov.gh</p>';
+            htmlContent += '<p>Document ID: VOR-' + Date.now() + '</p>';
+            htmlContent += '<p>© ' + new Date().getFullYear() + ' Driver and Vehicle Licensing Authority. All rights reserved.</p>';
+            htmlContent += '</div>';
+
+            htmlContent += '</body></html>';
+
+            // Write content to print window
+            printWindow.document.write(htmlContent);
+            printWindow.document.close();
+            printWindow.focus();
+
+            // Print after a short delay
+            setTimeout(() => {
+                printWindow.print();
+                printWindow.close();
+            }, 1000);
+        }
+
+
+
+
+
+        // Initialize page when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function () {
+            loadRecords();
+
+            // Add click outside listeners to close modals
+            const editModal = document.getElementById('editModal');
+            const viewModal = document.getElementById('viewModal');
+            const successModal = document.getElementById('successModal');
+            const errorModal = document.getElementById('errorModal');
+
+            if (editModal) {
+                editModal.addEventListener('click', function (event) {
+                    if (event.target === this) {
+                        closeEditModal();
+                    }
+                });
             }
+
+            if (viewModal) {
+                viewModal.addEventListener('click', function (event) {
+                    if (event.target === this) {
+                        closeViewModal();
+                    }
+                });
+            }
+
+            if (successModal) {
+                successModal.addEventListener('click', function (event) {
+                    if (event.target === this) {
+                        closeSuccessModal();
+                    }
+                });
+            }
+
+            if (errorModal) {
+                errorModal.addEventListener('click', function (event) {
+                    if (event.target === this) {
+                        closeErrorModal();
+                    }
+                });
+            }
+
+            // Close modals with Escape key
+            document.addEventListener('keydown', function (event) {
+                if (event.key === 'Escape') {
+                    closeEditModal();
+                    closeViewModal();
+                    closeSuccessModal();
+                    closeErrorModal();
+                }
+            });
         });
 
         // Add this search function to your JavaScript
@@ -1026,7 +2208,7 @@
             const searchTerm = document.getElementById('searchInput').value.trim();
             const loadingState = document.getElementById('loadingState');
             const errorState = document.getElementById('errorState');
-            
+
             if (!searchTerm) {
                 // If search is empty, load all records
                 loadRecords();
@@ -1036,14 +2218,14 @@
             try {
                 loadingState.classList.remove('hidden');
                 errorState.classList.add('hidden');
-                
-                const response = await fetch(`http://localhost/vir-data/backend/api/search_records.php?search=${encodeURIComponent(searchTerm)}`);
+
+                const response = await fetch(`http://localhost/VIR/backend/api/search_records.php?search=${encodeURIComponent(searchTerm)}`);
                 const data = await response.json();
-                
+
                 if (data.status === 'success') {
                     const tbody = document.querySelector('#recordsList');
                     tbody.innerHTML = '';
-                    
+
                     if (!data.data || data.data.length === 0) {
                         tbody.innerHTML = `
                             <tr>
@@ -1054,7 +2236,7 @@
                         `;
                         return;
                     }
-                    
+
                     data.data.forEach((record, index) => {
                         const row = document.createElement('tr');
                         row.className = 'border-b hover:bg-gray-50';
@@ -1098,11 +2280,12 @@
         }
 
         // Add event listener for Enter key on search input
-        document.getElementById('searchInput').addEventListener('keypress', function(event) {
+        document.getElementById('searchInput').addEventListener('keypress', function (event) {
             if (event.key === 'Enter') {
                 searchRecords();
             }
         });
     </script>
 </body>
+
 </html>

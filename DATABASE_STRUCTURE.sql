@@ -8,10 +8,24 @@ USE dvla_db;
 CREATE TABLE `activity_logs` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `action` varchar(255) NOT NULL,
-  `user` varchar(100) NOT NULL,
-  `timestamp` timestamp NOT NULL DEFAULT current_timestamp(),
+  `user_email` varchar(100) NOT NULL,
+  `details` text DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+-- Insert sample data for `activity_logs`
+INSERT INTO `activity_logs` (`id`, `action`, `user_email`, `details`, `created_at`) VALUES
+(1, 'User Login', 'kingdenzil166@gmail.com', 'Admin user logged in', '2024-11-20 15:59:05'),
+(2, 'Record Created', 'kingdenzil13@gmail.com', 'New vehicle record created', '2024-11-21 00:44:28'),
+(3, 'Record Updated', 'kingdenzil166@gmail.com', 'Vehicle record updated', '2024-11-21 00:44:50'),
+(4, 'Data Export', 'kingdenzil166@gmail.com', 'Data exported to CSV', '2024-11-21 01:15:20'),
+(5, 'User Registration', 'kingdenzil513@gmail.com', 'New user account created', '2024-11-21 02:30:15'),
+(6, 'Ownership Transfer', 'kingdenzil13@gmail.com', 'Vehicle ownership transferred', '2024-11-21 03:45:10'),
+(7, 'Record Deleted', 'kingdenzil166@gmail.com', 'Vehicle record deleted', '2024-11-21 04:20:35'),
+(8, 'System Backup', 'kingdenzil166@gmail.com', 'Database backup created', '2024-11-21 05:10:25');
 
 -- --------------------------------------------------------
 

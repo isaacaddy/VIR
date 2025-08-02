@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,23 +9,31 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        
         .logo {
-            width: 130px; /* Increased width */
-            height: 75px; /* Adjusted height to maintain aspect ratio */
-            border-radius: 50%; /* Circular logo */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow */
-            transition: transform 0.3s; /* Smooth scaling on hover */
+            width: 130px;
+            /* Increased width */
+            height: 75px;
+            /* Adjusted height to maintain aspect ratio */
+            border-radius: 50%;
+            /* Circular logo */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            /* Subtle shadow */
+            transition: transform 0.3s;
+            /* Smooth scaling on hover */
         }
+
         .logo:hover {
-            transform: scale(1.1); /* Slightly enlarge on hover */
+            transform: scale(1.1);
+            /* Slightly enlarge on hover */
         }
     </style>
 </head>
+
 <body class="bg-gradient-to-br from-green-50 to-blue-50 min-h-screen flex items-center justify-center">
     <div class="flex min-h-screen w-full">
         <!-- Sidebar -->
-        <div class="w-64 bg-gradient-to-b from-green-700 to-teal-600 p-6 text-white shadow-lg flex flex-col justify-between">
+        <div
+            class="w-64 bg-gradient-to-b from-green-700 to-teal-600 p-6 text-white shadow-lg flex flex-col justify-between">
             <div>
                 <div class="flex items-center mb-8">
                     <a href="dashboard.html">
@@ -36,27 +45,32 @@
                     </div>
                 </div>
                 <nav>
-                    <a href="dashboard.html" class="flex items-center p-3 mb-2 bg-green-600 rounded-lg transition duration-200">
+                    <a href="dashboard.html"
+                        class="flex items-center p-3 mb-2 bg-green-600 rounded-lg transition duration-200">
                         <span class="material-icons mr-3">dashboard</span>
                         <span>Dashboard</span>
                     </a>
-                    <a href="records.html" class="flex items-center p-3 mb-2 hover:bg-green-500 rounded-lg transition duration-200">
+                    <a href="records.html"
+                        class="flex items-center p-3 mb-2 hover:bg-green-500 rounded-lg transition duration-200">
                         <span class="material-icons mr-3">search</span>
                         <span>Search Records</span>
                     </a>
-                    <a href="changeowner.html" class="flex items-center p-3 mb-2 hover:bg-green-500 rounded-lg transition duration-200">
+                    <a href="changeowner.html"
+                        class="flex items-center p-3 mb-2 hover:bg-green-500 rounded-lg transition duration-200">
                         <span class="material-icons mr-3">sync_alt</span>
                         <span>Change Ownership</span>
                     </a>
-                    <a href="admin.html" class="flex items-center p-3 mb-2 hover:bg-green-500 rounded-lg transition duration-200">
+                    <a href="admin.html"
+                        class="flex items-center p-3 mb-2 hover:bg-green-500 rounded-lg transition duration-200">
                         <span class="material-icons mr-3">admin_panel_settings</span>
                         <span>Admin</span>
                     </a>
-                    
+
                 </nav>
             </div>
             <div class="mt-auto flex flex-col items-center">
-                <button onclick="handleLogout()" class="flex items-center bg-gradient-to-r from-green-600 to-teal-600 text-white px-5 py-3 rounded-lg shadow-lg hover:from-green-500 hover:to-teal-500 transform hover:scale-105 transition duration-200 ease-in-out mb-4">
+                <button onclick="handleLogout()"
+                    class="flex items-center bg-gradient-to-r from-green-600 to-teal-600 text-white px-5 py-3 rounded-lg shadow-lg hover:from-green-500 hover:to-teal-500 transform hover:scale-105 transition duration-200 ease-in-out mb-4">
                     <span class="material-icons mr-2">logout</span>
                     <span class="font-semibold">Logout</span>
                 </button>
@@ -216,15 +230,17 @@
                     <div class="bg-white rounded-lg shadow-lg p-6">
                         <h2 class="text-xl font-bold text-gray-800 mb-4">Quick Access</h2>
                         <div class="flex flex-col space-y-3">
-                            <button onclick="window.location.href='changeowner.html'" class="flex items-center bg-green-600 text-white px-4 py-3 rounded-lg hover:bg-green-500 transition duration-200">
+                            <button onclick="window.location.href='changeowner.html'"
+                                class="flex items-center bg-green-600 text-white px-4 py-3 rounded-lg hover:bg-green-500 transition duration-200">
                                 <span class="material-icons mr-2">add_circle</span>
                                 New Data Entry
                             </button>
-                            <button onclick="window.location.href='records.html'" class="flex items-center bg-green-600 text-white px-4 py-3 rounded-lg hover:bg-green-500 transition duration-200">
+                            <button onclick="window.location.href='records.html'"
+                                class="flex items-center bg-green-600 text-white px-4 py-3 rounded-lg hover:bg-green-500 transition duration-200">
                                 <span class="material-icons mr-2">schedule</span>
                                 Records Table
                             </button>
-                            
+
                         </div>
                     </div>
 
@@ -358,11 +374,11 @@
             // Add this function to get and display user info
             async function getUserInfo() {
                 try {
-                    const response = await fetch('http://localhost/vir-data/backend/api/user_info.php', {
+                    const response = await fetch('http://localhost/VIR/backend/api/user_info.php', {
                         credentials: 'include'  // Important for session handling
                     });
                     const data = await response.json();
-                    
+
                     if (data.status === 'success') {
                         document.querySelector('#userGreeting').textContent = `Welcome, ${data.user.name}!`;
                     }
@@ -387,7 +403,7 @@
         // Test API connection
         async function testAPI() {
             try {
-                const response = await fetch('http://localhost/vir-data/backend/api/dashboard_stats.php');
+                const response = await fetch('http://localhost/VIR/backend/api/dashboard_stats.php');
                 const data = await response.json();
                 console.log('API Response:', data);
                 return data;
@@ -400,9 +416,9 @@
         // Update dashboard function
         async function updateDashboard() {
             try {
-                const response = await fetch('http://localhost/vir-data/backend/api/dashboard_stats.php');
+                const response = await fetch('http://localhost/VIR/backend/api/dashboard_stats.php');
                 const data = await response.json();
-                
+
                 if (data.status === 'success') {
                     // Update stats
                     document.getElementById('totalTransfers').textContent = data.stats.total;
@@ -467,4 +483,5 @@
         }
     </script>
 </body>
+
 </html>

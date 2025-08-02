@@ -1,11 +1,20 @@
 <?php
+// Prevent any output before JSON
+ob_start();
+
+// Suppress PHP errors/warnings from corrupting JSON output
+error_reporting(0);
+ini_set('display_errors', 0);
+
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST');
 header('Access-Control-Allow-Headers: Content-Type');
 
+// Clear any previous output
+ob_clean();
+
 include_once '../config/database.php';
-include_once '../helpers/activity_logger.php';
 
 try {
     // Get posted data
@@ -81,12 +90,20 @@ try {
 
     // Execute the query
     if ($stmt->execute()) {
-        // Log the edit activity
-        include_once '../helpers/activity_logger.php';
-        if (!logActivity($db, 'edit_record', $_SESSION['user_email'])) {
-            error_log("Failed to log edit activity");
+        // Log the edit activity (optional - don't fail if session not available)
+        try {
+            session_start();
+            if (isset($_SESSION['user_email'])) {
+                include_once '../helpers/activity_logger.php';
+                logActivity($db, 'edit_record', $_SESSION['user_email']);
+            }
+        } catch (Exception $logError) {
+            // Log error but don't fail the main operation
+            error_log("Failed to log edit activity: " . $logError->getMessage());
         }
         
+        // Clear any output buffer and send clean JSON
+        ob_clean();
         echo json_encode([
             "status" => "success",
             "message" => "Record updated successfully"
@@ -95,5 +112,14 @@ try {
         throw new Exception("Unable to update record");
     }
 } catch (Exception $e) {
-    echo json_encode(array("message" => $e->getMessage()));
-} 
+    // Clear any output buffer and send clean JSON
+    ob_clean();
+    http_response_code(500);
+    echo json_encode([
+        "status" => "error",
+        "message" => $e->getMessage()
+    ]);
+}
+
+// End output buffering
+ob_end_flush(); 

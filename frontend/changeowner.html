@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,15 +10,23 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .logo {
-            width: 130px; /* Increased width */
-            height: 75px; /* Adjusted height to maintain aspect ratio */
-            border-radius: 50%; /* Circular logo */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow */
-            transition: transform 0.3s; /* Smooth scaling on hover */
+            width: 130px;
+            /* Increased width */
+            height: 75px;
+            /* Adjusted height to maintain aspect ratio */
+            border-radius: 50%;
+            /* Circular logo */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            /* Subtle shadow */
+            transition: transform 0.3s;
+            /* Smooth scaling on hover */
         }
+
         .logo:hover {
-            transform: scale(1.1); /* Slightly enlarge on hover */
+            transform: scale(1.1);
+            /* Slightly enlarge on hover */
         }
+
         .success-popup {
             opacity: 0;
             transform: translateY(10px);
@@ -50,8 +59,13 @@
         }
 
         @keyframes button-loading-spinner {
-            from { transform: rotate(0turn); }
-            to { transform: rotate(1turn); }
+            from {
+                transform: rotate(0turn);
+            }
+
+            to {
+                transform: rotate(1turn);
+            }
         }
 
         /* Add to your existing styles */
@@ -60,14 +74,24 @@
         }
 
         @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         /* Error toast animation */
         @keyframes slideIn {
-            from { transform: translateX(100%); }
-            to { transform: translateX(0); }
+            from {
+                transform: translateX(100%);
+            }
+
+            to {
+                transform: translateX(0);
+            }
         }
 
         .fixed.bottom-4.right-4 {
@@ -108,12 +132,18 @@
         }
 
         @keyframes button-loading-spinner {
-            from { transform: rotate(0turn); }
-            to { transform: rotate(1turn); }
+            from {
+                transform: rotate(0turn);
+            }
+
+            to {
+                transform: rotate(1turn);
+            }
         }
     </style>
-    
+
 </head>
+
 <body class="bg-gradient-to-br from-green-50 to-blue-50 min-h-screen flex items-center justify-center">
     <div id="successPopup" class="fixed inset-0 flex items-center justify-center z-50 hidden">
         <div class="bg-white rounded-lg shadow-xl p-6 transform transition-all duration-300 scale-0">
@@ -127,7 +157,8 @@
     </div>
     <div class="flex min-h-screen w-full">
         <!-- Sidebar -->
-        <div class="w-64 bg-gradient-to-b from-green-700 to-teal-600 p-6 text-white shadow-lg flex flex-col justify-between">
+        <div
+            class="w-64 bg-gradient-to-b from-green-700 to-teal-600 p-6 text-white shadow-lg flex flex-col justify-between">
             <div>
                 <div class="flex items-center mb-8">
                     <a href="dashboard.html">
@@ -139,28 +170,33 @@
                     </div>
                 </div>
                 <nav>
-                    <a href="dashboard.html" class="flex items-center p-3 mb-2 hover:bg-green-500 rounded-lg transition duration-200">
+                    <a href="dashboard.html"
+                        class="flex items-center p-3 mb-2 hover:bg-green-500 rounded-lg transition duration-200">
                         <span class="material-icons mr-3">dashboard</span>
                         <span>Dashboard</span>
                     </a>
-                    <a href="records.html" class="flex items-center p-3 mb-2 hover:bg-green-500 rounded-lg transition duration-200">
+                    <a href="records.html"
+                        class="flex items-center p-3 mb-2 hover:bg-green-500 rounded-lg transition duration-200">
                         <span class="material-icons mr-3">search</span>
                         <span>Search Records</span>
                     </a>
-                    <a href="changeowner.html" class="flex items-center p-3 mb-2 bg-green-600 rounded-lg transition duration-200">
+                    <a href="changeowner.html"
+                        class="flex items-center p-3 mb-2 bg-green-600 rounded-lg transition duration-200">
                         <span class="material-icons mr-3">sync_alt</span>
                         <span>Change Ownership</span>
                     </a>
-                    <a href="admin.html" class="flex items-center p-3 mb-2 hover:bg-green-500 rounded-lg transition duration-200">
+                    <a href="admin.html"
+                        class="flex items-center p-3 mb-2 hover:bg-green-500 rounded-lg transition duration-200">
                         <span class="material-icons mr-3">admin_panel_settings</span>
                         <span>Admin</span>
                     </a>
-                    
+
                 </nav>
             </div>
 
             <div class="mt-auto flex flex-col items-center">
-                <button onclick="handleLogout()" class="flex items-center bg-gradient-to-r from-green-600 to-teal-600 text-white px-5 py-3 rounded-lg shadow-lg hover:from-green-500 hover:to-teal-500 transform hover:scale-105 transition duration-200 ease-in-out mb-4">
+                <button onclick="handleLogout()"
+                    class="flex items-center bg-gradient-to-r from-green-600 to-teal-600 text-white px-5 py-3 rounded-lg shadow-lg hover:from-green-500 hover:to-teal-500 transform hover:scale-105 transition duration-200 ease-in-out mb-4">
                     <span class="material-icons mr-2">logout</span>
                     <span class="font-semibold">Logout</span>
                 </button>
@@ -172,8 +208,9 @@
 
         <!-- Main Content -->
         <div class="flex-1 p-8 relative">
-            <a href="dashboard.html" class="absolute top-4 left-4 text-green-500 text-2xl hover:text-green-700 transition">←</a>
-            
+            <a href="dashboard.html"
+                class="absolute top-4 left-4 text-green-500 text-2xl hover:text-green-700 transition">←</a>
+
             <div class="bg-white rounded-lg shadow-lg p-6 mt-12">
                 <h1 class="text-3xl font-bold mb-6 text-center text-gray-800">Change of Ownership</h1>
 
@@ -181,7 +218,9 @@
                 <div class="flex items-center mb-6">
                     <div class="flex items-center flex-1">
                         <div id="step1" class="flex items-center">
-                            <div class="w-10 h-10 flex items-center justify-center rounded-full bg-green-500 text-white font-bold">1</div>
+                            <div
+                                class="w-10 h-10 flex items-center justify-center rounded-full bg-green-500 text-white font-bold">
+                                1</div>
                             <span class="ml-2 font-medium text-green-500">Current Owner Information</span>
                         </div>
                         <div class="flex-1 h-1 bg-gray-300 mx-2"></div>
@@ -189,7 +228,9 @@
 
                     <div class="flex items-center flex-1">
                         <div id="step2" class="flex items-center">
-                            <div class="w-10 h-10 flex items-center justify-center rounded-full bg-green-500 text-white font-bold">2</div>
+                            <div
+                                class="w-10 h-10 flex items-center justify-center rounded-full bg-green-500 text-white font-bold">
+                                2</div>
                             <span class="ml-2 font-medium text-green-500">Previous Owner Information</span>
                         </div>
                         <div class="flex-1 h-1 bg-gray-300 mx-2"></div>
@@ -197,7 +238,9 @@
 
                     <div class="flex items-center">
                         <div id="step3" class="flex items-center">
-                            <div class="w-10 h-10 flex items-center justify-center rounded-full border-2 border-green-500 text-green-500 font-bold">3</div>
+                            <div
+                                class="w-10 h-10 flex items-center justify-center rounded-full border-2 border-green-500 text-green-500 font-bold">
+                                3</div>
                             <span class="ml-2 font-medium text-gray-600">Vehicle Information</span>
                         </div>
                     </div>
@@ -212,11 +255,13 @@
                         </div>
                         <div>
                             <label class="block text-gray-700 mb-2 font-semibold">C.O Postal Address</label>
-                            <input type="text" name="co_postal_address" class="w-full p-2 border rounded-lg text-gray-800">
+                            <input type="text" name="co_postal_address"
+                                class="w-full p-2 border rounded-lg text-gray-800">
                         </div>
                         <div>
                             <label class="block text-gray-700 mb-2 font-semibold">C.O Residential Address</label>
-                            <input type="text" name="co_residential_address" class="w-full p-2 border rounded-lg text-gray-800">
+                            <input type="text" name="co_residential_address"
+                                class="w-full p-2 border rounded-lg text-gray-800">
                         </div>
                         <div>
                             <label class="block text-gray-700 mb-2 font-semibold">C.O Contact</label>
@@ -232,9 +277,13 @@
                         </div>
                     </div>
                     <div class="flex justify-between mt-6">
-                        <button onclick="navigatePrevious()" class="px-6 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition opacity-0">Previous</button>
-                        <button onclick="navigateNext()" class="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">Next</button>
-                        <button onclick="saveFormData()" class="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition invisible" id="saveButton">Save</button>
+                        <button onclick="navigatePrevious()"
+                            class="px-6 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition opacity-0">Previous</button>
+                        <button onclick="navigateNext()"
+                            class="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">Next</button>
+                        <button onclick="saveFormData()"
+                            class="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition invisible"
+                            id="saveButton">Save</button>
                     </div>
                 </div>
 
@@ -250,11 +299,13 @@
                         </div>
                         <div>
                             <label class="block text-gray-700 mb-2 font-semibold">Postal Address</label>
-                            <input type="text" name="po_postal_address" class="w-full p-2 border rounded-lg text-gray-800">
+                            <input type="text" name="po_postal_address"
+                                class="w-full p-2 border rounded-lg text-gray-800">
                         </div>
                         <div>
                             <label class="block text-gray-700 mb-2 font-semibold">Residential Address</label>
-                            <input type="text" name="po_residential_address" class="w-full p-2 border rounded-lg text-gray-800">
+                            <input type="text" name="po_residential_address"
+                                class="w-full p-2 border rounded-lg text-gray-800">
                         </div>
                         <div>
                             <label class="block text-gray-700 mb-2 font-semibold">Contact</label>
@@ -270,9 +321,12 @@
                         </div>
                     </div>
                     <div class="flex justify-between mt-6">
-                        <button onclick="navigatePrevious()" class="px-6 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition">Previous</button>
-                        <button onclick="navigateNext()" class="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">Next</button>
-                        <button onclick="saveFormData()" class="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition invisible">Save</button>
+                        <button onclick="navigatePrevious()"
+                            class="px-6 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition">Previous</button>
+                        <button onclick="navigateNext()"
+                            class="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">Next</button>
+                        <button onclick="saveFormData()"
+                            class="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition invisible">Save</button>
                     </div>
                 </div>
 
@@ -293,7 +347,8 @@
                         </div>
                         <div>
                             <label class="block text-gray-700 mb-2 font-semibold">Year of Manufacture</label>
-                            <input type="number" name="year_of_manufacture" class="w-full p-2 border rounded-lg text-gray-800">
+                            <input type="number" name="year_of_manufacture"
+                                class="w-full p-2 border rounded-lg text-gray-800">
                         </div>
                         <div>
                             <label class="block text-gray-700 mb-2 font-semibold">Body Type</label>
@@ -327,7 +382,8 @@
                         </div>
                         <div>
                             <label class="block text-gray-700 mb-2 font-semibold">Cubic Capacity</label>
-                            <input type="number" name="cubic_capacity" class="w-full p-2 border rounded-lg text-gray-800">
+                            <input type="number" name="cubic_capacity"
+                                class="w-full p-2 border rounded-lg text-gray-800">
                         </div>
                         <div>
                             <label class="block text-gray-700 mb-2 font-semibold">Engine No.</label>
@@ -335,7 +391,8 @@
                         </div>
                         <div>
                             <label class="block text-gray-700 mb-2 font-semibold">No. of Cylinders</label>
-                            <input type="number" name="number_of_cylinders" class="w-full p-2 border rounded-lg text-gray-800">
+                            <input type="number" name="number_of_cylinders"
+                                class="w-full p-2 border rounded-lg text-gray-800">
                         </div>
                         <div>
                             <label class="block text-gray-700 mb-2 font-semibold">Remarks</label>
@@ -354,22 +411,27 @@
 
                     <!-- Success Popup -->
                     <div id="successPopup" class="success-popup mb-4 hidden">
-                        <div class="flex items-center justify-center bg-white rounded-lg shadow-md p-3 transform transition-all duration-300">
+                        <div
+                            class="flex items-center justify-center bg-white rounded-lg shadow-md p-3 transform transition-all duration-300">
                             <span class="material-icons text-green-500 mr-2">check_circle</span>
-                            <p class="text-gray-800 font-medium">Change of Ownership information has been saved successfully</p>
+                            <p class="text-gray-800 font-medium">Change of Ownership information has been saved
+                                successfully</p>
                         </div>
                     </div>
 
                     <!-- Navigation Buttons -->
                     <div class="flex justify-between mt-6">
-                        <button onclick="navigatePrevious()" class="px-6 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition">Previous</button>
-                        <button onclick="navigateNext()" class="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition invisible">Next</button>
-                        <button onclick="saveOwnership()" type="submit" class="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">
+                        <button onclick="navigatePrevious()"
+                            class="px-6 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition">Previous</button>
+                        <button onclick="navigateNext()"
+                            class="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition invisible">Next</button>
+                        <button onclick="saveOwnership()" type="submit"
+                            class="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">
                             Submit
                         </button>
                     </div>
 
-                    
+
                 </div>
             </div>
         </div>
@@ -435,76 +497,91 @@
                 saveButton.disabled = true;
                 saveButton.classList.add('button-loading');
 
-                // Collect form data matching PHP backend structure
+                // Collect form data matching PHP backend structure using name attributes
                 const formData = {
                     // Current Owner
-                    co_full_name: document.querySelector('#section1 input[type="text"]').value,
-                    co_postal_address: document.querySelector('#section1 input[type="text"]:nth-of-type(2)').value,
-                    co_residential_address: document.querySelector('#section1 input[type="text"]:nth-of-type(3)').value,
-                    co_contact: document.querySelector('#section1 input[type="tel"]').value,
-                    co_email: document.querySelector('#section1 input[type="email"]').value,
-                    co_tin: document.querySelector('#section1 input[type="text"]:last-of-type').value,
-                    
+                    co_full_name: document.querySelector('input[name="co_full_name"]').value,
+                    co_postal_address: document.querySelector('input[name="co_postal_address"]').value,
+                    co_residential_address: document.querySelector('input[name="co_residential_address"]').value,
+                    co_contact: document.querySelector('input[name="co_contact"]').value,
+                    co_email: document.querySelector('input[name="co_email"]').value,
+                    co_tin: document.querySelector('input[name="co_tin"]').value,
+
                     // Previous Owner
-                    transfer_date: document.querySelector('#section2 input[type="date"]').value,
-                    po_full_name: document.querySelector('#section2 input[type="text"]').value,
-                    po_postal_address: document.querySelector('#section2 input[type="text"]:nth-of-type(2)').value,
-                    po_residential_address: document.querySelector('#section2 input[type="text"]:nth-of-type(3)').value,
-                    po_contact: document.querySelector('#section2 input[type="tel"]').value,
-                    po_email: document.querySelector('#section2 input[type="email"]').value,
-                    po_tin: document.querySelector('#section2 input[type="text"]:last-of-type').value,
-                    
+                    transfer_date: document.querySelector('input[name="transfer_date"]').value,
+                    po_full_name: document.querySelector('input[name="po_full_name"]').value,
+                    po_postal_address: document.querySelector('input[name="po_postal_address"]').value,
+                    po_residential_address: document.querySelector('input[name="po_residential_address"]').value,
+                    po_contact: document.querySelector('input[name="po_contact"]').value,
+                    po_email: document.querySelector('input[name="po_email"]').value,
+                    po_tin: document.querySelector('input[name="po_tin"]').value,
+
                     // Vehicle
-                    vehicle_make: document.querySelector('#section3 input[type="text"]').value,
-                    model_name: document.querySelector('#section3 input[type="text"]:nth-of-type(2)').value,
-                    chassis_number: document.querySelector('#section3 input[type="text"]:nth-of-type(3)').value,
-                    year_of_manufacture: document.querySelector('#section3 input[type="number"]').value,
-                    body_type: document.querySelector('#section3 input[type="text"]:nth-of-type(4)').value,
-                    color: document.querySelector('#section3 input[type="text"]:nth-of-type(5)').value,
+                    vehicle_make: document.querySelector('input[name="vehicle_make"]').value,
+                    model_name: document.querySelector('input[name="model_name"]').value,
+                    chassis_number: document.querySelector('input[name="chassis_number"]').value,
+                    year_of_manufacture: document.querySelector('input[name="year_of_manufacture"]').value,
+                    body_type: document.querySelector('input[name="body_type"]').value,
+                    color: document.querySelector('input[name="color"]').value,
                     vehicle_use: document.querySelector('select[name="vehicleUse"]').value,
                     fuel_type: document.querySelector('select[name="fuelType"]').value,
-                    cubic_capacity: document.querySelector('#section3 input[type="number"]:nth-of-type(2)').value,
-                    engine_number: document.querySelector('#section3 input[type="text"]:nth-of-type(6)').value,
-                    number_of_cylinders: document.querySelector('#section3 input[type="number"]:last-of-type').value,
+                    cubic_capacity: document.querySelector('input[name="cubic_capacity"]').value,
+                    engine_number: document.querySelector('input[name="engine_number"]').value,
+                    number_of_cylinders: document.querySelector('input[name="number_of_cylinders"]').value,
                     remarks: document.querySelector('select[name="remarks"]').value,
-                    vehicle_number: document.querySelector('#section3 input[type="text"]:last-of-type').value
+                    vehicle_number: document.querySelector('input[name="vehicle_number"]').value
                 };
+
+                console.log('Collected form data:', formData); // Debug log
+
+                // Validate form data before submission
+                const validationErrors = validateFormData(formData);
+                if (validationErrors.length > 0) {
+                    // Remove loading state
+                    saveButton.disabled = false;
+                    saveButton.classList.remove('button-loading');
+
+                    // Show validation errors
+                    showValidationErrors(validationErrors);
+                    return; // Stop execution
+                }
 
                 // Show loading for 3 seconds then save
                 setTimeout(() => {
-                    fetch('backend/api/save_ownership.php', {
+                    fetch('http://localhost/VIR/backend/api/save_ownership.php', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
                         },
                         body: JSON.stringify(formData)
                     })
-                    .then(response => response.json())
-                    .then(data => {
-                        // Remove loading state
-                        saveButton.disabled = false;
-                        saveButton.classList.remove('button-loading');
+                        .then(response => response.json())
+                        .then(data => {
+                            // Remove loading state
+                            saveButton.disabled = false;
+                            saveButton.classList.remove('button-loading');
 
-                        if (data.status === 'success') {
-                            const popup = document.getElementById('successPopup');
-                            popup.classList.remove('hidden');
-                            popup.classList.add('show');
+                            if (data.status === 'success' && data.id) {
+                                // Store form data for printing
+                                lastSubmittedData = formData;
+                                console.log('Stored form data for printing (first handler):', lastSubmittedData);
 
-                            setTimeout(() => {
-                                popup.classList.remove('show');
-                                popup.classList.add('hidden');
-                                window.location.href = 'records.html';
-                            }, 3000);
-                        } else {
-                            throw new Error(data.message);
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        saveButton.disabled = false;
-                        saveButton.classList.remove('button-loading');
-                        alert('Failed to save data: ' + error.message);
-                    });
+                                // Only show success if we have confirmation of database insertion
+                                showSuccessModal('Vehicle ownership information has been saved successfully');
+
+                                setTimeout(() => {
+                                    window.location.href = 'records.html';
+                                }, 3000);
+                            } else {
+                                throw new Error(data.message || 'Failed to save ownership information');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            saveButton.disabled = false;
+                            saveButton.classList.remove('button-loading');
+                            showValidationErrors([error.message]);
+                        });
                 }, 3000);
             }
         }
@@ -569,30 +646,30 @@
                 };
 
                 // Send update request to backend
-                fetch(`http://localhost/vir-data/backend/api/update_ownership.php`, {
+                fetch(`http://localhost/VIR/backend/api/update_ownership.php`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify(formData)
                 })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === 'success') {
-                        successPopup.style.display = 'block';
-                        setTimeout(() => {
-                            successPopup.style.display = 'none';
-                            clearForm();
-                            window.location.href = 'records.html';
-                        }, 3000);
-                    } else {
-                        throw new Error(data.message || 'Failed to update record');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Failed to update record. Please try again.');
-                });
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            successPopup.style.display = 'block';
+                            setTimeout(() => {
+                                successPopup.style.display = 'none';
+                                clearForm();
+                                window.location.href = 'records.html';
+                            }, 3000);
+                        } else {
+                            throw new Error(data.message || 'Failed to update record');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Failed to update record. Please try again.');
+                    });
             }
         }
 
@@ -603,7 +680,7 @@
                 const recordId = urlParams.get('id');
                 if (recordId) {
                     // Fetch record data
-                    fetch(`http://localhost/vir-data/backend/api/get_records.php?id=${recordId}`)
+                    fetch(`http://localhost/VIR/backend/api/get_records.php?id=${recordId}`)
                         .then(response => response.json())
                         .then(data => {
                             if (data.status === 'success') {
@@ -647,7 +724,7 @@
             const records = JSON.parse(localStorage.getItem('vehicleRecords')) || [];
             records[editingIndex] = updatedRecord;
             localStorage.setItem('vehicleRecords', JSON.stringify(records));
-            
+
             closeModal();
             renderMembers(); // Refresh the table
         }
@@ -672,180 +749,554 @@
         }
 
         function handleSendButton() {
-    // Show the success popup
-    const successPopup = document.getElementById('successPopup');
-    successPopup.classList.remove('hidden');
-    successPopup.classList.add('flex');
-    
-    
-    }
+            // Show the success popup
+            const successPopup = document.getElementById('successPopup');
+            successPopup.classList.remove('hidden');
+            successPopup.classList.add('flex');
 
-    
 
-    function validateAllFields(formData) {
-        // Add your validation logic here
-        const requiredFields = {
-            currentOwner: ['fullName', 'contact', 'email'],
-            previousOwner: ['fullName', 'contact'],
-            vehicle: ['make', 'chassisNo', 'engineNo']
-        };
-
-        for (const section in requiredFields) {
-            for (const field of requiredFields[section]) {
-                if (!formData[section][field]) {
-                    showErrorMessage(`Please fill in all required fields in ${section.replace(/([A-Z])/g, ' $1').toLowerCase()}`);
-                    return false;
-                }
-            }
         }
 
-        return true;
-    }
 
-    function showErrorMessage(message) {
-        // Create and show error toast
-        const errorToast = document.createElement('div');
-        errorToast.className = 'fixed bottom-4 right-4 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 flex items-center';
-        errorToast.innerHTML = `
+
+        function validateAllFields(formData) {
+            // Add your validation logic here
+            const requiredFields = {
+                currentOwner: ['fullName', 'contact', 'email'],
+                previousOwner: ['fullName', 'contact'],
+                vehicle: ['make', 'chassisNo', 'engineNo']
+            };
+
+            for (const section in requiredFields) {
+                for (const field of requiredFields[section]) {
+                    if (!formData[section][field]) {
+                        showErrorMessage(`Please fill in all required fields in ${section.replace(/([A-Z])/g, ' $1').toLowerCase()}`);
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        // Validate form data before submission
+        function validateFormData(formData) {
+            const errors = [];
+            const fieldMappings = {
+                'co_full_name': 'Current Owner Full Name',
+                'co_postal_address': 'Current Owner Postal Address',
+                'co_residential_address': 'Current Owner Residential Address',
+                'co_contact': 'Current Owner Contact',
+                'co_email': 'Current Owner Email',
+                'co_tin': 'Current Owner TIN',
+                'transfer_date': 'Transfer Date',
+                'po_full_name': 'Previous Owner Full Name',
+                'po_postal_address': 'Previous Owner Postal Address',
+                'po_residential_address': 'Previous Owner Residential Address',
+                'po_contact': 'Previous Owner Contact',
+                'po_email': 'Previous Owner Email',
+                'po_tin': 'Previous Owner TIN',
+                'vehicle_make': 'Vehicle Make',
+                'model_name': 'Model Name',
+                'chassis_number': 'Chassis Number',
+                'year_of_manufacture': 'Year of Manufacture',
+                'body_type': 'Body Type',
+                'color': 'Color',
+                'vehicle_use': 'Vehicle Use',
+                'fuel_type': 'Fuel Type',
+                'cubic_capacity': 'Cubic Capacity',
+                'engine_number': 'Engine Number',
+                'number_of_cylinders': 'Number of Cylinders',
+                'vehicle_number': 'Vehicle Number'
+            };
+
+            // Check for empty required fields
+            for (const [key, value] of Object.entries(formData)) {
+                if (key === 'remarks') continue; // remarks is optional
+
+                if (!value || value.toString().trim() === '') {
+                    const friendlyName = fieldMappings[key] || key;
+                    errors.push(`Please fill in the ${friendlyName} field`);
+                }
+            }
+
+            // Additional specific validations
+            if (formData.co_email && !isValidEmail(formData.co_email)) {
+                errors.push('Please enter a valid Current Owner email address');
+            }
+
+            if (formData.po_email && !isValidEmail(formData.po_email)) {
+                errors.push('Please enter a valid Previous Owner email address');
+            }
+
+            if (formData.year_of_manufacture && (formData.year_of_manufacture < 1900 || formData.year_of_manufacture > new Date().getFullYear() + 1)) {
+                errors.push('Please enter a valid year of manufacture');
+            }
+
+            return errors;
+        }
+
+        // Helper function to validate email format
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
+        // Show validation errors using beautiful modal
+        function showValidationErrors(errors) {
+            const errorModal = document.getElementById('errorModal');
+            const errorModalList = document.getElementById('errorModalList');
+            const errorModalContent = document.getElementById('errorModalContent');
+
+            // Clear previous errors
+            errorModalList.innerHTML = '';
+
+            // Create grid container for errors - adjust columns based on number of errors
+            const gridContainer = document.createElement('div');
+            let gridCols = 'grid-cols-1';
+
+            if (errors.length >= 2) {
+                gridCols = 'grid-cols-1 sm:grid-cols-2';
+            }
+            if (errors.length >= 4) {
+                gridCols = 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-2';
+            }
+
+            gridContainer.className = `grid ${gridCols} gap-3`;
+
+            // Add each error as a styled item
+            errors.forEach((error, index) => {
+                const errorItem = document.createElement('div');
+                errorItem.className = 'flex items-start p-3 bg-red-50 border border-red-200 rounded-lg hover:bg-red-100 transition-colors duration-200';
+                errorItem.innerHTML = `
+                    <div class="flex-shrink-0 mr-2">
+                        <span class="material-icons text-red-500 text-sm">warning</span>
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-red-800 font-medium text-sm leading-tight">${error}</p>
+                    </div>
+                `;
+                gridContainer.appendChild(errorItem);
+            });
+
+            errorModalList.appendChild(gridContainer);
+
+            // Show modal with animation
+            errorModal.classList.remove('hidden');
+            errorModal.classList.add('flex');
+
+            // Trigger animation
+            setTimeout(() => {
+                errorModalContent.classList.remove('scale-95');
+                errorModalContent.classList.add('scale-100');
+            }, 10);
+        }
+
+        function showErrorMessage(message) {
+            // Create and show error toast
+            const errorToast = document.createElement('div');
+            errorToast.className = 'fixed bottom-4 right-4 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 flex items-center';
+            errorToast.innerHTML = `
             <span class="material-icons mr-2">error</span>
             ${message}
         `;
-        document.body.appendChild(errorToast);
+            document.body.appendChild(errorToast);
 
-        // Remove after 3 seconds
-        setTimeout(() => {
-            errorToast.remove();
-        }, 3000);
-    }
+            // Remove after 3 seconds
+            setTimeout(() => {
+                errorToast.remove();
+            }, 3000);
+        }
 
-    function showSuccessPopup() {
-        const popup = document.getElementById('successPopup');
-        popup.classList.remove('hidden');
-        
-        // Force a reflow to enable the animation
-        popup.offsetHeight;
-        
-        // Add slide-down animation
-        const popupContent = popup.querySelector('.bg-green-500');
-        popupContent.style.transform = 'translateY(0)';
-        
-        // Auto hide after 5 seconds
-        setTimeout(() => {
-            hideSuccessPopup();
-        }, 5000);
-    }
+        function showSuccessPopup() {
+            const popup = document.getElementById('successPopup');
+            popup.classList.remove('hidden');
 
-    function hideSuccessPopup() {
-        const popup = document.getElementById('successPopup');
-        const popupContent = popup.querySelector('.bg-green-500');
-        
-        // Slide up animation
-        popupContent.style.transform = 'translateY(-100%)';
-        
-        // Hide popup after animation
-        setTimeout(() => {
-            popup.classList.add('hidden');
-            // Redirect to records page
-            window.location.href = 'records.html';
-        }, 300);
-    }
+            // Force a reflow to enable the animation
+            popup.offsetHeight;
 
-    function closeSuccessPopup() {
-        hideSuccessPopup();
-    }
+            // Add slide-down animation
+            const popupContent = popup.querySelector('.bg-green-500');
+            popupContent.style.transform = 'translateY(0)';
 
-    // Add this temporarily to test the popup
-    document.querySelector('#section3 button:last-child').addEventListener('click', function() {
-        const popup = document.getElementById('successPopup');
-        popup.classList.remove('hidden');
-        void popup.offsetWidth; // Force reflow
-        popup.classList.add('show');
-        
-        setTimeout(() => {
-            popup.classList.remove('show');
+            // Auto hide after 5 seconds
+            setTimeout(() => {
+                hideSuccessPopup();
+            }, 5000);
+        }
+
+        function hideSuccessPopup() {
+            const popup = document.getElementById('successPopup');
+            const popupContent = popup.querySelector('.bg-green-500');
+
+            // Slide up animation
+            popupContent.style.transform = 'translateY(-100%)';
+
+            // Hide popup after animation
             setTimeout(() => {
                 popup.classList.add('hidden');
+                // Redirect to records page
+                window.location.href = 'records.html';
             }, 300);
-        }, 3000);
-    });
-
-    async function saveOwnership() {
-        const saveButton = document.querySelector('button[type="submit"]');
-        saveButton.disabled = true;
-        saveButton.classList.add('button-loading');
-
-        const formData = {
-            // Current Owner
-            co_full_name: document.querySelector('#section1 input[name="co_full_name"]').value,
-            co_postal_address: document.querySelector('#section1 input[name="co_postal_address"]').value,
-            co_residential_address: document.querySelector('#section1 input[name="co_residential_address"]').value,
-            co_contact: document.querySelector('#section1 input[name="co_contact"]').value,
-            co_email: document.querySelector('#section1 input[name="co_email"]').value,
-            co_tin: document.querySelector('#section1 input[name="co_tin"]').value,
-            
-            // Previous Owner
-            transfer_date: document.querySelector('#section3 input[name="transfer_date"]').value,
-            po_full_name: document.querySelector('#section2 input[name="po_full_name"]').value,
-            po_postal_address: document.querySelector('#section2 input[name="po_postal_address"]').value,
-            po_residential_address: document.querySelector('#section2 input[name="po_residential_address"]').value,
-            po_contact: document.querySelector('#section2 input[name="po_contact"]').value,
-            po_email: document.querySelector('#section2 input[name="po_email"]').value,
-            po_tin: document.querySelector('#section2 input[name="po_tin"]').value,
-            
-            // Vehicle
-            vehicle_make: document.querySelector('#section3 input[name="vehicle_make"]').value,
-            model_name: document.querySelector('#section3 input[name="model_name"]').value,
-            chassis_number: document.querySelector('#section3 input[name="chassis_number"]').value,
-            year_of_manufacture: document.querySelector('#section3 input[name="year_of_manufacture"]').value,
-            body_type: document.querySelector('#section3 input[name="body_type"]').value,
-            color: document.querySelector('#section3 input[name="color"]').value,
-            vehicle_use: document.querySelector('#section3 select[name="vehicleUse"]').value,
-            fuel_type: document.querySelector('#section3 select[name="fuelType"]').value,
-            cubic_capacity: document.querySelector('#section3 input[name="cubic_capacity"]').value,
-            engine_number: document.querySelector('#section3 input[name="engine_number"]').value,
-            number_of_cylinders: document.querySelector('#section3 input[name="number_of_cylinders"]').value,
-            remarks: document.querySelector('#section3 select[name="remarks"]').value,
-            vehicle_number: document.querySelector('#section3 input[name="vehicle_number"]').value
-        };
-
-        try {
-            const response = await fetch('http://localhost/vir-data/backend/api/save_ownership.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(formData)
-            });
-
-            const data = await response.json();
-
-            if (data.status === 'success') {
-                const popup = document.getElementById('successPopup');
-                popup.classList.remove('hidden');
-                popup.classList.add('show');
-
-                setTimeout(() => {
-                    popup.classList.remove('show');
-                    popup.classList.add('hidden');
-                    window.location.href = 'records.html';
-                }, 2000);
-            } else {
-                throw new Error(data.message || 'Failed to save ownership information');
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            alert('Failed to save ownership information: ' + error.message);
-        } finally {
-            saveButton.disabled = false;
-            saveButton.classList.remove('button-loading');
         }
-    }
 
-    
-    document.addEventListener('DOMContentLoaded', function() {
-        currentSection = 0;
-        showSection(0);  // Initialize with first section
-    });
+        function closeSuccessPopup() {
+            hideSuccessPopup();
+        }
+
+        // Add this temporarily to test the popup
+        document.querySelector('#section3 button:last-child').addEventListener('click', function () {
+            const popup = document.getElementById('successPopup');
+            popup.classList.remove('hidden');
+            void popup.offsetWidth; // Force reflow
+            popup.classList.add('show');
+
+            setTimeout(() => {
+                popup.classList.remove('show');
+                setTimeout(() => {
+                    popup.classList.add('hidden');
+                }, 300);
+            }, 3000);
+        });
+
+        async function saveOwnership() {
+            const saveButton = document.querySelector('button[type="submit"]');
+            saveButton.disabled = true;
+            saveButton.classList.add('button-loading');
+
+            const formData = {
+                // Current Owner
+                co_full_name: document.querySelector('#section1 input[name="co_full_name"]').value,
+                co_postal_address: document.querySelector('#section1 input[name="co_postal_address"]').value,
+                co_residential_address: document.querySelector('#section1 input[name="co_residential_address"]').value,
+                co_contact: document.querySelector('#section1 input[name="co_contact"]').value,
+                co_email: document.querySelector('#section1 input[name="co_email"]').value,
+                co_tin: document.querySelector('#section1 input[name="co_tin"]').value,
+
+                // Previous Owner
+                transfer_date: document.querySelector('#section3 input[name="transfer_date"]').value,
+                po_full_name: document.querySelector('#section2 input[name="po_full_name"]').value,
+                po_postal_address: document.querySelector('#section2 input[name="po_postal_address"]').value,
+                po_residential_address: document.querySelector('#section2 input[name="po_residential_address"]').value,
+                po_contact: document.querySelector('#section2 input[name="po_contact"]').value,
+                po_email: document.querySelector('#section2 input[name="po_email"]').value,
+                po_tin: document.querySelector('#section2 input[name="po_tin"]').value,
+
+                // Vehicle
+                vehicle_make: document.querySelector('#section3 input[name="vehicle_make"]').value,
+                model_name: document.querySelector('#section3 input[name="model_name"]').value,
+                chassis_number: document.querySelector('#section3 input[name="chassis_number"]').value,
+                year_of_manufacture: document.querySelector('#section3 input[name="year_of_manufacture"]').value,
+                body_type: document.querySelector('#section3 input[name="body_type"]').value,
+                color: document.querySelector('#section3 input[name="color"]').value,
+                vehicle_use: document.querySelector('#section3 select[name="vehicleUse"]').value,
+                fuel_type: document.querySelector('#section3 select[name="fuelType"]').value,
+                cubic_capacity: document.querySelector('#section3 input[name="cubic_capacity"]').value,
+                engine_number: document.querySelector('#section3 input[name="engine_number"]').value,
+                number_of_cylinders: document.querySelector('#section3 input[name="number_of_cylinders"]').value,
+                remarks: document.querySelector('#section3 select[name="remarks"]').value,
+                vehicle_number: document.querySelector('#section3 input[name="vehicle_number"]').value
+            };
+
+            // Validate form data before submission
+            const validationErrors = validateFormData(formData);
+            if (validationErrors.length > 0) {
+                // Remove loading state
+                saveButton.disabled = false;
+                saveButton.classList.remove('button-loading');
+
+                // Show validation errors
+                showValidationErrors(validationErrors);
+                return; // Stop execution
+            }
+
+            try {
+                const response = await fetch('http://localhost/VIR/backend/api/save_ownership.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+                console.log('Server response:', data); // Debug log
+
+                if (data.status === 'success' && data.id) {
+                    // Store form data for printing
+                    lastSubmittedData = formData;
+                    console.log('Stored form data for printing (second handler):', lastSubmittedData);
+
+                    // Only show success if we have confirmation of database insertion
+                    showSuccessModal('Vehicle ownership information has been saved successfully');
+
+                    setTimeout(() => {
+                        window.location.href = 'records.html';
+                    }, 3000);
+                } else {
+                    throw new Error(data.message || 'Failed to save ownership information');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showValidationErrors([error.message]);
+            } finally {
+                saveButton.disabled = false;
+                saveButton.classList.remove('button-loading');
+            }
+        }
+
+
+        document.addEventListener('DOMContentLoaded', function () {
+            currentSection = 0;
+            showSection(0);  // Initialize with first section
+        });
+
+        // Modal control functions
+        function closeErrorModal() {
+            const errorModal = document.getElementById('errorModal');
+            const errorModalContent = document.getElementById('errorModalContent');
+
+            // Animate out
+            errorModalContent.classList.remove('scale-100');
+            errorModalContent.classList.add('scale-95');
+
+            setTimeout(() => {
+                errorModal.classList.add('hidden');
+                errorModal.classList.remove('flex');
+            }, 200);
+        }
+
+        function showSuccessModal(message) {
+            const successModal = document.getElementById('successModal');
+            const successModalMessage = document.getElementById('successModalMessage');
+            const successModalContent = document.getElementById('successModalContent');
+
+            successModalMessage.textContent = message;
+
+            // Show modal with animation
+            successModal.classList.remove('hidden');
+            successModal.classList.add('flex');
+
+            // Trigger animation
+            setTimeout(() => {
+                successModalContent.classList.remove('scale-95');
+                successModalContent.classList.add('scale-100');
+            }, 10);
+        }
+
+        function closeSuccessModal() {
+            const successModal = document.getElementById('successModal');
+            const successModalContent = document.getElementById('successModalContent');
+
+            // Animate out
+            successModalContent.classList.remove('scale-100');
+            successModalContent.classList.add('scale-95');
+
+            setTimeout(() => {
+                successModal.classList.add('hidden');
+                successModal.classList.remove('flex');
+            }, 200);
+        }
+
+        // Close modals when clicking outside
+        document.addEventListener('click', function (event) {
+            const errorModal = document.getElementById('errorModal');
+            const successModal = document.getElementById('successModal');
+
+            if (event.target === errorModal) {
+                closeErrorModal();
+            }
+            if (event.target === successModal) {
+                closeSuccessModal();
+            }
+        });
+
+        // Close modals with Escape key
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape') {
+                closeErrorModal();
+                closeSuccessModal();
+            }
+        });
+
+        // Global variable to store the last submitted form data for printing
+        let lastSubmittedData = null;
+
+        // Test function to print with sample data (for debugging)
+        function testPrint() {
+            lastSubmittedData = {
+                co_full_name: 'John Doe',
+                co_contact: '123-456-7890',
+                co_email: 'john@example.com',
+                co_tin: 'TIN123456',
+                co_postal_address: '123 Main St, Accra',
+                co_residential_address: '123 Main St, Accra',
+                po_full_name: 'Jane Smith',
+                po_contact: '987-654-3210',
+                po_email: 'jane@example.com',
+                po_tin: 'TIN789012',
+                po_postal_address: '456 Oak Ave, Kumasi',
+                po_residential_address: '456 Oak Ave, Kumasi',
+                vehicle_make: 'Toyota',
+                model_name: 'Camry',
+                chassis_number: 'CH123456789',
+                year_of_manufacture: '2020',
+                body_type: 'Sedan',
+                color: 'Blue',
+                vehicle_use: 'Private',
+                fuel_type: 'Petrol',
+                cubic_capacity: '2000',
+                engine_number: 'EN123456',
+                number_of_cylinders: '4',
+                vehicle_number: 'GH-1234-20',
+                transfer_date: '2024-01-15',
+                remarks: 'Test record for debugging'
+            };
+            printOwnershipRecord();
+        }
+
+        // Print ownership record function
+        function printOwnershipRecord() {
+            console.log('Print function called');
+            console.log('lastSubmittedData:', lastSubmittedData);
+
+            if (!lastSubmittedData) {
+                alert('No record data available for printing. Please submit the form first.');
+                return;
+            }
+
+            // Test with sample data if no data exists
+            if (!lastSubmittedData.co_full_name) {
+                console.log('Using sample data for testing');
+                lastSubmittedData = {
+                    co_full_name: 'John Doe',
+                    co_contact: '123-456-7890',
+                    co_email: 'john@example.com',
+                    co_tin: 'TIN123456',
+                    co_postal_address: '123 Main St',
+                    co_residential_address: '123 Main St',
+                    po_full_name: 'Jane Smith',
+                    po_contact: '987-654-3210',
+                    po_email: 'jane@example.com',
+                    po_tin: 'TIN789012',
+                    po_postal_address: '456 Oak Ave',
+                    po_residential_address: '456 Oak Ave',
+                    vehicle_make: 'Toyota',
+                    model_name: 'Camry',
+                    chassis_number: 'CH123456789',
+                    year_of_manufacture: '2020',
+                    body_type: 'Sedan',
+                    color: 'Blue',
+                    vehicle_use: 'Private',
+                    fuel_type: 'Petrol',
+                    cubic_capacity: '2000',
+                    engine_number: 'EN123456',
+                    number_of_cylinders: '4',
+                    vehicle_number: 'GH-1234-20',
+                    transfer_date: '2024-01-15',
+                    remarks: 'Test record'
+                };
+            }
+
+            console.log('Final data for printing:', lastSubmittedData);
+
+            // Create a new window for printing
+            const printWindow = window.open('', '_blank', 'width=800,height=600');
+
+            // Build the HTML content step by step
+            let htmlContent = '<!DOCTYPE html><html><head>';
+            htmlContent += '<title>Vehicle Ownership Transfer Record</title>';
+            htmlContent += '<style>';
+            htmlContent += 'body { font-family: Arial, sans-serif; margin: 20px; color: #333; }';
+            htmlContent += '.header { text-align: center; border-bottom: 2px solid #16a085; padding-bottom: 20px; margin-bottom: 30px; }';
+            htmlContent += '.logo { width: 60px; height: 60px; margin: 0 auto 10px; display: block; }';
+            htmlContent += '.org-name { font-size: 20px; font-weight: bold; color: #16a085; }';
+            htmlContent += '.document-title { font-size: 18px; font-weight: bold; margin-top: 10px; }';
+            htmlContent += '.section { margin-bottom: 20px; }';
+            htmlContent += '.section-title { font-size: 14px; font-weight: bold; color: #16a085; border-bottom: 1px solid #ccc; padding-bottom: 5px; margin-bottom: 10px; }';
+            htmlContent += '.info-row { display: flex; margin-bottom: 8px; }';
+            htmlContent += '.info-label { font-weight: bold; width: 150px; }';
+            htmlContent += '.info-value { flex: 1; }';
+            htmlContent += '.footer { margin-top: 30px; text-align: center; font-size: 12px; color: #666; }';
+            htmlContent += '</style></head><body>';
+
+            // Header
+            htmlContent += '<div class="header">';
+            htmlContent += '<img src="./images/oop.png" alt="DVLA Logo" class="logo">';
+            htmlContent += '<div class="org-name">DVLA</div>';
+            htmlContent += '<div>Driver and Vehicle Licensing Authority</div>';
+            htmlContent += '<div class="document-title">Vehicle Ownership Transfer Record</div>';
+            htmlContent += '</div>';
+
+            // Current Owner Section
+            htmlContent += '<div class="section">';
+            htmlContent += '<div class="section-title">Current Owner Information</div>';
+            htmlContent += '<div class="info-row"><div class="info-label">Full Name:</div><div class="info-value">' + (lastSubmittedData.co_full_name || 'N/A') + '</div></div>';
+            htmlContent += '<div class="info-row"><div class="info-label">Contact:</div><div class="info-value">' + (lastSubmittedData.co_contact || 'N/A') + '</div></div>';
+            htmlContent += '<div class="info-row"><div class="info-label">Email:</div><div class="info-value">' + (lastSubmittedData.co_email || 'N/A') + '</div></div>';
+            htmlContent += '<div class="info-row"><div class="info-label">TIN:</div><div class="info-value">' + (lastSubmittedData.co_tin || 'N/A') + '</div></div>';
+            htmlContent += '<div class="info-row"><div class="info-label">Postal Address:</div><div class="info-value">' + (lastSubmittedData.co_postal_address || 'N/A') + '</div></div>';
+            htmlContent += '<div class="info-row"><div class="info-label">Residential Address:</div><div class="info-value">' + (lastSubmittedData.co_residential_address || 'N/A') + '</div></div>';
+            htmlContent += '</div>';
+
+            // Previous Owner Section
+            htmlContent += '<div class="section">';
+            htmlContent += '<div class="section-title">Previous Owner Information</div>';
+            htmlContent += '<div class="info-row"><div class="info-label">Full Name:</div><div class="info-value">' + (lastSubmittedData.po_full_name || 'N/A') + '</div></div>';
+            htmlContent += '<div class="info-row"><div class="info-label">Contact:</div><div class="info-value">' + (lastSubmittedData.po_contact || 'N/A') + '</div></div>';
+            htmlContent += '<div class="info-row"><div class="info-label">Email:</div><div class="info-value">' + (lastSubmittedData.po_email || 'N/A') + '</div></div>';
+            htmlContent += '<div class="info-row"><div class="info-label">TIN:</div><div class="info-value">' + (lastSubmittedData.po_tin || 'N/A') + '</div></div>';
+            htmlContent += '<div class="info-row"><div class="info-label">Postal Address:</div><div class="info-value">' + (lastSubmittedData.po_postal_address || 'N/A') + '</div></div>';
+            htmlContent += '<div class="info-row"><div class="info-label">Residential Address:</div><div class="info-value">' + (lastSubmittedData.po_residential_address || 'N/A') + '</div></div>';
+            htmlContent += '</div>';
+
+            // Vehicle Information Section
+            htmlContent += '<div class="section">';
+            htmlContent += '<div class="section-title">Vehicle Information</div>';
+            htmlContent += '<div class="info-row"><div class="info-label">Vehicle Make:</div><div class="info-value">' + (lastSubmittedData.vehicle_make || 'N/A') + '</div></div>';
+            htmlContent += '<div class="info-row"><div class="info-label">Model Name:</div><div class="info-value">' + (lastSubmittedData.model_name || 'N/A') + '</div></div>';
+            htmlContent += '<div class="info-row"><div class="info-label">Chassis Number:</div><div class="info-value">' + (lastSubmittedData.chassis_number || 'N/A') + '</div></div>';
+            htmlContent += '<div class="info-row"><div class="info-label">Year:</div><div class="info-value">' + (lastSubmittedData.year_of_manufacture || 'N/A') + '</div></div>';
+            htmlContent += '<div class="info-row"><div class="info-label">Body Type:</div><div class="info-value">' + (lastSubmittedData.body_type || 'N/A') + '</div></div>';
+            htmlContent += '<div class="info-row"><div class="info-label">Color:</div><div class="info-value">' + (lastSubmittedData.color || 'N/A') + '</div></div>';
+            htmlContent += '<div class="info-row"><div class="info-label">Vehicle Use:</div><div class="info-value">' + (lastSubmittedData.vehicle_use || 'N/A') + '</div></div>';
+            htmlContent += '<div class="info-row"><div class="info-label">Fuel Type:</div><div class="info-value">' + (lastSubmittedData.fuel_type || 'N/A') + '</div></div>';
+            htmlContent += '<div class="info-row"><div class="info-label">Cubic Capacity:</div><div class="info-value">' + (lastSubmittedData.cubic_capacity || 'N/A') + '</div></div>';
+            htmlContent += '<div class="info-row"><div class="info-label">Engine Number:</div><div class="info-value">' + (lastSubmittedData.engine_number || 'N/A') + '</div></div>';
+            htmlContent += '<div class="info-row"><div class="info-label">Cylinders:</div><div class="info-value">' + (lastSubmittedData.number_of_cylinders || 'N/A') + '</div></div>';
+            htmlContent += '<div class="info-row"><div class="info-label">Vehicle Number:</div><div class="info-value">' + (lastSubmittedData.vehicle_number || 'N/A') + '</div></div>';
+            htmlContent += '</div>';
+
+            // Transfer Information Section
+            htmlContent += '<div class="section">';
+            htmlContent += '<div class="section-title">Transfer Information</div>';
+            htmlContent += '<div class="info-row"><div class="info-label">Transfer Date:</div><div class="info-value">' + (lastSubmittedData.transfer_date ? new Date(lastSubmittedData.transfer_date).toLocaleDateString() : 'N/A') + '</div></div>';
+            htmlContent += '<div class="info-row"><div class="info-label">Record Created:</div><div class="info-value">' + new Date().toLocaleDateString() + '</div></div>';
+            htmlContent += '<div class="info-row"><div class="info-label">Remarks:</div><div class="info-value">' + (lastSubmittedData.remarks || 'None') + '</div></div>';
+            htmlContent += '<div class="info-row"><div class="info-label">Status:</div><div class="info-value">Active</div></div>';
+            htmlContent += '</div>';
+
+            // Footer
+            htmlContent += '<div class="footer">';
+            htmlContent += '<p><strong>This is an official document generated by the DVLA Vehicle Registration System.</strong></p>';
+            htmlContent += '<p>For verification purposes, please contact DVLA at info@dvla.gov.gh</p>';
+            htmlContent += '<p>Document ID: VOR-' + Date.now() + '</p>';
+            htmlContent += '<p>© ' + new Date().getFullYear() + ' Driver and Vehicle Licensing Authority. All rights reserved.</p>';
+            htmlContent += '</div>';
+
+            htmlContent += '</body></html>';
+
+            // Write content to print window
+            printWindow.document.write(htmlContent);
+            printWindow.document.close();
+            printWindow.focus();
+
+            // Print after a short delay
+            setTimeout(() => {
+                printWindow.print();
+                printWindow.close();
+            }, 1000);
+        }
     </script>
 
     <!-- Modal/Popup -->
@@ -867,8 +1318,10 @@
                 </div>
             </div>
             <div class="mt-6 flex justify-end space-x-4">
-                <button onclick="closeModal()" class="px-6 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition">Cancel</button>
-                <button onclick="updateRecord()" class="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">Update</button>
+                <button onclick="closeModal()"
+                    class="px-6 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition">Cancel</button>
+                <button onclick="updateRecord()"
+                    class="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">Update</button>
             </div>
         </div>
     </div>
@@ -879,10 +1332,12 @@
             <h2 class="text-xl font-bold mb-4">Confirm Logout</h2>
             <p class="text-gray-600 mb-6">Are you sure you want to logout?</p>
             <div class="flex justify-end space-x-3">
-                <button onclick="closeLogoutPopup()" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition">
+                <button onclick="closeLogoutPopup()"
+                    class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition">
                     Cancel
                 </button>
-                <button onclick="confirmLogout()" class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition">
+                <button onclick="confirmLogout()"
+                    class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition">
                     Logout
                 </button>
             </div>
@@ -895,9 +1350,93 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
         }
     </style>
+
+    <!-- Error Modal -->
+    <div id="errorModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50"
+        style="backdrop-filter: blur(5px);">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full mx-4 transform transition-all duration-300 scale-95"
+            id="errorModalContent">
+            <!-- Modal Header -->
+            <div class="bg-gradient-to-r from-red-500 to-red-600 text-white p-6 rounded-t-2xl">
+                <div class="flex items-center">
+                    <div class="bg-white bg-opacity-20 rounded-full p-2 mr-4">
+                        <span class="material-icons text-2xl">error_outline</span>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold">Validation Error</h3>
+                        <p class="text-red-100 text-sm">Please fix the following issues</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="p-6 max-h-96 overflow-y-auto">
+                <div id="errorModalList">
+                    <!-- Error items will be inserted here -->
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="bg-gray-50 px-6 py-4 rounded-b-2xl flex justify-end">
+                <button onclick="closeErrorModal()"
+                    class="bg-gradient-to-r from-gray-500 to-gray-600 text-white px-6 py-2 rounded-lg hover:from-gray-600 hover:to-gray-700 transition duration-200 font-medium">
+                    <span class="material-icons mr-2 text-sm">close</span>
+                    Got it
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50"
+        style="backdrop-filter: blur(5px);">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4 transform transition-all duration-300 scale-95"
+            id="successModalContent">
+            <!-- Modal Header -->
+            <div class="bg-gradient-to-r from-green-500 to-green-600 text-white p-6 rounded-t-2xl">
+                <div class="flex items-center">
+                    <div class="bg-white bg-opacity-20 rounded-full p-2 mr-4">
+                        <span class="material-icons text-2xl">check_circle_outline</span>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold">Success!</h3>
+                        <p class="text-green-100 text-sm">Operation completed successfully</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="p-6">
+                <p id="successModalMessage" class="text-gray-700">
+                    <!-- Success message will be inserted here -->
+                </p>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="bg-gray-50 px-6 py-4 rounded-b-2xl flex justify-between">
+                <button onclick="printOwnershipRecord()"
+                    class="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-2 rounded-lg hover:from-blue-600 hover:to-blue-700 transition duration-200 font-medium">
+                    <span class="material-icons mr-2 text-sm">print</span>
+                    Print Record
+                </button>
+                <button onclick="closeSuccessModal()"
+                    class="bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-2 rounded-lg hover:from-green-600 hover:to-green-700 transition duration-200 font-medium">
+                    <span class="material-icons mr-2 text-sm">check</span>
+                    Continue
+                </button>
+            </div>
+        </div>
+    </div>
+
 </body>
+
 </html>

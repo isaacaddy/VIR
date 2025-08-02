@@ -29,7 +29,7 @@ class UserController {
 
             if($stmt->execute()) {
                 // Log the activity
-                $this->logActivity($this->conn->lastInsertId(), "User Registration", "New user registered: $email");
+                $this->logActivity($email, "User Registration", "New user registered: $email");
                 return true;
             }
             return false;
@@ -41,13 +41,13 @@ class UserController {
         }
     }
 
-    private function logActivity($userId, $action, $details) {
-        $query = "INSERT INTO activity_logs (user_id, action, details)
-                VALUES (:user_id, :action, :details)";
+    private function logActivity($userEmail, $action, $details) {
+        $query = "INSERT INTO activity_logs (action, user_email, details)
+                VALUES (:action, :user_email, :details)";
         
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(":user_id", $userId);
         $stmt->bindParam(":action", $action);
+        $stmt->bindParam(":user_email", $userEmail);
         $stmt->bindParam(":details", $details);
         $stmt->execute();
     }
