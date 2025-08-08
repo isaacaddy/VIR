@@ -63,14 +63,55 @@
                       <span class="material-icons mr-3">dashboard</span>
                       <span>Dashboard</span>
                   </a>
-                  <a href="records.html" class="flex items-center p-3 mb-2 hover:bg-green-500 rounded-lg transition duration-200">
-                      <span class="material-icons mr-3">search</span>
-                      <span>Search Records</span>
-                  </a>
-                  <a href="changeowner.html" class="flex items-center p-3 mb-2 hover:bg-green-500 rounded-lg transition duration-200">
-                      <span class="material-icons mr-3">sync_alt</span>
-                      <span>Change Ownership</span>
-                  </a>
+                  <div class="relative">
+                      <button onclick="toggleVehicleDropdown()" 
+                          class="flex items-center justify-between w-full p-3 mb-2 hover:bg-green-500 rounded-lg transition duration-200">
+                          <div class="flex items-center">
+                              <span class="material-icons mr-3">directions_car</span>
+                              <span>Vehicle Register</span>
+                          </div>
+                          <span class="material-icons" id="vehicleDropdownIcon">expand_more</span>
+                      </button>
+                      <div id="vehicleDropdown" class="hidden ml-6 mt-1 space-y-1">
+                          <a href="VehicleRegistration.html"
+                              class="flex items-center p-2 text-sm hover:bg-green-600 rounded-lg transition duration-200">
+                              <span class="material-icons mr-2 text-sm">add</span>
+                              <span>Register Vehicle</span>
+                          </a>
+                          <a href="VehicleRegistrationRecords.html"
+                              class="flex items-center p-2 text-sm hover:bg-green-600 rounded-lg transition duration-200">
+                              <span class="material-icons mr-2 text-sm">list_alt</span>
+                              <span>View Records</span>
+                          </a>
+                          <a href="VehicleRegisterHistory.html"
+                              class="flex items-center p-2 text-sm hover:bg-green-600 rounded-lg transition duration-200">
+                              <span class="material-icons mr-2 text-sm">history</span>
+                              <span>History</span>
+                          </a>
+                      </div>
+                  </div>
+                  <div class="relative">
+                      <button onclick="toggleOwnershipDropdown()"
+                          class="flex items-center justify-between w-full p-3 mb-2 hover:bg-green-500 rounded-lg transition duration-200">
+                          <div class="flex items-center">
+                              <span class="material-icons mr-3">sync_alt</span>
+                              <span>Ownership</span>
+                          </div>
+                          <span class="material-icons" id="ownershipDropdownIcon">expand_more</span>
+                      </button>
+                      <div id="ownershipDropdown" class="hidden ml-6 mt-1 space-y-1">
+                          <a href="changeowner.html"
+                              class="flex items-center p-2 text-sm hover:bg-green-600 rounded-lg transition duration-200">
+                              <span class="material-icons mr-2 text-sm">edit</span>
+                              <span>Transfer Ownership</span>
+                          </a>
+                          <a href="records.html"
+                              class="flex items-center p-2 text-sm hover:bg-green-600 rounded-lg transition duration-200">
+                              <span class="material-icons mr-2 text-sm">search</span>
+                              <span>Search Records</span>
+                          </a>
+                      </div>
+                  </div>
                   <a href="admin.html" class="flex items-center p-3 hover:bg-green-500 rounded-lg transition duration-200">
                     <span class="material-icons mr-3">admin_panel_settings</span>
                     <span>Admin</span>
@@ -92,7 +133,22 @@
       <div class="flex-1 p-8">
           <!-- Recent Activity Logs Section -->
           <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
-              <h2 class="text-2xl font-bold text-gray-800 mb-4">Recent Activity Logs</h2>
+              <div class="flex justify-between items-center mb-4">
+                  <h2 class="text-2xl font-bold text-gray-800">Recent Activity Logs</h2>
+                  <div class="flex space-x-2">
+                      <button id="deleteSelectedBtn" onclick="deleteSelectedLogs()" 
+                              class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition duration-200 disabled:bg-gray-300 disabled:cursor-not-allowed" 
+                              disabled>
+                          <span class="material-icons mr-1 text-sm">delete</span>
+                          Delete Selected
+                      </button>
+                      <button onclick="deleteAllLogs()" 
+                              class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition duration-200">
+                          <span class="material-icons mr-1 text-sm">delete_sweep</span>
+                          Delete All
+                      </button>
+                  </div>
+              </div>
               <div class="overflow-x-auto">
                   <div id="logsLoading" class="flex justify-center py-4">
                       <div class="loading-spinner"></div>
@@ -100,6 +156,10 @@
                   <table class="min-w-full bg-white border border-gray-300 rounded-lg shadow-md">
                       <thead>
                           <tr class="bg-gray-100 text-left text-gray-600">
+                              <th class="py-4 px-6">
+                                  <input type="checkbox" id="selectAllLogs" onchange="toggleSelectAll()" 
+                                         class="rounded border-gray-300 text-green-600 focus:ring-green-500">
+                              </th>
                               <th class="py-4 px-6">ID</th>
                               <th class="py-4 px-6">Action</th>
                               <th class="py-4 px-6">User</th>
@@ -111,6 +171,30 @@
                           <!-- Activity logs will be rendered here -->
                       </tbody>
                   </table>
+              </div>
+              
+              <!-- Pagination Controls -->
+              <div id="logsPagination" class="flex justify-between items-center mt-4 pt-4 border-t border-gray-200">
+                  <div class="text-sm text-gray-600">
+                      Showing <span id="logsShowingStart">0</span> to <span id="logsShowingEnd">0</span> of <span id="logsTotalCount">0</span> logs
+                  </div>
+                  <div class="flex space-x-2">
+                      <button id="logsPrevBtn" onclick="goToPreviousPage()" 
+                              class="px-3 py-2 text-sm bg-gray-200 text-gray-600 rounded-md hover:bg-gray-300 transition duration-200 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed" 
+                              disabled>
+                          <span class="material-icons text-sm">chevron_left</span>
+                          Previous
+                      </button>
+                      <div id="logsPageNumbers" class="flex space-x-1">
+                          <!-- Page numbers will be rendered here -->
+                      </div>
+                      <button id="logsNextBtn" onclick="goToNextPage()" 
+                              class="px-3 py-2 text-sm bg-gray-200 text-gray-600 rounded-md hover:bg-gray-300 transition duration-200 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed" 
+                              disabled>
+                          Next
+                          <span class="material-icons text-sm">chevron_right</span>
+                      </button>
+                  </div>
               </div>
           </div>
 
@@ -190,8 +274,15 @@
   </div>
 
   <script>
+    // Pagination variables
+    let currentPage = 1;
+    const logsPerPage = 6;
+    let totalLogs = 0;
+    let totalPages = 0;
+
     // Update the fetchActivityLogs function
-    async function fetchActivityLogs() {
+    async function fetchActivityLogs(page = 1) {
+        currentPage = page;
         const loadingElement = document.getElementById('logsLoading');
         const tableBody = document.getElementById('activityLogsList');
         
@@ -199,7 +290,8 @@
             loadingElement.style.display = 'flex';
             tableBody.innerHTML = ''; // Clear existing content
             
-            const response = await fetch('http://localhost/VIR/backend/api/activity_logs.php');
+            const offset = (currentPage - 1) * logsPerPage;
+            const response = await fetch(`http://localhost/VIR/backend/api/activity_logs.php?limit=${logsPerPage}&offset=${offset}`);
             console.log('Activity Logs Response:', response); // Debug log
             
             if (!response.ok) {
@@ -213,7 +305,7 @@
                 if (data.logs.length === 0) {
                     tableBody.innerHTML = `
                         <tr>
-                            <td colspan="5" class="py-4 px-6 text-center text-gray-500">
+                            <td colspan="6" class="py-4 px-6 text-center text-gray-500">
                                 No activity logs found
                             </td>
                         </tr>
@@ -222,51 +314,88 @@
                 }
 
                 data.logs.forEach((log, index) => {
-                    // Define action styles
+                    // Validate log data before processing
+                    if (!log || !log.id || !log.action) {
+                        console.warn('Skipping invalid log entry:', log);
+                        return;
+                    }
+
+                    // Skip malformed logs
+                    if (log.action.includes('undefined') || log.action.includes('tableystem')) {
+                        console.warn('Skipping malformed log entry:', log);
+                        return;
+                    }
+
+                    // Define action styles based on action content
                     let actionStyle = '';
                     let actionIcon = '';
                     
-                    switch(log.action) {
-                        case 'login':
-                            actionStyle = 'text-green-600';
-                            actionIcon = 'login';
-                            break;
-                        case 'logout':
-                            actionStyle = 'text-blue-600';
-                            actionIcon = 'logout';
-                            break;
-                        case 'edit_record':
-                            actionStyle = 'text-yellow-600';
-                            actionIcon = 'edit';
-                            break;
-                        case 'delete_record':
-                            actionStyle = 'text-red-600';
-                            actionIcon = 'delete';
-                            break;
-                        default:
-                            actionStyle = 'text-gray-600';
-                            actionIcon = 'info';
+                    const action = log.action.toLowerCase();
+                    
+                    if (action.includes('login')) {
+                        actionStyle = 'text-green-600';
+                        actionIcon = 'login';
+                    } else if (action.includes('logout')) {
+                        actionStyle = 'text-blue-600';
+                        actionIcon = 'logout';
+                    } else if (action.includes('created') || action.includes('registration')) {
+                        actionStyle = 'text-green-600';
+                        actionIcon = 'add_circle';
+                    } else if (action.includes('updated') || action.includes('edit')) {
+                        actionStyle = 'text-yellow-600';
+                        actionIcon = 'edit';
+                    } else if (action.includes('deleted') || action.includes('delete')) {
+                        actionStyle = 'text-red-600';
+                        actionIcon = 'delete';
+                    } else if (action.includes('transfer') || action.includes('ownership')) {
+                        actionStyle = 'text-purple-600';
+                        actionIcon = 'sync_alt';
+                    } else if (action.includes('backup') || action.includes('system')) {
+                        actionStyle = 'text-indigo-600';
+                        actionIcon = 'backup';
+                    } else if (action.includes('export')) {
+                        actionStyle = 'text-teal-600';
+                        actionIcon = 'download';
+                    } else {
+                        actionStyle = 'text-gray-600';
+                        actionIcon = 'info';
                     }
+
+                    // Safely extract and clean data
+                    const safeId = log.id || 'N/A';
+                    const safeAction = log.action || 'Unknown Action';
+                    const safeUserEmail = log.user_email || 'Unknown User';
+                    const safeDetails = log.details || 'No details available';
+                    const safeTimestamp = formatTimestamp(log.created_at);
 
                     const row = document.createElement('tr');
                     row.className = 'border-b hover:bg-gray-50 transition duration-200 fade-in';
                     row.style.animationDelay = `${index * 50}ms`;
                     row.innerHTML = `
-                        <td class="py-4 px-6">${log.id}</td>
+                        <td class="py-4 px-6">
+                            <input type="checkbox" class="log-checkbox rounded border-gray-300 text-green-600 focus:ring-green-500" 
+                                   value="${safeId}" onchange="updateDeleteButton()">
+                        </td>
+                        <td class="py-4 px-6">${safeId}</td>
                         <td class="py-4 px-6">
                             <div class="flex items-center">
                                 <span class="material-icons ${actionStyle} mr-2">${actionIcon}</span>
-                                <span class="${actionStyle}">${log.action}</span>
+                                <span class="${actionStyle}">${safeAction}</span>
                             </div>
                         </td>
-                        <td class="py-4 px-6">${log.user}</td>
+                        <td class="py-4 px-6">${safeUserEmail}</td>
                         <td class="py-4 px-6">
-                            <span class="text-sm text-gray-600">${log.details || 'No details available'}</span>
+                            <span class="text-sm text-gray-600">${safeDetails}</span>
                         </td>
-                        <td class="py-4 px-6">${formatTimestamp(log.timestamp)}</td>
+                        <td class="py-4 px-6">${safeTimestamp}</td>
                     `;
                     tableBody.appendChild(row);
                 });
+                
+                // Update pagination info
+                totalLogs = parseInt(data.total) || 0;
+                totalPages = Math.ceil(totalLogs / logsPerPage);
+                updatePaginationControls();
             } else {
                 throw new Error(data.message || 'Failed to fetch logs');
             }
@@ -274,11 +403,13 @@
             console.error('Error fetching logs:', error);
             tableBody.innerHTML = `
                 <tr>
-                    <td colspan="5" class="py-4 px-6 text-center text-red-500">
+                    <td colspan="6" class="py-4 px-6 text-center text-red-500">
                         Failed to load activity logs. Error: ${error.message}
                     </td>
                 </tr>
             `;
+            // Hide pagination on error
+            document.getElementById('logsPagination').style.display = 'none';
         } finally {
             loadingElement.style.display = 'none';
         }
@@ -286,15 +417,30 @@
 
     // Helper function to format timestamp
     function formatTimestamp(timestamp) {
-        const date = new Date(timestamp);
-        return date.toLocaleString('en-US', {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit'
-        });
+        if (!timestamp) {
+            return 'No timestamp';
+        }
+        
+        try {
+            const date = new Date(timestamp);
+            
+            // Check if the date is valid
+            if (isNaN(date.getTime())) {
+                return 'Invalid Date';
+            }
+            
+            return date.toLocaleString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+        } catch (error) {
+            console.error('Error formatting timestamp:', error);
+            return 'Invalid Date';
+        }
     }
 
     // Call fetchActivityLogs when the page loads
@@ -395,7 +541,7 @@
     // Function to register user
     async function registerUser(userData) {
         try {
-            const response = await fetch('http://localhost/VIR/backend/api/register.php', {
+            const response = await fetch('http://localhost/VIR/backend/api/users.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -458,6 +604,270 @@
         } catch (error) {
             console.error('Logout error:', error);
             alert('Error during logout: ' + error.message);
+        }
+    }
+
+    // Vehicle dropdown toggle
+    function toggleVehicleDropdown() {
+        const dropdown = document.getElementById('vehicleDropdown');
+        const icon = document.getElementById('vehicleDropdownIcon');
+        
+        if (dropdown.classList.contains('hidden')) {
+            dropdown.classList.remove('hidden');
+            icon.textContent = 'expand_less';
+        } else {
+            dropdown.classList.add('hidden');
+            icon.textContent = 'expand_more';
+        }
+    }
+
+    // Vehicle dropdown toggle function
+    function toggleVehicleDropdown() {
+        const dropdown = document.getElementById('vehicleDropdown');
+        const icon = document.getElementById('vehicleDropdownIcon');
+
+        if (dropdown.classList.contains('hidden')) {
+            dropdown.classList.remove('hidden');
+            icon.textContent = 'expand_less';
+        } else {
+            dropdown.classList.add('hidden');
+            icon.textContent = 'expand_more';
+        }
+    }
+
+    // Ownership dropdown toggle function
+    function toggleOwnershipDropdown() {
+        const dropdown = document.getElementById('ownershipDropdown');
+        const icon = document.getElementById('ownershipDropdownIcon');
+
+        if (dropdown.classList.contains('hidden')) {
+            dropdown.classList.remove('hidden');
+            icon.textContent = 'expand_less';
+        } else {
+            dropdown.classList.add('hidden');
+            icon.textContent = 'expand_more';
+        }
+    }
+
+    // Pagination functions
+    function updatePaginationControls() {
+        const paginationDiv = document.getElementById('logsPagination');
+        const showingStart = document.getElementById('logsShowingStart');
+        const showingEnd = document.getElementById('logsShowingEnd');
+        const totalCount = document.getElementById('logsTotalCount');
+        const prevBtn = document.getElementById('logsPrevBtn');
+        const nextBtn = document.getElementById('logsNextBtn');
+        const pageNumbers = document.getElementById('logsPageNumbers');
+        
+        // Show pagination only if there are logs
+        if (totalLogs === 0) {
+            paginationDiv.style.display = 'none';
+            return;
+        }
+        
+        paginationDiv.style.display = 'flex';
+        
+        // Update showing info
+        const start = totalLogs === 0 ? 0 : (currentPage - 1) * logsPerPage + 1;
+        const end = Math.min(currentPage * logsPerPage, totalLogs);
+        
+        showingStart.textContent = start;
+        showingEnd.textContent = end;
+        totalCount.textContent = totalLogs;
+        
+        // Update prev/next buttons
+        prevBtn.disabled = currentPage <= 1;
+        nextBtn.disabled = currentPage >= totalPages;
+        
+        // Generate page numbers
+        pageNumbers.innerHTML = '';
+        
+        // Calculate page range to show
+        let startPage = Math.max(1, currentPage - 2);
+        let endPage = Math.min(totalPages, currentPage + 2);
+        
+        // Adjust range if we're near the beginning or end
+        if (endPage - startPage < 4) {
+            if (startPage === 1) {
+                endPage = Math.min(totalPages, startPage + 4);
+            } else if (endPage === totalPages) {
+                startPage = Math.max(1, endPage - 4);
+            }
+        }
+        
+        // Add first page and ellipsis if needed
+        if (startPage > 1) {
+            addPageButton(1);
+            if (startPage > 2) {
+                const ellipsis = document.createElement('span');
+                ellipsis.className = 'px-3 py-2 text-sm text-gray-500';
+                ellipsis.textContent = '...';
+                pageNumbers.appendChild(ellipsis);
+            }
+        }
+        
+        // Add page numbers
+        for (let i = startPage; i <= endPage; i++) {
+            addPageButton(i);
+        }
+        
+        // Add last page and ellipsis if needed
+        if (endPage < totalPages) {
+            if (endPage < totalPages - 1) {
+                const ellipsis = document.createElement('span');
+                ellipsis.className = 'px-3 py-2 text-sm text-gray-500';
+                ellipsis.textContent = '...';
+                pageNumbers.appendChild(ellipsis);
+            }
+            addPageButton(totalPages);
+        }
+    }
+    
+    function addPageButton(pageNum) {
+        const button = document.createElement('button');
+        button.className = `px-3 py-2 text-sm rounded-md transition duration-200 ${
+            pageNum === currentPage 
+                ? 'bg-green-600 text-white' 
+                : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+        }`;
+        button.textContent = pageNum;
+        button.onclick = () => goToPage(pageNum);
+        document.getElementById('logsPageNumbers').appendChild(button);
+    }
+    
+    function goToPage(page) {
+        if (page >= 1 && page <= totalPages && page !== currentPage) {
+            fetchActivityLogs(page);
+            // Clear selections when changing pages
+            document.getElementById('selectAllLogs').checked = false;
+            updateDeleteButton();
+        }
+    }
+    
+    function goToPreviousPage() {
+        if (currentPage > 1) {
+            goToPage(currentPage - 1);
+        }
+    }
+    
+    function goToNextPage() {
+        if (currentPage < totalPages) {
+            goToPage(currentPage + 1);
+        }
+    }
+
+    // Activity logs delete functions
+    function toggleSelectAll() {
+        const selectAllCheckbox = document.getElementById('selectAllLogs');
+        const logCheckboxes = document.querySelectorAll('.log-checkbox');
+        
+        logCheckboxes.forEach(checkbox => {
+            checkbox.checked = selectAllCheckbox.checked;
+        });
+        
+        updateDeleteButton();
+    }
+
+    function updateDeleteButton() {
+        const selectedCheckboxes = document.querySelectorAll('.log-checkbox:checked');
+        const deleteButton = document.getElementById('deleteSelectedBtn');
+        const selectAllCheckbox = document.getElementById('selectAllLogs');
+        const allCheckboxes = document.querySelectorAll('.log-checkbox');
+        
+        // Enable/disable delete button based on selection
+        deleteButton.disabled = selectedCheckboxes.length === 0;
+        
+        // Update select all checkbox state
+        if (selectedCheckboxes.length === 0) {
+            selectAllCheckbox.indeterminate = false;
+            selectAllCheckbox.checked = false;
+        } else if (selectedCheckboxes.length === allCheckboxes.length) {
+            selectAllCheckbox.indeterminate = false;
+            selectAllCheckbox.checked = true;
+        } else {
+            selectAllCheckbox.indeterminate = true;
+        }
+    }
+
+    async function deleteSelectedLogs() {
+        const selectedCheckboxes = document.querySelectorAll('.log-checkbox:checked');
+        
+        if (selectedCheckboxes.length === 0) {
+            alert('Please select logs to delete');
+            return;
+        }
+        
+        const selectedIds = Array.from(selectedCheckboxes).map(cb => parseInt(cb.value));
+        const confirmMessage = `Are you sure you want to delete ${selectedIds.length} selected log(s)? This action cannot be undone.`;
+        
+        if (!confirm(confirmMessage)) {
+            return;
+        }
+        
+        try {
+            const response = await fetch('http://localhost/VIR/backend/api/activity_logs.php', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ ids: selectedIds })
+            });
+            
+            const result = await response.json();
+            
+            if (result.status === 'success') {
+                alert(result.message);
+                // Check if current page is now empty and go to previous page if needed
+                const remainingLogs = totalLogs - selectedIds.length;
+                const newTotalPages = Math.ceil(remainingLogs / logsPerPage);
+                const pageToLoad = currentPage > newTotalPages ? Math.max(1, newTotalPages) : currentPage;
+                fetchActivityLogs(pageToLoad); // Refresh the logs
+                document.getElementById('selectAllLogs').checked = false;
+            } else {
+                throw new Error(result.message || 'Delete failed');
+            }
+        } catch (error) {
+            console.error('Error deleting logs:', error);
+            alert('Error deleting logs: ' + error.message);
+        }
+    }
+
+    async function deleteAllLogs() {
+        const confirmMessage = 'Are you sure you want to delete ALL activity logs? This action cannot be undone and will permanently remove all log history.';
+        
+        if (!confirm(confirmMessage)) {
+            return;
+        }
+        
+        // Double confirmation for delete all
+        const doubleConfirm = confirm('This will permanently delete ALL activity logs. Are you absolutely sure?');
+        if (!doubleConfirm) {
+            return;
+        }
+        
+        try {
+            const response = await fetch('http://localhost/VIR/backend/api/activity_logs.php', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ delete_all: true })
+            });
+            
+            const result = await response.json();
+            
+            if (result.status === 'success') {
+                alert(result.message);
+                // Reset to page 1 after deleting all
+                currentPage = 1;
+                fetchActivityLogs(1); // Refresh the logs
+                document.getElementById('selectAllLogs').checked = false;
+            } else {
+                throw new Error(result.message || 'Delete all failed');
+            }
+        } catch (error) {
+            console.error('Error deleting all logs:', error);
+            alert('Error deleting all logs: ' + error.message);
         }
     }
   </script>

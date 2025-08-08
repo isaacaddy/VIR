@@ -1,62 +1,62 @@
 <?php
-session_start();
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: POST');
-header('Access-Control-Allow-Headers: Content-Type');
+header('Access-Control-Allow-Methods: POST, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type, Authorization');
 
-include_once '../config/database.php';
-include_once '../helpers/activity_logger.php';
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    exit(0);
+}
+
+require_once '../config/database.php';
+
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    http_response_code(405);
+    echo json_encode(['status' => 'error', 'message' => 'Method not allowed']);
+    exit();
+}
+
+$input = json_decode(file_get_contents('php://input'), true);
 
 try {
-    // Get posted data
-    $data = json_decode(file_get_contents("php://input"), true);
-    
-    if (!isset($data['email']) || !isset($data['password'])) {
-        throw new Exception('Email and password are required');
+    if (empty($input['email']) || empty($input['password'])) {
+        throw new Exception("Email and password are required");
     }
-
-    $database = new Database();
-    $db = $database->getConnection();
-
-    // Ensure activity_logs table exists
-    ensureActivityLogTable($db);
-
-    // Check user credentials
-    $query = "SELECT * FROM users WHERE email = :email AND status = 'active'";
-    $stmt = $db->prepare($query);
-    $stmt->bindParam(':email', $data['email']);
-    $stmt->execute();
     
+    $sql = "SELECT id, name, email, password, role FROM users WHERE email = ?";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([$input['email']]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
     
-    if ($user && password_verify($data['password'], $user['password'])) {
-        // Set session variables
-        $_SESSION['user_id'] = $user['id'];
-        $_SESSION['user_email'] = $user['email'];
-        $_SESSION['user_role'] = $user['role'];
+    if ($user && password_verify($input['password'], $user['password'])) {
+        // Remove password from response
+        unset($user['password']);
         
-        // Log the successful login
-        if (!logActivity($db, 'login', $user['email'])) {
-            error_log("Failed to log login activity");
-        }
-
+        // Log the login activity
+        $log_sql = "INSERT INTO activity_logs (action, user_email, details) VALUES (?, ?, ?)";
+        $log_stmt = $pdo->prepare($log_sql);
+        $log_stmt->execute(['User Login', $user['email'], 'User logged in successfully']);
+        
         echo json_encode([
             'status' => 'success',
             'message' => 'Login successful',
-            'user' => [
-                'id' => $user['id'],
-                'email' => $user['email'],
-                'role' => $user['role']
-            ]
+            'user' => $user
         ]);
     } else {
-        throw new Exception('Invalid credentials');
+        // Log failed login attempt
+        $log_sql = "INSERT INTO activity_logs (action, user_email, details) VALUES (?, ?, ?)";
+        $log_stmt = $pdo->prepare($log_sql);
+        $log_stmt->execute(['Failed Login', $input['email'], 'Invalid login attempt']);
+        
+        http_response_code(401);
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'Invalid email or password'
+        ]);
     }
+    
 } catch (Exception $e) {
-    error_log("Login error: " . $e->getMessage());
-    echo json_encode([
-        'status' => 'error',
-        'message' => $e->getMessage()
-    ]);
-} 
+    http_response_code(400);
+    echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+}
+?>

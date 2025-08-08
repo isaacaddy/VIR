@@ -50,16 +50,55 @@
                         <span class="material-icons mr-3">dashboard</span>
                         <span>Dashboard</span>
                     </a>
-                    <a href="records.html"
-                        class="flex items-center p-3 mb-2 hover:bg-green-500 rounded-lg transition duration-200">
-                        <span class="material-icons mr-3">search</span>
-                        <span>Search Records</span>
-                    </a>
-                    <a href="changeowner.html"
-                        class="flex items-center p-3 mb-2 hover:bg-green-500 rounded-lg transition duration-200">
-                        <span class="material-icons mr-3">sync_alt</span>
-                        <span>Change Ownership</span>
-                    </a>
+                    <div class="relative">
+                        <button onclick="toggleVehicleDropdown()" 
+                            class="flex items-center justify-between w-full p-3 mb-2 hover:bg-green-500 rounded-lg transition duration-200">
+                            <div class="flex items-center">
+                                <span class="material-icons mr-3">directions_car</span>
+                                <span>Vehicle Register</span>
+                            </div>
+                            <span class="material-icons" id="vehicleDropdownIcon">expand_more</span>
+                        </button>
+                        <div id="vehicleDropdown" class="hidden ml-6 mt-1 space-y-1">
+                            <a href="VehicleRegistration.html"
+                                class="flex items-center p-2 text-sm hover:bg-green-600 rounded-lg transition duration-200">
+                                <span class="material-icons mr-2 text-sm">add</span>
+                                <span>Register Vehicle</span>
+                            </a>
+                            <a href="VehicleRegistrationRecords.html"
+                                class="flex items-center p-2 text-sm hover:bg-green-600 rounded-lg transition duration-200">
+                                <span class="material-icons mr-2 text-sm">list_alt</span>
+                                <span>View Records</span>
+                            </a>
+                            <a href="VehicleRegisterHistory.html"
+                                class="flex items-center p-2 text-sm hover:bg-green-600 rounded-lg transition duration-200">
+                                <span class="material-icons mr-2 text-sm">history</span>
+                                <span>History</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="relative">
+                        <button onclick="toggleOwnershipDropdown()"
+                            class="flex items-center justify-between w-full p-3 mb-2 hover:bg-green-500 rounded-lg transition duration-200">
+                            <div class="flex items-center">
+                                <span class="material-icons mr-3">sync_alt</span>
+                                <span>Ownership</span>
+                            </div>
+                            <span class="material-icons" id="ownershipDropdownIcon">expand_more</span>
+                        </button>
+                        <div id="ownershipDropdown" class="hidden ml-6 mt-1 space-y-1">
+                            <a href="changeowner.html"
+                                class="flex items-center p-2 text-sm hover:bg-green-600 rounded-lg transition duration-200">
+                                <span class="material-icons mr-2 text-sm">edit</span>
+                                <span>Transfer Ownership</span>
+                            </a>
+                            <a href="records.html"
+                                class="flex items-center p-2 text-sm hover:bg-green-600 rounded-lg transition duration-200">
+                                <span class="material-icons mr-2 text-sm">search</span>
+                                <span>Search Records</span>
+                            </a>
+                        </div>
+                    </div>
                     <a href="admin.html"
                         class="flex items-center p-3 mb-2 hover:bg-green-500 rounded-lg transition duration-200">
                         <span class="material-icons mr-3">admin_panel_settings</span>
@@ -480,6 +519,48 @@
             localStorage.clear();
             sessionStorage.clear();
             window.location.href = 'login.html';
+        }
+
+        // Vehicle dropdown toggle
+        function toggleVehicleDropdown() {
+            const dropdown = document.getElementById('vehicleDropdown');
+            const icon = document.getElementById('vehicleDropdownIcon');
+            
+            if (dropdown.classList.contains('hidden')) {
+                dropdown.classList.remove('hidden');
+                icon.textContent = 'expand_less';
+            } else {
+                dropdown.classList.add('hidden');
+                icon.textContent = 'expand_more';
+            }
+        }
+
+        // Vehicle dropdown toggle function
+        function toggleVehicleDropdown() {
+            const dropdown = document.getElementById('vehicleDropdown');
+            const icon = document.getElementById('vehicleDropdownIcon');
+
+            if (dropdown.classList.contains('hidden')) {
+                dropdown.classList.remove('hidden');
+                icon.textContent = 'expand_less';
+            } else {
+                dropdown.classList.add('hidden');
+                icon.textContent = 'expand_more';
+            }
+        }
+
+        // Ownership dropdown toggle function
+        function toggleOwnershipDropdown() {
+            const dropdown = document.getElementById('ownershipDropdown');
+            const icon = document.getElementById('ownershipDropdownIcon');
+
+            if (dropdown.classList.contains('hidden')) {
+                dropdown.classList.remove('hidden');
+                icon.textContent = 'expand_less';
+            } else {
+                dropdown.classList.add('hidden');
+                icon.textContent = 'expand_more';
+            }
         }
     </script>
 </body>

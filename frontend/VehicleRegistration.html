@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vehicle Registration</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        .logo {
+            width: 130px;
+            height: 75px;
+            border-radius: 50%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s;
+        }
+
+        .logo:hover {
+            transform: scale(1.1);
+        }
+
+        /* Success/Error Modal styles */
+        #successModal,
+        #errorModal {
+            transition: all 0.3s ease-in-out;
+        }
+
+        #successModal.show,
+        #errorModal.show {
+            display: block !important;
+        }
+
+        #successModal .bg-white,
+        #errorModal .bg-white {
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                transform: translate(-50%, -60%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translate(-50%, -50%);
+                opacity: 1;
+            }
+        }
+
+        /* Form validation styles */
+        .error-border {
+            border-color: #ef4444 !important;
+            box-shadow: 0 0 0 1px #ef4444;
+        }
+
+        .error-text {
+            color: #ef4444;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+
+        /* Preview Modal styles */
+        #previewModal {
+            transition: all 0.3s ease-in-out;
+        }
+
+        #previewModal.show {
+            display: block !important;
+        }
+
+        #previewModal .bg-white {
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        /* Preview content styling */
+        #previewModal .bg-gray-50 {
+            background-color: #f9fafb;
+        }
+
+        #previewModal p {
+            word-wrap: break-word;
+            min-height: 1.25rem;
+        }
+
+        /* Scrollbar styling for modal */
+        #previewModal::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        #previewModal::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+
+        #previewModal::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 4px;
+        }
+
+        #previewModal::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+    </style>
+</head>
+
+<body class="bg-gradient-to-br from-green-50 to-blue-50 min-h-screen flex items-center justify-center">
+    <div class="flex min-h-screen w-full">
+        <!-- Sidebar -->
+        <div class="w-64 bg-gradient-to-b from-green-700 to-teal-600 p-6 text-white shadow-lg flex flex-col">
+            <div>
+                <div class="flex items-center mb-8">
+                    <a href="dashboard.html">
+                        <img src="./images/oop.png" alt="DVLA Logo" class="logo cursor-pointer">
+                    </a>
+                    <div class="ml-3">
+                        <h2 class="text-2xl font-bold">DVLA</h2>
+                        <p class="text-sm opacity-75">Vehicle Inspection and Registration</p>
+                    </div>
+                </div>
+                <nav>
+                    <a href="dashboard.html"
+                        class="flex items-center p-3 mb-2 hover:bg-green-500 rounded-lg transition duration-200">
+                        <span class="material-icons mr-3">dashboard</span>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="records.html"
+                        class="flex items-center p-3 mb-2 hover:bg-green-500 rounded-lg transition duration-200">
+                        <span class="material-icons mr-3">search</span>
+                        <span>Search</span>
+                    </a>
+                    <div class="relative">
+                        <button onclick="toggleVehicleDropdown()"
+                            class="flex items-center justify-between w-full p-3 mb-2 bg-green-600 rounded-lg hover:bg-green-500 transition duration-200">
+                            <div class="flex items-center">
+                                <span class="material-icons mr-3">directions_car</span>
+                                <span>Vehicle Register</span>
+                            </div>
+                            <span class="material-icons" id="vehicleDropdownIcon">expand_more</span>
+                        </button>
+                        <div id="vehicleDropdown" class="hidden ml-6 mt-1 space-y-1">
+                            <a href="VehicleRegistration.html"
+                                class="flex items-center p-2 text-sm bg-green-700 rounded-lg hover:bg-green-600 transition duration-200">
+                                <span class="material-icons mr-2 text-sm">add</span>
+                                <span>Register Vehicle</span>
+                            </a>
+                            <a href="VehicleRegistrationRecords.html"
+                                class="flex items-center p-2 text-sm hover:bg-green-600 rounded-lg transition duration-200">
+                                <span class="material-icons mr-2 text-sm">list_alt</span>
+                                <span>View Records</span>
+                            </a>
+                            <a href="VehicleRegisterHistory.html"
+                                class="flex items-center p-2 text-sm hover:bg-green-600 rounded-lg transition duration-200">
+                                <span class="material-icons mr-2 text-sm">history</span>
+                                <span>History</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="relative">
+                        <button onclick="toggleOwnershipDropdown()"
+                            class="flex items-center justify-between w-full p-3 mb-2 hover:bg-green-500 rounded-lg transition duration-200">
+                            <div class="flex items-center">
+                                <span class="material-icons mr-3">sync_alt</span>
+                                <span>Ownership</span>
+                            </div>
+                            <span class="material-icons" id="ownershipDropdownIcon">expand_more</span>
+                        </button>
+                        <div id="ownershipDropdown" class="hidden ml-6 mt-1 space-y-1">
+                            <a href="changeowner.html"
+                                class="flex items-center p-2 text-sm hover:bg-green-600 rounded-lg transition duration-200">
+                                <span class="material-icons mr-2 text-sm">edit</span>
+                                <span>Transfer Ownership</span>
+                            </a>
+                            <a href="records.html"
+                                class="flex items-center p-2 text-sm hover:bg-green-600 rounded-lg transition duration-200">
+                                <span class="material-icons mr-2 text-sm">search</span>
+                                <span>Search Records</span>
+                            </a>
+                        </div>
+                    </div>
+                    <a href="admin.html"
+                        class="flex items-center p-3 mb-2 hover:bg-green-500 rounded-lg transition duration-200">
+                        <span class="material-icons mr-3">admin_panel_settings</span>
+                        <span>Admin</span>
+                    </a>
+                </nav>
+            </div>
+            <div class="mt-auto flex flex-col items-center">
+                <button onclick="handleLogout()"
+                    class="flex items-center bg-gradient-to-r from-green-600 to-teal-600 text-white px-5 py-3 rounded-lg shadow-lg hover:from-green-500 hover:to-teal-500 transform hover:scale-105 transition duration-200 ease-in-out mb-4">
+                    <span class="material-icons mr-2">logout</span>
+                    <span class="font-semibold">Logout</span>
+                </button>
+                <div class="text-center opacity-75 text-sm">
+                    © 2024 DVLA Club
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 p-8">
+            <!-- Header -->
+            <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-3xl font-bold text-gray-800 mb-2">Vehicle Registration</h1>
+                        <p class="text-gray-600">Register a new vehicle in the DVLA system</p>
+                    </div>
+                    <div class="flex items-center space-x-2 text-green-600">
+                        <span class="material-icons text-4xl">directions_car</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Registration Form -->
+            <div class="bg-white rounded-lg shadow-lg p-8">
+                <form id="vehicleRegistrationForm" onsubmit="submitRegistration(event)" class="space-y-8">
+
+                    <!-- Vehicle Owner Information -->
+                    <div>
+                        <h2 class="text-xl font-semibold text-gray-800 mb-6 flex items-center">
+                            <span class="material-icons mr-2 text-green-600">person</span>
+                            Vehicle Owner Information
+                        </h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label for="owner_full_name" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Full Name <span class="text-red-500">*</span>
+                                </label>
+                                <input type="text" id="owner_full_name" name="owner_full_name" required
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition duration-200"
+                                    placeholder="Enter full name">
+                            </div>
+                            <div>
+                                <label for="owner_contact" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Contact Number <span class="text-red-500">*</span>
+                                </label>
+                                <input type="tel" id="owner_contact" name="owner_contact" required
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition duration-200"
+                                    placeholder="Enter contact number">
+                            </div>
+                            <div>
+                                <label for="owner_email" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Email Address <span class="text-red-500">*</span>
+                                </label>
+                                <input type="email" id="owner_email" name="owner_email" required
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition duration-200"
+                                    placeholder="Enter email address">
+                            </div>
+                            <div>
+                                <label for="owner_tin" class="block text-sm font-medium text-gray-700 mb-2">
+                                    TIN Number
+                                </label>
+                                <input type="text" id="owner_tin" name="owner_tin"
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition duration-200"
+                                    placeholder="Enter TIN number">
+                            </div>
+                            <div class="md:col-span-2">
+                                <label for="owner_postal_address" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Postal Address <span class="text-red-500">*</span>
+                                </label>
+                                <textarea id="owner_postal_address" name="owner_postal_address" required rows="3"
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition duration-200"
+                                    placeholder="Enter postal address"></textarea>
+                            </div>
+                            <div class="md:col-span-2">
+                                <label for="owner_residential_address"
+                                    class="block text-sm font-medium text-gray-700 mb-2">
+                                    Residential Address <span class="text-red-500">*</span>
+                                </label>
+                                <textarea id="owner_residential_address" name="owner_residential_address" required
+                                    rows="3"
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition duration-200"
+                                    placeholder="Enter residential address"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Vehicle Information -->
+                    <div>
+                        <h2 class="text-xl font-semibold text-gray-800 mb-6 flex items-center">
+                            <span class="material-icons mr-2 text-green-600">directions_car</span>
+                            Vehicle Information
+                        </h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <div>
+                                <label for="registration_number" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Registration Number (Number on Plate) <span class="text-red-500">*</span>
+                                </label>
+                                <input type="text" id="registration_number" name="registration_number" required
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition duration-200"
+                                    placeholder="e.g., GR-1234-20" style="text-transform: uppercase;">
+                            </div>
+                            <div>
+                                <label for="vehicle_make" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Vehicle Make <span class="text-red-500">*</span>
+                                </label>
+                                <input type="text" id="vehicle_make" name="vehicle_make" required
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition duration-200"
+                                    placeholder="e.g., Toyota, Honda, Ford">
+                            </div>
+                            <div>
+                                <label for="model_name" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Model Name <span class="text-red-500">*</span>
+                                </label>
+                                <input type="text" id="model_name" name="model_name" required
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition duration-200"
+                                    placeholder="e.g., Camry, Civic, Focus">
+                            </div>
+                            <div>
+                                <label for="year_of_manufacture" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Year of Manufacture <span class="text-red-500">*</span>
+                                </label>
+                                <input type="number" id="year_of_manufacture" name="year_of_manufacture" required
+                                    min="1900" max="2025"
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition duration-200"
+                                    placeholder="e.g., 2020">
+                            </div>
+                            <div>
+                                <label for="chassis_number" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Chassis Number <span class="text-red-500">*</span>
+                                </label>
+                                <input type="text" id="chassis_number" name="chassis_number" required
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition duration-200"
+                                    placeholder="Enter chassis number">
+                            </div>
+                            <div>
+                                <label for="engine_number" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Engine Number <span class="text-red-500">*</span>
+                                </label>
+                                <input type="text" id="engine_number" name="engine_number" required
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition duration-200"
+                                    placeholder="Enter engine number">
+                            </div>
+                            <div>
+                                <label for="body_type" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Body Type <span class="text-red-500">*</span>
+                                </label>
+                                <select id="body_type" name="body_type" required
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition duration-200">
+                                    <option value="">Select body type</option>
+                                    <option value="Sedan">Sedan</option>
+                                    <option value="SUV">SUV</option>
+                                    <option value="Hatchback">Hatchback</option>
+                                    <option value="Coupe">Coupe</option>
+                                    <option value="Convertible">Convertible</option>
+                                    <option value="Wagon">Wagon</option>
+                                    <option value="Pickup">Pickup</option>
+                                    <option value="Van">Van</option>
+                                    <option value="Truck">Truck</option>
+                                    <option value="Motorcycle">Motorcycle</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="color" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Color <span class="text-red-500">*</span>
+                                </label>
+                                <input type="text" id="color" name="color" required
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition duration-200"
+                                    placeholder="e.g., White, Black, Red">
+                            </div>
+                            <div>
+                                <label for="fuel_type" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Fuel Type <span class="text-red-500">*</span>
+                                </label>
+                                <select id="fuel_type" name="fuel_type" required
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition duration-200">
+                                    <option value="">Select fuel type</option>
+                                    <option value="Petrol">Petrol</option>
+                                    <option value="Diesel">Diesel</option>
+                                    <option value="Electric">Electric</option>
+                                    <option value="Hybrid">Hybrid</option>
+                                    <option value="CNG">CNG</option>
+                                    <option value="LPG">LPG</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="vehicle_use" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Vehicle Use <span class="text-red-500">*</span>
+                                </label>
+                                <select id="vehicle_use" name="vehicle_use" required
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition duration-200">
+                                    <option value="">Select vehicle use</option>
+                                    <option value="Private">Private</option>
+                                    <option value="Commercial">Commercial</option>
+                                    <option value="Government">Government</option>
+                                    <option value="Diplomatic">Diplomatic</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="cubic_capacity" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Cubic Capacity (CC)
+                                </label>
+                                <input type="number" id="cubic_capacity" name="cubic_capacity"
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition duration-200"
+                                    placeholder="e.g., 1500">
+                            </div>
+                            <div>
+                                <label for="number_of_cylinders" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Number of Cylinders
+                                </label>
+                                <input type="number" id="number_of_cylinders" name="number_of_cylinders"
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition duration-200"
+                                    placeholder="e.g., 4">
+                            </div>
+                            <div>
+                                <label for="declaration_number" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Declaration Number
+                                </label>
+                                <input type="text" id="declaration_number" name="declaration_number"
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition duration-200"
+                                    placeholder="Enter declaration number">
+                            </div>
+                            <div class="md:col-span-2 lg:col-span-3">
+                                <label for="remarks" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Remarks
+                                </label>
+                                <textarea id="remarks" name="remarks" rows="3"
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition duration-200"
+                                    placeholder="Enter any additional remarks or notes about the vehicle"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex justify-end space-x-4 pt-6 border-t border-gray-200">
+                        <button type="button" onclick="resetForm()"
+                            class="flex items-center px-6 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition duration-200 font-medium">
+                            <span class="material-icons mr-2">refresh</span>
+                            Reset Form
+                        </button>
+                        <button type="button" onclick="showPreview()"
+                            class="flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200 font-medium">
+                            <span class="material-icons mr-2">visibility</span>
+                            Preview
+                        </button>
+                        <button type="submit"
+                            class="flex items-center px-8 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition duration-200 font-medium shadow-lg">
+                            <span class="material-icons mr-2">save</span>
+                            Register Vehicle
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="fixed inset-0 hidden z-50">
+        <div class="fixed inset-0 bg-black/50 backdrop-blur-sm"></div>
+        <div
+            class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-2xl p-8 max-w-md w-full mx-4">
+            <div class="text-center">
+                <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-4">
+                    <span class="material-icons text-green-600 text-3xl">check_circle</span>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-900 mb-2">Registration Successful!</h3>
+                <p class="text-gray-600 mb-6">Vehicle has been registered successfully in the DVLA system.</p>
+                <div class="flex justify-center space-x-3">
+                    <button onclick="closeSuccessModal()"
+                        class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition duration-200 font-medium">
+                        OK
+                    </button>
+                    <button onclick="window.location.href='records.html'"
+                        class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200 font-medium">
+                        View Records
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Error Modal -->
+    <div id="errorModal" class="fixed inset-0 hidden z-50">
+        <div class="fixed inset-0 bg-black/50 backdrop-blur-sm"></div>
+        <div
+            class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-2xl p-8 max-w-md w-full mx-4">
+            <div class="text-center">
+                <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-red-100 mb-4">
+                    <span class="material-icons text-red-600 text-3xl">error</span>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-900 mb-2">Registration Failed!</h3>
+                <p class="text-gray-600 mb-6" id="errorMessage">Something went wrong. Please try again.</p>
+                <div class="flex justify-center space-x-3">
+                    <button onclick="closeErrorModal()"
+                        class="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition duration-200 font-medium">
+                        OK
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Preview Modal -->
+    <div id="previewModal" class="fixed inset-0 hidden z-50">
+        <div class="fixed inset-0 bg-black/50 backdrop-blur-sm"></div>
+        <div class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-2xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <div class="p-6">
+                <!-- Modal Header -->
+                <div class="flex items-center justify-between mb-6 pb-4 border-b border-gray-200">
+                    <div class="flex items-center">
+                        <span class="material-icons text-blue-600 mr-2">visibility</span>
+                        <h3 class="text-2xl font-semibold text-gray-900">Vehicle Registration Preview</h3>
+                    </div>
+                    <button onclick="closePreviewModal()" class="text-gray-400 hover:text-gray-600 transition duration-200">
+                        <span class="material-icons text-2xl">close</span>
+                    </button>
+                </div>
+
+                <!-- Preview Content -->
+                <div class="space-y-8">
+                    <!-- Vehicle Owner Information Preview -->
+                    <div>
+                        <h4 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                            <span class="material-icons mr-2 text-green-600">person</span>
+                            Vehicle Owner Information
+                        </h4>
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <span class="text-sm font-medium text-gray-600">Full Name:</span>
+                                    <p class="text-gray-900" id="preview_owner_full_name">-</p>
+                                </div>
+                                <div>
+                                    <span class="text-sm font-medium text-gray-600">Contact Number:</span>
+                                    <p class="text-gray-900" id="preview_owner_contact">-</p>
+                                </div>
+                                <div>
+                                    <span class="text-sm font-medium text-gray-600">Email Address:</span>
+                                    <p class="text-gray-900" id="preview_owner_email">-</p>
+                                </div>
+                                <div>
+                                    <span class="text-sm font-medium text-gray-600">TIN Number:</span>
+                                    <p class="text-gray-900" id="preview_owner_tin">-</p>
+                                </div>
+                                <div class="md:col-span-2">
+                                    <span class="text-sm font-medium text-gray-600">Postal Address:</span>
+                                    <p class="text-gray-900" id="preview_owner_postal_address">-</p>
+                                </div>
+                                <div class="md:col-span-2">
+                                    <span class="text-sm font-medium text-gray-600">Residential Address:</span>
+                                    <p class="text-gray-900" id="preview_owner_residential_address">-</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Vehicle Information Preview -->
+                    <div>
+                        <h4 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                            <span class="material-icons mr-2 text-green-600">directions_car</span>
+                            Vehicle Information
+                        </h4>
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                <div>
+                                    <span class="text-sm font-medium text-gray-600">Registration Number:</span>
+                                    <p class="text-gray-900 font-semibold" id="preview_registration_number">-</p>
+                                </div>
+                                <div>
+                                    <span class="text-sm font-medium text-gray-600">Vehicle Make:</span>
+                                    <p class="text-gray-900" id="preview_vehicle_make">-</p>
+                                </div>
+                                <div>
+                                    <span class="text-sm font-medium text-gray-600">Model Name:</span>
+                                    <p class="text-gray-900" id="preview_model_name">-</p>
+                                </div>
+                                <div>
+                                    <span class="text-sm font-medium text-gray-600">Year of Manufacture:</span>
+                                    <p class="text-gray-900" id="preview_year_of_manufacture">-</p>
+                                </div>
+                                <div>
+                                    <span class="text-sm font-medium text-gray-600">Chassis Number:</span>
+                                    <p class="text-gray-900" id="preview_chassis_number">-</p>
+                                </div>
+                                <div>
+                                    <span class="text-sm font-medium text-gray-600">Engine Number:</span>
+                                    <p class="text-gray-900" id="preview_engine_number">-</p>
+                                </div>
+                                <div>
+                                    <span class="text-sm font-medium text-gray-600">Body Type:</span>
+                                    <p class="text-gray-900" id="preview_body_type">-</p>
+                                </div>
+                                <div>
+                                    <span class="text-sm font-medium text-gray-600">Color:</span>
+                                    <p class="text-gray-900" id="preview_color">-</p>
+                                </div>
+                                <div>
+                                    <span class="text-sm font-medium text-gray-600">Fuel Type:</span>
+                                    <p class="text-gray-900" id="preview_fuel_type">-</p>
+                                </div>
+                                <div>
+                                    <span class="text-sm font-medium text-gray-600">Vehicle Use:</span>
+                                    <p class="text-gray-900" id="preview_vehicle_use">-</p>
+                                </div>
+                                <div>
+                                    <span class="text-sm font-medium text-gray-600">Cubic Capacity (CC):</span>
+                                    <p class="text-gray-900" id="preview_cubic_capacity">-</p>
+                                </div>
+                                <div>
+                                    <span class="text-sm font-medium text-gray-600">Number of Cylinders:</span>
+                                    <p class="text-gray-900" id="preview_number_of_cylinders">-</p>
+                                </div>
+                                <div>
+                                    <span class="text-sm font-medium text-gray-600">Declaration Number:</span>
+                                    <p class="text-gray-900" id="preview_declaration_number">-</p>
+                                </div>
+                                <div class="md:col-span-2 lg:col-span-3">
+                                    <span class="text-sm font-medium text-gray-600">Remarks:</span>
+                                    <p class="text-gray-900" id="preview_remarks">-</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="flex justify-end space-x-4 pt-6 mt-6 border-t border-gray-200">
+                    <button onclick="closePreviewModal()"
+                        class="flex items-center px-6 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition duration-200 font-medium">
+                        <span class="material-icons mr-2">close</span>
+                        Close
+                    </button>
+                    <button onclick="submitFromPreview()"
+                        class="flex items-center px-8 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition duration-200 font-medium shadow-lg">
+                        <span class="material-icons mr-2">save</span>
+                        Register Vehicle
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Form submission handler
+        async function submitRegistration(event) {
+            event.preventDefault();
+
+            // Get form data
+            const formData = new FormData(event.target);
+            const data = Object.fromEntries(formData.entries());
+
+            // Basic validation
+            if (!validateForm(data)) {
+                return;
+            }
+
+            // Map form fields to API expected fields
+            const apiData = {
+                ...data,
+                vehicle_number: data.registration_number, // Map registration_number to vehicle_number
+                registration_date: new Date().toISOString().split('T')[0], // Set current date
+                certificate_number: 'CERT-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5).toUpperCase() // Generate certificate number
+            };
+
+            // Remove the old field name
+            delete apiData.registration_number;
+
+            try {
+                // Show loading state
+                const submitButton = event.target.querySelector('button[type="submit"]');
+                const originalText = submitButton.innerHTML;
+                submitButton.innerHTML = '<span class="material-icons mr-2 animate-spin">refresh</span>Registering...';
+                submitButton.disabled = true;
+
+                // Call the actual API endpoint
+                const response = await fetch('http://localhost/VIR/backend/api/vehicle_registration.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(apiData)
+                });
+
+                if (response.ok) {
+                    showSuccessModal();
+                    resetForm();
+                } else {
+                    const errorData = await response.json();
+                    showErrorModal(errorData.message || 'Registration failed. Please try again.');
+                }
+            } catch (error) {
+                console.error('Registration error:', error);
+                showErrorModal('Network error. Please check your connection and try again.');
+            } finally {
+                // Reset button state
+                const submitButton = event.target.querySelector('button[type="submit"]');
+                submitButton.innerHTML = originalText;
+                submitButton.disabled = false;
+            }
+        }
+
+        // Form validation
+        function validateForm(data) {
+            const requiredFields = [
+                'owner_full_name', 'owner_contact', 'owner_email', 'owner_postal_address',
+                'owner_residential_address', 'registration_number', 'vehicle_make', 'model_name', 'year_of_manufacture',
+                'chassis_number', 'engine_number', 'body_type', 'color', 'fuel_type', 'vehicle_use'
+            ];
+
+            let isValid = true;
+
+            // Clear previous error states
+            document.querySelectorAll('.error-border').forEach(el => {
+                el.classList.remove('error-border');
+            });
+            document.querySelectorAll('.error-text').forEach(el => {
+                el.remove();
+            });
+
+            // Check required fields
+            requiredFields.forEach(field => {
+                if (!data[field] || data[field].trim() === '') {
+                    const element = document.getElementById(field);
+                    element.classList.add('error-border');
+
+                    const errorText = document.createElement('div');
+                    errorText.className = 'error-text';
+                    errorText.textContent = 'This field is required';
+                    element.parentNode.appendChild(errorText);
+
+                    isValid = false;
+                }
+            });
+
+            // Email validation
+            if (data.owner_email && !isValidEmail(data.owner_email)) {
+                const element = document.getElementById('owner_email');
+                element.classList.add('error-border');
+
+                const errorText = document.createElement('div');
+                errorText.className = 'error-text';
+                errorText.textContent = 'Please enter a valid email address';
+                element.parentNode.appendChild(errorText);
+
+                isValid = false;
+            }
+
+            return isValid;
+        }
+
+        // Email validation helper
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
+        // Reset form
+        function resetForm() {
+            document.getElementById('vehicleRegistrationForm').reset();
+
+            // Clear error states
+            document.querySelectorAll('.error-border').forEach(el => {
+                el.classList.remove('error-border');
+            });
+            document.querySelectorAll('.error-text').forEach(el => {
+                el.remove();
+            });
+        }
+
+        // Modal functions
+        function showSuccessModal() {
+            document.getElementById('successModal').classList.add('show');
+        }
+
+        function closeSuccessModal() {
+            document.getElementById('successModal').classList.remove('show');
+        }
+
+        function showErrorModal(message) {
+            document.getElementById('errorMessage').textContent = message;
+            document.getElementById('errorModal').classList.add('show');
+        }
+
+        function closeErrorModal() {
+            document.getElementById('errorModal').classList.remove('show');
+        }
+
+        // Logout handler
+        function handleLogout() {
+            if (confirm('Are you sure you want to logout?')) {
+                // Implement logout logic here
+                window.location.href = 'login.html';
+            }
+        }
+
+        // Auto-format registration number to uppercase
+        document.getElementById('registration_number').addEventListener('input', function (e) {
+            e.target.value = e.target.value.toUpperCase();
+        });
+
+        // Vehicle dropdown toggle
+        function toggleVehicleDropdown() {
+            const dropdown = document.getElementById('vehicleDropdown');
+            const icon = document.getElementById('vehicleDropdownIcon');
+
+            if (dropdown.classList.contains('hidden')) {
+                dropdown.classList.remove('hidden');
+                icon.textContent = 'expand_less';
+            } else {
+                dropdown.classList.add('hidden');
+                icon.textContent = 'expand_more';
+            }
+        }
+
+        // Close modals when clicking outside
+        document.getElementById('successModal').addEventListener('click', function (e) {
+            if (e.target === this) {
+                closeSuccessModal();
+            }
+        });
+
+        document.getElementById('errorModal').addEventListener('click', function (e) {
+            if (e.target === this) {
+                closeErrorModal();
+            }
+        });
+
+        // Vehicle dropdown toggle function
+        function toggleVehicleDropdown() {
+            const dropdown = document.getElementById('vehicleDropdown');
+            const icon = document.getElementById('vehicleDropdownIcon');
+
+            if (dropdown.classList.contains('hidden')) {
+                dropdown.classList.remove('hidden');
+                icon.textContent = 'expand_less';
+            } else {
+                dropdown.classList.add('hidden');
+                icon.textContent = 'expand_more';
+            }
+        }
+
+        // Ownership dropdown toggle function
+        function toggleOwnershipDropdown() {
+            const dropdown = document.getElementById('ownershipDropdown');
+            const icon = document.getElementById('ownershipDropdownIcon');
+
+            if (dropdown.classList.contains('hidden')) {
+                dropdown.classList.remove('hidden');
+                icon.textContent = 'expand_less';
+            } else {
+                dropdown.classList.add('hidden');
+                icon.textContent = 'expand_more';
+            }
+        }
+
+        // Preview functionality
+        function showPreview() {
+            // Get form data
+            const form = document.getElementById('vehicleRegistrationForm');
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+
+            // Populate preview modal with form data
+            populatePreviewModal(data);
+
+            // Show the modal
+            const modal = document.getElementById('previewModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('show');
+            
+            // Prevent body scroll
+            document.body.style.overflow = 'hidden';
+        }
+
+        function populatePreviewModal(data) {
+            // Owner information
+            document.getElementById('preview_owner_full_name').textContent = data.owner_full_name || '-';
+            document.getElementById('preview_owner_contact').textContent = data.owner_contact || '-';
+            document.getElementById('preview_owner_email').textContent = data.owner_email || '-';
+            document.getElementById('preview_owner_tin').textContent = data.owner_tin || '-';
+            document.getElementById('preview_owner_postal_address').textContent = data.owner_postal_address || '-';
+            document.getElementById('preview_owner_residential_address').textContent = data.owner_residential_address || '-';
+
+            // Vehicle information
+            document.getElementById('preview_registration_number').textContent = data.registration_number || '-';
+            document.getElementById('preview_vehicle_make').textContent = data.vehicle_make || '-';
+            document.getElementById('preview_model_name').textContent = data.model_name || '-';
+            document.getElementById('preview_year_of_manufacture').textContent = data.year_of_manufacture || '-';
+            document.getElementById('preview_chassis_number').textContent = data.chassis_number || '-';
+            document.getElementById('preview_engine_number').textContent = data.engine_number || '-';
+            document.getElementById('preview_body_type').textContent = data.body_type || '-';
+            document.getElementById('preview_color').textContent = data.color || '-';
+            document.getElementById('preview_fuel_type').textContent = data.fuel_type || '-';
+            document.getElementById('preview_vehicle_use').textContent = data.vehicle_use || '-';
+            document.getElementById('preview_cubic_capacity').textContent = data.cubic_capacity || '-';
+            document.getElementById('preview_number_of_cylinders').textContent = data.number_of_cylinders || '-';
+            document.getElementById('preview_declaration_number').textContent = data.declaration_number || '-';
+            document.getElementById('preview_remarks').textContent = data.remarks || '-';
+        }
+
+        function closePreviewModal() {
+            const modal = document.getElementById('previewModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('show');
+            
+            // Restore body scroll
+            document.body.style.overflow = '';
+        }
+
+        function submitFromPreview() {
+            // Close preview modal
+            closePreviewModal();
+            
+            // Submit the form
+            const form = document.getElementById('vehicleRegistrationForm');
+            const submitEvent = new Event('submit', { bubbles: true, cancelable: true });
+            form.dispatchEvent(submitEvent);
+        }
+
+        // Close modal when clicking outside
+        document.addEventListener('click', function(event) {
+            const modal = document.getElementById('previewModal');
+            if (event.target === modal) {
+                closePreviewModal();
+            }
+        });
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                const modal = document.getElementById('previewModal');
+                if (!modal.classList.contains('hidden')) {
+                    closePreviewModal();
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

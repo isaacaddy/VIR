@@ -1,23 +1,16 @@
 <?php
-class Database {
-    private $host = "localhost";
-    private $db_name = "dvla_db";
-    private $username = "root";
-    private $password = "";
-    public $conn;
+// Database configuration
+$host = 'localhost';
+$dbname = 'dvla_db';
+$username = 'root';
+$password = '';
 
-    public function getConnection() {
-        $this->conn = null;
-        try {
-            $this->conn = new PDO(
-                "mysql:host=" . $this->host . ";dbname=" . $this->db_name,
-                $this->username,
-                $this->password
-            );
-            $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        } catch(PDOException $e) {
-            echo "Connection error: " . $e->getMessage();
-        }
-        return $this->conn;
-    }
-} 
+try {
+    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    // Don't output anything here - let the calling script handle the error
+    throw new Exception('Database connection failed: ' . $e->getMessage());
+}
+?>

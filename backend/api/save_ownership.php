@@ -4,7 +4,7 @@ header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Methods: POST");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
-include_once '../config/database.php';
+require_once '../config/database.php';
 
 try {
     // Get posted data and log it
@@ -20,8 +20,8 @@ try {
     // Log the decoded data
     error_log("Decoded data: " . print_r($data, true));
 
-    $database = new Database();
-    $conn = $database->getConnection();
+    // Use the $pdo connection from database.php
+    $conn = $pdo;
 
     if (!$conn) {
         throw new Exception("Database connection failed");

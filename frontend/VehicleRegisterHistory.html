@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vehicle Register History</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        .logo {
+            width: 130px;
+            height: 75px;
+            border-radius: 50%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s;
+        }
+
+        .logo:hover {
+            transform: scale(1.1);
+        }
+
+        /* History timeline styles */
+        .timeline-item {
+            position: relative;
+            padding-left: 2rem;
+            border-left: 2px solid #e5e7eb;
+        }
+
+        .timeline-item:last-child {
+            border-left: 2px solid transparent;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: -0.5rem;
+            top: 0.5rem;
+            width: 1rem;
+            height: 1rem;
+            border-radius: 50%;
+            background-color: #10b981;
+            border: 2px solid white;
+            box-shadow: 0 0 0 2px #10b981;
+        }
+
+        .timeline-dot.current {
+            background-color: #3b82f6;
+            box-shadow: 0 0 0 2px #3b82f6;
+        }
+
+        .timeline-dot.old {
+            background-color: #6b7280;
+            box-shadow: 0 0 0 2px #6b7280;
+        }
+
+        /* Loading animation */
+        .loading-spinner {
+            border: 3px solid #f3f4f6;
+            border-top: 3px solid #10b981;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gradient-to-br from-green-50 to-blue-50 min-h-screen flex items-center justify-center">
+    <div class="flex min-h-screen w-full">
+        <!-- Sidebar -->
+        <div class="w-64 bg-gradient-to-b from-green-700 to-teal-600 p-6 text-white shadow-lg flex flex-col">
+            <div>
+                <div class="flex items-center mb-8">
+                    <a href="dashboard.html">
+                        <img src="./images/oop.png" alt="DVLA Logo" class="logo cursor-pointer">
+                    </a>
+                    <div class="ml-3">
+                        <h2 class="text-2xl font-bold">DVLA</h2>
+                        <p class="text-sm opacity-75">Vehicle Inspection and Registration</p>
+                    </div>
+                </div>
+                <nav>
+                    <a href="dashboard.html"
+                        class="flex items-center p-3 mb-2 hover:bg-green-500 rounded-lg transition duration-200">
+                        <span class="material-icons mr-3">dashboard</span>
+                        <span>Dashboard</span>
+                    </a>
+                    <div class="relative">
+                        <button onclick="toggleVehicleDropdown()"
+                            class="flex items-center justify-between w-full p-3 mb-2 bg-green-600 rounded-lg hover:bg-green-500 transition duration-200">
+                            <div class="flex items-center">
+                                <span class="material-icons mr-3">directions_car</span>
+                                <span>Vehicle Register</span>
+                            </div>
+                            <span class="material-icons" id="vehicleDropdownIcon">expand_less</span>
+                        </button>
+                        <div id="vehicleDropdown" class="ml-6 mt-1 space-y-1">
+                            <a href="VehicleRegistration.html"
+                                class="flex items-center p-2 text-sm hover:bg-green-600 rounded-lg transition duration-200">
+                                <span class="material-icons mr-2 text-sm">add</span>
+                                <span>Register Vehicle</span>
+                            </a>
+                            <a href="VehicleRegistrationRecords.html"
+                                class="flex items-center p-2 text-sm hover:bg-green-600 rounded-lg transition duration-200">
+                                <span class="material-icons mr-2 text-sm">list_alt</span>
+                                <span>View Records</span>
+                            </a>
+                            <a href="VehicleRegisterHistory.html"
+                                class="flex items-center p-2 text-sm bg-green-700 hover:bg-green-600 rounded-lg transition duration-200">
+                                <span class="material-icons mr-2 text-sm">history</span>
+                                <span>History</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="relative">
+                        <button onclick="toggleOwnershipDropdown()"
+                            class="flex items-center justify-between w-full p-3 mb-2 hover:bg-green-500 rounded-lg transition duration-200">
+                            <div class="flex items-center">
+                                <span class="material-icons mr-3">sync_alt</span>
+                                <span>Ownership</span>
+                            </div>
+                            <span class="material-icons" id="ownershipDropdownIcon">expand_more</span>
+                        </button>
+                        <div id="ownershipDropdown" class="hidden ml-6 mt-1 space-y-1">
+                            <a href="changeowner.html"
+                                class="flex items-center p-2 text-sm hover:bg-green-600 rounded-lg transition duration-200">
+                                <span class="material-icons mr-2 text-sm">edit</span>
+                                <span>Transfer Ownership</span>
+                            </a>
+                            <a href="records.html"
+                                class="flex items-center p-2 text-sm hover:bg-green-600 rounded-lg transition duration-200">
+                                <span class="material-icons mr-2 text-sm">search</span>
+                                <span>Search Records</span>
+                            </a>
+                        </div>
+                    </div>
+                    <a href="admin.html"
+                        class="flex items-center p-3 mb-2 hover:bg-green-500 rounded-lg transition duration-200">
+                        <span class="material-icons mr-3">admin_panel_settings</span>
+                        <span>Admin</span>
+                    </a>
+                </nav>
+            </div>
+            <div class="mt-auto flex flex-col items-center">
+                <button onclick="handleLogout()"
+                    class="flex items-center bg-gradient-to-r from-green-600 to-teal-600 text-white px-5 py-3 rounded-lg shadow-lg hover:from-green-500 hover:to-teal-500 transform hover:scale-105 transition duration-200 ease-in-out mb-4">
+                    <span class="material-icons mr-2">logout</span>
+                    <span class="font-semibold">Logout</span>
+                </button>
+                <div class="text-center opacity-75 text-sm">
+                    © 2024 DVLA Club
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 p-8">
+            <!-- Header -->
+            <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+                <div class="flex justify-between items-center mb-6">
+                    <div>
+                        <h1 class="text-3xl font-bold text-gray-800 mb-2">Vehicle Register History</h1>
+                        <p class="text-gray-600">Search and view complete history of vehicle registrations and updates
+                        </p>
+                    </div>
+                    <div class="flex items-center space-x-2 text-blue-600">
+                        <span class="material-icons text-4xl">history</span>
+                    </div>
+                </div>
+
+                <!-- Search Section -->
+                <div class="space-y-4">
+                    <div class="flex flex-wrap gap-4 items-center">
+                        <div class="flex-1 min-w-64">
+                            <input type="text" id="searchInput"
+                                placeholder="Search by vehicle number, chassis number, or owner name..."
+                                class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                        </div>
+                        <div>
+                            <select id="historyFilter"
+                                class="border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="all">All History</option>
+                                <option value="registrations">Registrations Only</option>
+                                <option value="updates">Updates Only</option>
+                                <option value="ownership_changes">Ownership Changes</option>
+                            </select>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <button onclick="searchHistory()"
+                                class="bg-blue-600 text-white px-6 py-3 rounded-lg shadow-md hover:bg-blue-700 transition duration-200 flex items-center">
+                                <span class="material-icons mr-2">search</span>
+                                Search
+                            </button>
+                            <button onclick="clearSearch()"
+                                class="bg-gray-500 text-white px-6 py-3 rounded-lg shadow-md hover:bg-gray-600 transition duration-200 flex items-center">
+                                <span class="material-icons mr-2">clear</span>
+                                Clear
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Loading State -->
+            <div id="loadingState" class="hidden">
+                <div class="flex justify-center items-center p-8">
+                    <div class="loading-spinner"></div>
+                    <span class="ml-3 text-gray-600">Searching history...</span>
+                </div>
+            </div>
+
+            <!-- Search Results -->
+            <div id="searchResults" class="hidden">
+                <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-xl font-bold text-gray-800">Search Results</h2>
+                        <span id="resultsCount" class="text-sm text-gray-600"></span>
+                    </div>
+                    <div id="historyContainer">
+                        <!-- History items will be populated here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Empty State -->
+            <div id="emptyState" class="text-center py-12">
+                <span class="material-icons text-gray-400 text-6xl mb-4">search</span>
+                <h3 class="text-lg font-medium text-gray-900 mb-2">Search Vehicle History</h3>
+                <p class="text-gray-500 mb-6">Enter a vehicle number, chassis number, or owner name to view complete
+                    history</p>
+            </div>
+
+            <!-- No Results State -->
+            <div id="noResultsState" class="hidden text-center py-12">
+                <span class="material-icons text-gray-400 text-6xl mb-4">search_off</span>
+                <h3 class="text-lg font-medium text-gray-900 mb-2">No History Found</h3>
+                <p class="text-gray-500 mb-6">No history records found for your search criteria</p>
+                <button onclick="clearSearch()"
+                    class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition duration-200">
+                    Try Another Search
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentSearchTerm = '';
+        let historyData = [];
+
+        // Vehicle dropdown toggle function
+        function toggleVehicleDropdown() {
+            const dropdown = document.getElementById('vehicleDropdown');
+            const icon = document.getElementById('vehicleDropdownIcon');
+
+            if (dropdown.classList.contains('hidden')) {
+                dropdown.classList.remove('hidden');
+                icon.textContent = 'expand_less';
+            } else {
+                dropdown.classList.add('hidden');
+                icon.textContent = 'expand_more';
+            }
+        }
+
+        // Ownership dropdown toggle function
+        function toggleOwnershipDropdown() {
+            const dropdown = document.getElementById('ownershipDropdown');
+            const icon = document.getElementById('ownershipDropdownIcon');
+
+            if (dropdown.classList.contains('hidden')) {
+                dropdown.classList.remove('hidden');
+                icon.textContent = 'expand_less';
+            } else {
+                dropdown.classList.add('hidden');
+                icon.textContent = 'expand_more';
+            }
+        }
+
+        // Search history function
+        async function searchHistory() {
+            const searchTerm = document.getElementById('searchInput').value.trim();
+            const historyFilter = document.getElementById('historyFilter').value;
+
+            if (!searchTerm) {
+                alert('Please enter a search term');
+                return;
+            }
+
+            currentSearchTerm = searchTerm;
+            showLoadingState();
+
+            try {
+                // Simulate API call - replace with actual API endpoint
+                const response = await fetch(`http://localhost/VIR/backend/api/vehicle_history.php?search=${encodeURIComponent(searchTerm)}&filter=${historyFilter}`);
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    historyData = data.data || [];
+                    displayHistoryResults();
+                } else {
+                    throw new Error(data.message || 'Failed to fetch history');
+                }
+            } catch (error) {
+                console.error('Error fetching history:', error);
+                // For demo purposes, show sample data
+                showSampleData(searchTerm);
+            }
+        }
+
+        // Show sample data for demonstration
+        function showSampleData(searchTerm) {
+            historyData = [
+                {
+                    id: 1,
+                    vehicle_number: 'GH-1234-20',
+                    chassis_number: 'ABC123456789',
+                    engine_number: 'ENG789456123',
+                    owner_name: 'John Doe',
+                    action_type: 'registration',
+                    action_description: 'Current vehicle registration - Active',
+                    timestamp: '2024-01-15T10:30:00Z',
+                    details: {
+                        // Vehicle Information
+                        vehicle_make: 'Toyota',
+                        model_name: 'Camry',
+                        year_of_manufacture: '2020',
+                        body_type: 'Sedan',
+                        color: 'Blue',
+                        fuel_type: 'Petrol',
+                        cubic_capacity: '2500cc',
+                        number_of_cylinders: '4',
+                        vehicle_use: 'Private',
+                        declaration_number: 'DECL-2024-001',
+
+                        // Owner Information
+                        owner_full_name: 'John Doe',
+                        owner_postal_address: 'P.O. Box 123, Accra',
+                        owner_residential_address: '15 Independence Avenue, Accra',
+                        owner_contact: '+233-24-123-4567',
+                        owner_email: 'john.doe@email.com',
+
+                        // Registration Details
+                        registration_date: '2024-01-15',
+                        certificate_number: 'CERT-2024-001',
+                        status: 'Active',
+                        remarks: 'Vehicle in good condition'
+                    },
+                    is_current: true
+                },
+                {
+                    id: 2,
+                    vehicle_number: 'GH-1234-20',
+                    chassis_number: 'ABC123456789',
+                    engine_number: 'ENG789456123',
+                    owner_name: 'Jane Smith',
+                    action_type: 'ownership_change',
+                    action_description: 'Ownership transferred from Jane Smith to John Doe',
+                    timestamp: '2023-08-20T14:15:00Z',
+                    details: {
+                        // Transfer Information
+                        previous_owner: 'Jane Smith',
+                        previous_owner_address: '25 Castle Road, Kumasi',
+                        previous_owner_contact: '+233-24-987-6543',
+
+                        new_owner: 'John Doe',
+                        new_owner_address: '15 Independence Avenue, Accra',
+                        new_owner_contact: '+233-24-123-4567',
+
+                        transfer_date: '2023-08-20',
+                        remarks: 'Ownership transfer completed successfully'
+                    },
+                    is_current: false
+                },
+                {
+                    id: 3,
+                    vehicle_number: 'GH-1234-20',
+                    chassis_number: 'ABC123456789',
+                    engine_number: 'ENG789456123',
+                    owner_name: 'Jane Smith',
+                    action_type: 'update',
+                    action_description: 'Vehicle information updated - Color and address changed',
+                    timestamp: '2023-06-10T09:45:00Z',
+                    details: {
+                        // Updated Fields
+                        fields_changed: ['color', 'owner_address'],
+
+                        // Color Change
+                        color_old: 'Red',
+                        color_new: 'Blue',
+
+                        // Address Change
+                        address_old: '10 Osu Street, Accra',
+                        address_new: '25 Castle Road, Kumasi',
+
+                        // Update Details
+                        updated_by: 'Jane Smith',
+                        verification_status: 'Verified',
+                        remarks: 'Documents updated and verified'
+                    },
+                    is_current: false
+                },
+                {
+                    id: 4,
+                    vehicle_number: 'GH-1234-20',
+                    chassis_number: 'ABC123456789',
+                    engine_number: 'ENG789456123',
+                    owner_name: 'Jane Smith',
+                    action_type: 'registration',
+                    action_description: 'Initial vehicle registration',
+                    timestamp: '2023-01-05T11:20:00Z',
+                    details: {
+                        // Vehicle Information
+                        vehicle_make: 'Toyota',
+                        model_name: 'Camry',
+                        year_of_manufacture: '2020',
+                        body_type: 'Sedan',
+                        color: 'Red',
+                        fuel_type: 'Petrol',
+                        cubic_capacity: '2500cc',
+                        number_of_cylinders: '4',
+                        vehicle_use: 'Private',
+                        declaration_number: 'DECL-2023-045',
+
+                        // Owner Information
+                        owner_full_name: 'Jane Smith',
+                        owner_postal_address: 'P.O. Box 456, Accra',
+                        owner_residential_address: '10 Osu Street, Accra',
+                        owner_contact: '+233-24-987-6543',
+                        owner_email: 'jane.smith@email.com',
+
+                        // Registration Details
+                        registration_date: '2023-01-05',
+                        certificate_number: 'CERT-2023-045',
+                        status: 'Completed',
+                        inspector_name: 'Inspector Adams',
+                        inspection_date: '2023-01-03',
+                        remarks: 'Initial registration completed successfully'
+                    },
+                    is_current: false
+                }
+            ];
+            displayHistoryResults();
+        }
+
+        // Display history results
+        function displayHistoryResults() {
+            hideAllStates();
+            document.getElementById('searchResults').classList.remove('hidden');
+
+            const resultsCount = document.getElementById('resultsCount');
+            const historyContainer = document.getElementById('historyContainer');
+
+            if (historyData.length === 0) {
+                showNoResultsState();
+                return;
+            }
+
+            resultsCount.textContent = `${historyData.length} record(s) found for "${currentSearchTerm}"`;
+
+            // Sort by timestamp (most recent first)
+            const sortedHistory = historyData.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+            historyContainer.innerHTML = '';
+
+            sortedHistory.forEach((item, index) => {
+                const historyItem = createHistoryItem(item, index === 0);
+                historyContainer.appendChild(historyItem);
+            });
+        }
+
+        // Create history item element
+        function createHistoryItem(item, isFirst) {
+            const div = document.createElement('div');
+            div.className = 'timeline-item mb-6 pb-6';
+
+            const actionTypeClass = getActionTypeClass(item.action_type);
+            const actionIcon = getActionIcon(item.action_type);
+
+            div.innerHTML = `
+                <div class="timeline-dot ${item.is_current ? 'current' : 'old'}"></div>
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <div class="flex justify-between items-start mb-3">
+                        <div class="flex items-center">
+                            <span class="material-icons text-${actionTypeClass} mr-2">${actionIcon}</span>
+                            <h3 class="text-lg font-semibold text-gray-800">${item.action_description}</h3>
+                            ${item.is_current ? '<span class="ml-2 bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">Current</span>' : ''}
+                        </div>
+                        <span class="text-sm text-gray-500">${formatDateTime(item.timestamp)}</span>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-3">
+                        <div>
+                            <span class="text-sm font-medium text-gray-600">Vehicle Number:</span>
+                            <p class="text-sm text-gray-800">${item.vehicle_number}</p>
+                        </div>
+                        <div>
+                            <span class="text-sm font-medium text-gray-600">Chassis Number:</span>
+                            <p class="text-sm text-gray-800">${item.chassis_number}</p>
+                        </div>
+                        <div>
+                            <span class="text-sm font-medium text-gray-600">Owner:</span>
+                            <p class="text-sm text-gray-800">${item.owner_name}</p>
+                        </div>
+                    </div>
+
+                    ${item.details ? createDetailsSection(item.details, item.action_type) : ''}
+                </div>
+            `;
+
+            return div;
+        }
+
+        // Create details section based on action type
+        function createDetailsSection(details, actionType) {
+            let detailsHtml = '<div class="bg-white rounded p-4 mt-3 border border-gray-200">';
+
+            if (actionType === 'registration') {
+                detailsHtml += `
+                    <h4 class="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">Complete Registration Details</h4>
+                    
+                    <!-- Vehicle Information -->
+                    <div class="mb-6">
+                        <h5 class="text-md font-semibold text-gray-700 mb-3 text-green-600">🚗 Vehicle Information</h5>
+                        <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-3 text-sm">
+                            <div class="bg-gray-50 p-2 rounded"><span class="font-medium text-gray-600">Make:</span><br>${details.vehicle_make || 'N/A'}</div>
+                            <div class="bg-gray-50 p-2 rounded"><span class="font-medium text-gray-600">Model:</span><br>${details.model_name || 'N/A'}</div>
+                            <div class="bg-gray-50 p-2 rounded"><span class="font-medium text-gray-600">Year:</span><br>${details.year_of_manufacture || 'N/A'}</div>
+                            <div class="bg-gray-50 p-2 rounded"><span class="font-medium text-gray-600">Body Type:</span><br>${details.body_type || 'N/A'}</div>
+                            <div class="bg-gray-50 p-2 rounded"><span class="font-medium text-gray-600">Color:</span><br>${details.color || 'N/A'}</div>
+                            <div class="bg-gray-50 p-2 rounded"><span class="font-medium text-gray-600">Fuel Type:</span><br>${details.fuel_type || 'N/A'}</div>
+                            <div class="bg-gray-50 p-2 rounded"><span class="font-medium text-gray-600">Cubic Capacity:</span><br>${details.cubic_capacity || 'N/A'}</div>
+                            <div class="bg-gray-50 p-2 rounded"><span class="font-medium text-gray-600">Cylinders:</span><br>${details.number_of_cylinders || 'N/A'}</div>
+                            <div class="bg-gray-50 p-2 rounded"><span class="font-medium text-gray-600">Vehicle Use:</span><br>${details.vehicle_use || 'N/A'}</div>
+                            <div class="bg-gray-50 p-2 rounded"><span class="font-medium text-gray-600">Declaration No.:</span><br>${details.declaration_number || 'N/A'}</div>
+                        </div>
+                    </div>
+
+                    <!-- Owner Information -->
+                    <div class="mb-6">
+                        <h5 class="text-md font-semibold text-gray-700 mb-3 text-blue-600">👤 Owner Information</h5>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 text-sm">
+                            <div class="bg-blue-50 p-2 rounded"><span class="font-medium text-gray-600">Full Name:</span><br>${details.owner_full_name || 'N/A'}</div>
+                            <div class="bg-blue-50 p-2 rounded"><span class="font-medium text-gray-600">Contact:</span><br>${details.owner_contact || 'N/A'}</div>
+                            <div class="bg-blue-50 p-2 rounded"><span class="font-medium text-gray-600">Email:</span><br>${details.owner_email || 'N/A'}</div>
+                            <div class="bg-blue-50 p-2 rounded col-span-1 md:col-span-2"><span class="font-medium text-gray-600">Postal Address:</span><br>${details.owner_postal_address || 'N/A'}</div>
+                            <div class="bg-blue-50 p-2 rounded col-span-1 md:col-span-2 lg:col-span-3"><span class="font-medium text-gray-600">Residential Address:</span><br>${details.owner_residential_address || 'N/A'}</div>
+                        </div>
+                    </div>
+
+                    <!-- Registration Details -->
+                    <div class="mb-4">
+                        <h5 class="text-md font-semibold text-gray-700 mb-3 text-purple-600">📋 Registration Details</h5>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 text-sm">
+                            <div class="bg-purple-50 p-2 rounded"><span class="font-medium text-gray-600">Registration Date:</span><br>${details.registration_date || 'N/A'}</div>
+                            <div class="bg-purple-50 p-2 rounded"><span class="font-medium text-gray-600">Certificate No.:</span><br>${details.certificate_number || 'N/A'}</div>
+                            <div class="bg-purple-50 p-2 rounded"><span class="font-medium text-gray-600">Status:</span><br>${details.status || 'N/A'}</div>
+                            ${details.inspector_name ? `<div class="bg-purple-50 p-2 rounded"><span class="font-medium text-gray-600">Inspector:</span><br>${details.inspector_name}</div>` : ''}
+                            ${details.inspection_date ? `<div class="bg-purple-50 p-2 rounded"><span class="font-medium text-gray-600">Inspection Date:</span><br>${details.inspection_date}</div>` : ''}
+                        </div>
+                        ${details.remarks ? `<div class="mt-3 bg-yellow-50 p-3 rounded border-l-4 border-yellow-400"><span class="font-medium text-gray-600">Remarks:</span><br>${details.remarks}</div>` : ''}
+                    </div>
+                `;
+            } else if (actionType === 'ownership_change') {
+                detailsHtml += `
+                    <h4 class="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">Ownership Transfer Details</h4>
+                    
+                    <!-- Previous Owner -->
+                    <div class="mb-6">
+                        <h5 class="text-md font-semibold text-gray-700 mb-3 text-red-600">👤 Previous Owner</h5>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                            <div class="bg-red-50 p-2 rounded"><span class="font-medium text-gray-600">Name:</span><br>${details.previous_owner || 'N/A'}</div>
+                            <div class="bg-red-50 p-2 rounded"><span class="font-medium text-gray-600">Contact:</span><br>${details.previous_owner_contact || 'N/A'}</div>
+                            <div class="bg-red-50 p-2 rounded col-span-1 md:col-span-2"><span class="font-medium text-gray-600">Address:</span><br>${details.previous_owner_address || 'N/A'}</div>
+                        </div>
+                    </div>
+
+                    <!-- New Owner -->
+                    <div class="mb-6">
+                        <h5 class="text-md font-semibold text-gray-700 mb-3 text-green-600">👤 New Owner</h5>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                            <div class="bg-green-50 p-2 rounded"><span class="font-medium text-gray-600">Name:</span><br>${details.new_owner || 'N/A'}</div>
+                            <div class="bg-green-50 p-2 rounded"><span class="font-medium text-gray-600">Contact:</span><br>${details.new_owner_contact || 'N/A'}</div>
+                            <div class="bg-green-50 p-2 rounded col-span-1 md:col-span-2"><span class="font-medium text-gray-600">Address:</span><br>${details.new_owner_address || 'N/A'}</div>
+                        </div>
+                    </div>
+
+                    <!-- Transfer Details -->
+                    <div class="mb-4">
+                        <h5 class="text-md font-semibold text-gray-700 mb-3 text-blue-600">🔄 Transfer Information</h5>
+                        <div class="grid grid-cols-1 gap-3 text-sm">
+                            <div class="bg-blue-50 p-2 rounded"><span class="font-medium text-gray-600">Transfer Date:</span><br>${details.transfer_date || 'N/A'}</div>
+                        </div>
+                        ${details.remarks ? `<div class="mt-3 bg-yellow-50 p-3 rounded border-l-4 border-yellow-400"><span class="font-medium text-gray-600">Remarks:</span><br>${details.remarks}</div>` : ''}
+                    </div>
+                `;
+            } else if (actionType === 'update') {
+                detailsHtml += `
+                    <h4 class="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">Update Details</h4>
+                    
+                    <!-- Changes Made -->
+                    <div class="mb-6">
+                        <h5 class="text-md font-semibold text-gray-700 mb-3 text-orange-600">📝 Changes Made</h5>
+                        <div class="space-y-3">
+                            ${details.color_old && details.color_new ? `
+                                <div class="bg-orange-50 p-3 rounded border-l-4 border-orange-400">
+                                    <div class="font-medium text-gray-700">Color Change</div>
+                                    <div class="text-sm text-gray-600 mt-1">
+                                        <span class="bg-red-100 px-2 py-1 rounded">Old: ${details.color_old}</span>
+                                        <span class="mx-2">→</span>
+                                        <span class="bg-green-100 px-2 py-1 rounded">New: ${details.color_new}</span>
+                                    </div>
+                                </div>
+                            ` : ''}
+                            ${details.address_old && details.address_new ? `
+                                <div class="bg-orange-50 p-3 rounded border-l-4 border-orange-400">
+                                    <div class="font-medium text-gray-700">Address Change</div>
+                                    <div class="text-sm text-gray-600 mt-1">
+                                        <div><span class="font-medium">Old:</span> ${details.address_old}</div>
+                                        <div><span class="font-medium">New:</span> ${details.address_new}</div>
+                                    </div>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+
+                    <!-- Update Information -->
+                    <div class="mb-4">
+                        <h5 class="text-md font-semibold text-gray-700 mb-3 text-purple-600">ℹ️ Update Information</h5>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                            ${details.updated_by ? `<div class="bg-purple-50 p-2 rounded"><span class="font-medium text-gray-600">Updated By:</span><br>${details.updated_by}</div>` : ''}
+                            ${details.verification_status ? `<div class="bg-purple-50 p-2 rounded"><span class="font-medium text-gray-600">Verification:</span><br>${details.verification_status}</div>` : ''}
+                        </div>
+                        ${details.remarks ? `<div class="mt-3 bg-yellow-50 p-3 rounded border-l-4 border-yellow-400"><span class="font-medium text-gray-600">Remarks:</span><br>${details.remarks}</div>` : ''}
+                    </div>
+                `;
+            }
+
+            detailsHtml += '</div>';
+            return detailsHtml;
+        }
+
+        // Get action type class for styling
+        function getActionTypeClass(actionType) {
+            switch (actionType) {
+                case 'registration': return 'green-600';
+                case 'ownership_change': return 'blue-600';
+                case 'update': return 'yellow-600';
+                default: return 'gray-600';
+            }
+        }
+
+        // Get action icon
+        function getActionIcon(actionType) {
+            switch (actionType) {
+                case 'registration': return 'add_circle';
+                case 'ownership_change': return 'sync_alt';
+                case 'update': return 'edit';
+                default: return 'info';
+            }
+        }
+
+        // Format date and time
+        function formatDateTime(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        // Show loading state
+        function showLoadingState() {
+            hideAllStates();
+            document.getElementById('loadingState').classList.remove('hidden');
+        }
+
+        // Show no results state
+        function showNoResultsState() {
+            hideAllStates();
+            document.getElementById('noResultsState').classList.remove('hidden');
+        }
+
+        // Hide all states
+        function hideAllStates() {
+            document.getElementById('loadingState').classList.add('hidden');
+            document.getElementById('searchResults').classList.add('hidden');
+            document.getElementById('emptyState').classList.add('hidden');
+            document.getElementById('noResultsState').classList.add('hidden');
+        }
+
+        // Clear search
+        function clearSearch() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('historyFilter').value = 'all';
+            currentSearchTerm = '';
+            historyData = [];
+            hideAllStates();
+            document.getElementById('emptyState').classList.remove('hidden');
+        }
+
+        // Handle logout
+        function handleLogout() {
+            localStorage.clear();
+            sessionStorage.clear();
+            window.location.href = 'index.html';
+        }
+
+        // Add event listener for Enter key on search input
+        document.getElementById('searchInput').addEventListener('keypress', function (event) {
+            if (event.key === 'Enter') {
+                searchHistory();
+            }
+        });
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function () {
+            // Show empty state by default
+            document.getElementById('emptyState').classList.remove('hidden');
+        });
+    </script>
+</body>
+
+</html>
