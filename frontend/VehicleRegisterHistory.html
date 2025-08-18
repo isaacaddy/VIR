@@ -223,8 +223,20 @@
             <div id="searchResults" class="hidden">
                 <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
                     <div class="flex justify-between items-center mb-4">
-                        <h2 class="text-xl font-bold text-gray-800">Search Results</h2>
-                        <span id="resultsCount" class="text-sm text-gray-600"></span>
+                        <div class="flex items-center gap-3">
+                            <h2 class="text-xl font-bold text-gray-800">Search Results</h2>
+                            <span id="resultsCount" class="text-sm text-gray-600"></span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button onclick="printHistoryReport()" class="bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 transition duration-200 flex items-center">
+                                <span class="material-icons mr-2">print</span>
+                                Print
+                            </button>
+                            <button onclick="exportHistoryPDF()" class="bg-green-600 text-white px-4 py-2 rounded-lg shadow hover:bg-green-700 transition duration-200 flex items-center">
+                                <span class="material-icons mr-2">picture_as_pdf</span>
+                                Export PDF
+                            </button>
+                        </div>
                     </div>
                     <div id="historyContainer">
                         <!-- History items will be populated here -->
@@ -477,6 +489,277 @@
             });
         }
 
+        // Print History Report with DVLA-styled header (data-driven)
+        function printHistoryReport() {
+            if (!Array.isArray(historyData) || historyData.length === 0) return;
+
+            const reportHtml = buildHistoryReportHTMLFromData(historyData, currentSearchTerm);
+            const w = window.open('', '_blank');
+            w.document.write(reportHtml);
+            w.document.close();
+            setTimeout(() => { w.print(); }, 300);
+        }
+
+        // Export History Report to PDF using html2pdf
+        async function exportHistoryPDF() {
+            if (!Array.isArray(historyData) || historyData.length === 0) return;
+
+            await ensureHtml2Pdf();
+
+            const wrapper = document.createElement('div');
+            // Inject same styles as print for consistent design
+            wrapper.innerHTML = `<style>${reportStyles()}</style>` + buildHistoryReportBodyFromData(historyData, currentSearchTerm);
+            wrapper.style.width = '210mm';
+            wrapper.style.padding = '15mm';
+            wrapper.style.boxSizing = 'border-box';
+            document.body.appendChild(wrapper);
+
+            const opt = {
+                margin: [0.5, 0.5, 0.5, 0.5],
+                filename: `DVLA_Vehicle_History_${new Date().toISOString().slice(0,10)}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true },
+                jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+            };
+
+            try {
+                await html2pdf().set(opt).from(wrapper).save();
+            } finally {
+                document.body.removeChild(wrapper);
+            }
+        }
+
+        function buildHistoryReportHTMLFromData(data, searchTerm) {
+            const body = buildHistoryReportBodyFromData(data, searchTerm);
+            return `<!DOCTYPE html>
+<html>
+<head>
+    <title>DVLA Vehicle History Report</title>
+    <style>${reportStyles()}</style>
+</head>
+<body>
+${body}
+</body>
+</html>`;
+        }
+
+        // Shared stylesheet for both print and PDF
+        function reportStyles() {
+            return `
+        body { font-family: Arial, sans-serif; color: #333; }
+        .header { text-align: center; border-bottom: 3px solid #16a085; padding-bottom: 16px; margin-bottom: 24px; }
+        .brand { display:flex; align-items:center; justify-content:center; gap:12px; }
+        .brand img { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; }
+        .org { display: inline-block; }
+        .org h1 { margin: 0; font-size: 22px; color: #16a085; }
+        .org p { margin: 4px 0 0 0; color: #666; font-size: 12px; }
+        .title { font-size: 18px; margin-top: 8px; font-weight: bold; }
+        .meta { font-size: 12px; color: #666; margin-top: 4px; }
+        .footer { margin-top: 24px; text-align: center; font-size: 12px; color: #777; }
+        .section { margin-bottom: 18px; }
+        .section h3 { margin: 0 0 8px 0; font-size: 14px; color: #16a085; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #e5e7eb; padding: 8px; font-size: 12px; vertical-align: top; }
+        th { background: #f3f4f6; text-align: left; }
+        .changes { margin-top: 8px; }
+        .changes th, .changes td { font-size: 11px; }
+        .item { page-break-inside: avoid; margin-bottom: 10px; }
+        @page { size: A4; margin: 12mm; }
+        @media print { .no-print { display: none; } }
+            `;
+        }
+
+        function buildHistoryReportBodyFromData(data, searchTerm) {
+            const printedOn = new Date().toLocaleString();
+            const totals = data.reduce((acc, it) => { acc[it.action_type] = (acc[it.action_type]||0)+1; return acc; }, {});
+
+            const rows = data.map((it, idx) => {
+                const details = it.details || {};
+                const prev = details.previous_data || null;
+                if (prev) delete details.previous_data;
+                const changesTable = generateChangeTable(prev, details);
+                const currentOwnerSection = renderOwnerSection(details, 'Current Owner', true);
+                const previousOwnerSection = renderOwnerSection(details, 'Previous Owner', false);
+                const vehicleSection = renderVehicleSection(details);
+
+                return `
+                <div class="item">
+                    <table>
+                        <tr>
+                            <th style="width:18%">Date/Time</th>
+                            <td>${formatDateTime(it.timestamp)}</td>
+                        </tr>
+                        <tr>
+                            <th>Action</th>
+                            <td>${(it.action_type || '').replace('_',' ')}</td>
+                        </tr>
+                        <tr>
+                            <th>Vehicle</th>
+                            <td><strong>${it.vehicle_number || '-'}</strong> | Chassis: ${it.chassis_number || '-'}</td>
+                        </tr>
+                        <tr>
+                            <th>Owner</th>
+                            <td>${it.owner_name || '-'}</td>
+                        </tr>
+                        <tr>
+                            <th>Description</th>
+                            <td>${it.action_description || '-'}</td>
+                        </tr>
+                    </table>
+                    ${currentOwnerSection}
+                    ${previousOwnerSection}
+                    ${vehicleSection}
+                    ${changesTable}
+                </div>`;
+            }).join('');
+
+            const summary = `
+                <table>
+                    <tr><th>Total Records</th><td>${data.length}</td></tr>
+                    <tr><th>Registrations</th><td>${totals.registration || 0}</td></tr>
+                    <tr><th>Ownership Changes</th><td>${totals.ownership_change || 0}</td></tr>
+                    <tr><th>Updates</th><td>${totals.update || 0}</td></tr>
+                </table>
+            `;
+
+            return `
+    <div class="header">
+        <div class="brand">
+            <img src="./images/oop.png" alt="DVLA Logo" />
+            <div class="org">
+                <h1>DRIVER AND VEHICLE LICENSING AUTHORITY</h1>
+                <p>Vehicle History Report</p>
+            </div>
+        </div>
+        <div class="title">Search Results${searchTerm ? ` for "${escapeHtml(searchTerm)}"` : ''}</div>
+        <div class="meta">Generated: ${printedOn}</div>
+    </div>
+    <div class="section">
+        <h3>Summary</h3>
+        ${summary}
+    </div>
+    <div class="section">
+        <h3>Details</h3>
+        ${rows}
+    </div>
+    <div class="footer">© ${new Date().getFullYear()} DVLA. All rights reserved.</div>
+            `;
+        }
+
+        function generateChangeTable(previousData, newData) {
+            if (!previousData || !newData) return '';
+            const fields = [
+                'owner_full_name','owner_contact','owner_email','owner_postal_address','owner_residential_address','owner_tin',
+                'vehicle_make','model_name','year_of_manufacture','body_type','color','fuel_type','cubic_capacity','number_of_cylinders','vehicle_use',
+                'declaration_number','engine_number','chassis_number','vehicle_number','remarks'
+            ];
+            const labelMap = {
+                owner_full_name: 'Owner Full Name', owner_contact: 'Owner Contact', owner_email: 'Owner Email',
+                owner_postal_address: 'Postal Address', owner_residential_address: 'Residential Address', owner_tin: 'Owner TIN',
+                vehicle_make: 'Vehicle Make', model_name: 'Model Name', year_of_manufacture: 'Year of Manufacture',
+                body_type: 'Body Type', color: 'Color', fuel_type: 'Fuel Type', cubic_capacity: 'Cubic Capacity',
+                number_of_cylinders: 'No. of Cylinders', vehicle_use: 'Vehicle Use', declaration_number: 'Declaration No.',
+                engine_number: 'Engine Number', chassis_number: 'Chassis Number', vehicle_number: 'Vehicle Number',
+                remarks: 'Remarks'
+            };
+            const diffs = [];
+            fields.forEach(f => {
+                const oldV = previousData[f] ?? '';
+                const newV = newData[f] ?? '';
+                if (String(oldV) !== String(newV)) {
+                    diffs.push({ f, oldV, newV });
+                }
+            });
+            if (diffs.length === 0) return '';
+            const rows = diffs.map(d => `
+                <tr>
+                    <td>${labelMap[d.f] || d.f}</td>
+                    <td>${escapeHtml(String(d.oldV) || '—')}</td>
+                    <td>${escapeHtml(String(d.newV) || '—')}</td>
+                </tr>
+            `).join('');
+            return `
+                <table class="changes" style="margin-top:8px;">
+                    <thead>
+                        <tr><th style="width:30%">Field</th><th>Old</th><th>New</th></tr>
+                    </thead>
+                    <tbody>${rows}</tbody>
+                </table>
+            `;
+        }
+
+        function escapeHtml(s) {
+            return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c] || c));
+        }
+
+        function renderOwnerSection(details, title, isCurrent) {
+            const name = isCurrent ? (details.owner_full_name || details.co_full_name) : (details.previous_owner || details.po_full_name);
+            const contact = isCurrent ? (details.owner_contact || details.co_contact) : (details.previous_owner_contact || details.po_contact);
+            const email = isCurrent ? (details.owner_email || details.co_email) : (details.previous_owner_email || details.po_email);
+            const postal = isCurrent ? (details.owner_postal_address || details.co_postal_address) : (details.previous_owner_address || details.po_postal_address);
+            const residential = isCurrent ? (details.owner_residential_address || '') : (details.po_residential_address || '');
+            const tin = isCurrent ? (details.owner_tin || details.co_tin) : (details.po_tin || '');
+
+            // If there is no data at all, skip section
+            const hasAny = [name, contact, email, postal, residential, tin].some(v => v && String(v).trim() !== '');
+            if (!hasAny) return '';
+
+            return `
+                <div class="section" style="margin-top:10px;">
+                    <h3>${escapeHtml(title)}</h3>
+                    <table>
+                        <tr><th style="width:25%">Full Name</th><td>${escapeHtml(name || '—')}</td></tr>
+                        <tr><th>Contact</th><td>${escapeHtml(contact || '—')}</td></tr>
+                        <tr><th>Email</th><td>${escapeHtml(email || '—')}</td></tr>
+                        <tr><th>Postal Address</th><td>${escapeHtml(postal || '—')}</td></tr>
+                        <tr><th>Residential Address</th><td>${escapeHtml(residential || '—')}</td></tr>
+                        <tr><th>TIN</th><td>${escapeHtml(tin || '—')}</td></tr>
+                    </table>
+                </div>
+            `;
+        }
+
+        function renderVehicleSection(details) {
+            const hasAny = [
+                details.vehicle_make, details.model_name, details.year_of_manufacture,
+                details.body_type, details.color, details.fuel_type, details.cubic_capacity,
+                details.number_of_cylinders, details.vehicle_use, details.declaration_number,
+                details.engine_number, details.chassis_number, details.vehicle_number
+            ].some(v => v && String(v).trim() !== '');
+            if (!hasAny) return '';
+
+            return `
+                <div class="section" style="margin-top:10px;">
+                    <h3>Vehicle Information</h3>
+                    <table>
+                        <tr><th style="width:25%">Registration Number</th><td>${escapeHtml(details.vehicle_number || '—')}</td></tr>
+                        <tr><th>Make / Model</th><td>${escapeHtml(details.vehicle_make || '—')} / ${escapeHtml(details.model_name || '—')}</td></tr>
+                        <tr><th>Year</th><td>${escapeHtml(details.year_of_manufacture || '—')}</td></tr>
+                        <tr><th>Chassis Number</th><td>${escapeHtml(details.chassis_number || '—')}</td></tr>
+                        <tr><th>Engine Number</th><td>${escapeHtml(details.engine_number || '—')}</td></tr>
+                        <tr><th>Body Type</th><td>${escapeHtml(details.body_type || '—')}</td></tr>
+                        <tr><th>Color</th><td>${escapeHtml(details.color || '—')}</td></tr>
+                        <tr><th>Fuel Type</th><td>${escapeHtml(details.fuel_type || '—')}</td></tr>
+                        <tr><th>Cubic Capacity</th><td>${escapeHtml(details.cubic_capacity || '—')}</td></tr>
+                        <tr><th>Number of Cylinders</th><td>${escapeHtml(details.number_of_cylinders || '—')}</td></tr>
+                        <tr><th>Use</th><td>${escapeHtml(details.vehicle_use || '—')}</td></tr>
+                        <tr><th>Declaration Number</th><td>${escapeHtml(details.declaration_number || '—')}</td></tr>
+                    </table>
+                </div>
+            `;
+        }
+
+        function ensureHtml2Pdf() {
+            return new Promise((resolve, reject) => {
+                if (typeof html2pdf !== 'undefined') return resolve();
+                const s = document.createElement('script');
+                s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
+                s.onload = () => resolve();
+                s.onerror = () => reject(new Error('Failed to load html2pdf'));
+                document.head.appendChild(s);
+            });
+        }
+
         // Create history item element
         function createHistoryItem(item, isFirst) {
             const div = document.createElement('div');
@@ -522,6 +805,68 @@
         // Create details section based on action type
         function createDetailsSection(details, actionType) {
             let detailsHtml = '<div class="bg-white rounded p-4 mt-3 border border-gray-200">';
+            
+            // Helper to render field-level change list
+            function renderChangesList(previousData, newData) {
+                try {
+                    const fieldsOfInterest = [
+                        'owner_full_name','owner_contact','owner_email','owner_postal_address','owner_residential_address','owner_tin',
+                        'vehicle_make','model_name','year_of_manufacture','body_type','color','fuel_type','cubic_capacity','number_of_cylinders','vehicle_use',
+                        'declaration_number','engine_number','chassis_number','vehicle_number','remarks'
+                    ];
+                    const changes = [];
+                    fieldsOfInterest.forEach((f) => {
+                        const oldVal = previousData ? (previousData[f] ?? '') : '';
+                        const newVal = newData ? (newData[f] ?? '') : '';
+                        if (String(oldVal) !== String(newVal)) {
+                            changes.push({ field: f, oldVal, newVal });
+                        }
+                    });
+
+                    if (changes.length === 0) {
+                        return '<div class="text-sm text-gray-500">No field-level differences detected.</div>';
+                    }
+
+                    const labelMap = {
+                        owner_full_name: 'Owner Full Name',
+                        owner_contact: 'Owner Contact',
+                        owner_email: 'Owner Email',
+                        owner_postal_address: 'Postal Address',
+                        owner_residential_address: 'Residential Address',
+                        owner_tin: 'Owner TIN',
+                        vehicle_make: 'Vehicle Make',
+                        model_name: 'Model Name',
+                        year_of_manufacture: 'Year of Manufacture',
+                        body_type: 'Body Type',
+                        color: 'Color',
+                        fuel_type: 'Fuel Type',
+                        cubic_capacity: 'Cubic Capacity',
+                        number_of_cylinders: 'No. of Cylinders',
+                        vehicle_use: 'Vehicle Use',
+                        declaration_number: 'Declaration No.',
+                        engine_number: 'Engine Number',
+                        chassis_number: 'Chassis Number',
+                        vehicle_number: 'Vehicle Number',
+                        remarks: 'Remarks'
+                    };
+
+                    const rows = changes.map(({ field, oldVal, newVal }) => `
+                        <div class="p-3 rounded border border-orange-200 bg-orange-50">
+                            <div class="text-sm font-semibold text-gray-800">${labelMap[field] || field}</div>
+                            <div class="text-xs text-gray-600 mt-1">
+                                <span class="bg-red-100 px-2 py-0.5 rounded">Old: ${oldVal || '—'}</span>
+                                <span class="mx-2">→</span>
+                                <span class="bg-green-100 px-2 py-0.5 rounded">New: ${newVal || '—'}</span>
+                            </div>
+                        </div>
+                    `).join('');
+
+                    return `<div class="space-y-2">${rows}</div>`;
+                } catch (e) {
+                    console.error('Diff render failed:', e);
+                    return '<div class="text-sm text-gray-500">Unable to render detailed differences.</div>';
+                }
+            }
 
             if (actionType === 'registration') {
                 detailsHtml += `
@@ -603,35 +948,22 @@
                     </div>
                 `;
             } else if (actionType === 'update') {
+                // Compute and render actual field-level differences when available
+                const previousData = details.previous_data || null;
+                const newData = { ...details };
+                if (newData.previous_data) { delete newData.previous_data; }
+
+                const changesHtml = renderChangesList(previousData, newData);
+
                 detailsHtml += `
                     <h4 class="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">Update Details</h4>
                     
                     <!-- Changes Made -->
                     <div class="mb-6">
                         <h5 class="text-md font-semibold text-gray-700 mb-3 text-orange-600">📝 Changes Made</h5>
-                        <div class="space-y-3">
-                            ${details.color_old && details.color_new ? `
-                                <div class="bg-orange-50 p-3 rounded border-l-4 border-orange-400">
-                                    <div class="font-medium text-gray-700">Color Change</div>
-                                    <div class="text-sm text-gray-600 mt-1">
-                                        <span class="bg-red-100 px-2 py-1 rounded">Old: ${details.color_old}</span>
-                                        <span class="mx-2">→</span>
-                                        <span class="bg-green-100 px-2 py-1 rounded">New: ${details.color_new}</span>
-                                    </div>
-                                </div>
-                            ` : ''}
-                            ${details.address_old && details.address_new ? `
-                                <div class="bg-orange-50 p-3 rounded border-l-4 border-orange-400">
-                                    <div class="font-medium text-gray-700">Address Change</div>
-                                    <div class="text-sm text-gray-600 mt-1">
-                                        <div><span class="font-medium">Old:</span> ${details.address_old}</div>
-                                        <div><span class="font-medium">New:</span> ${details.address_new}</div>
-                                    </div>
-                                </div>
-                            ` : ''}
-                        </div>
+                        ${changesHtml}
                     </div>
-
+                    
                     <!-- Update Information -->
                     <div class="mb-4">
                         <h5 class="text-md font-semibold text-gray-700 mb-3 text-purple-600">ℹ️ Update Information</h5>

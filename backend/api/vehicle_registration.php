@@ -45,11 +45,11 @@ function registerVehicle($pdo, $data) {
     try {
         // Validate required fields
         $required_fields = [
-            'vehicle_number', 'chassis_number', 'engine_number', 'vehicle_make', 
+            'vehicle_number', 'chassis_number', 'vehicle_make', 
             'model_name', 'year_of_manufacture', 'body_type', 'color', 'fuel_type',
             'cubic_capacity', 'number_of_cylinders', 'vehicle_use', 'declaration_number',
             'owner_full_name', 'owner_postal_address', 'owner_residential_address',
-            'owner_contact', 'owner_email', 'registration_date', 'certificate_number'
+            'owner_contact', 'registration_date', 'certificate_number'
         ];
 
         foreach ($required_fields as $field) {
@@ -80,7 +80,7 @@ function registerVehicle($pdo, $data) {
         $result = $stmt->execute([
             $data['vehicle_number'],
             $data['chassis_number'],
-            $data['engine_number'],
+            $data['engine_number'] ?? null,
             $data['vehicle_make'],
             $data['model_name'],
             $data['year_of_manufacture'],
@@ -95,7 +95,7 @@ function registerVehicle($pdo, $data) {
             $data['owner_postal_address'],
             $data['owner_residential_address'],
             $data['owner_contact'],
-            $data['owner_email'],
+            $data['owner_email'] ?? null,
             $data['registration_date'],
             $data['certificate_number'],
             $data['status'] ?? 'Active',

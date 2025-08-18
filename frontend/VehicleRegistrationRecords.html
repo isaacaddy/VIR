@@ -520,7 +520,7 @@
 
             <!-- Edit Form -->
             <form id="editVehicleForm" class="space-y-8">
-                <input type="hidden" id="edit_record_id" name="record_id">
+                <input type="hidden" id="edit_record_id" name="id">
                 
                 <!-- Vehicle Owner Information -->
                 <div>
@@ -2511,7 +2511,7 @@
                         closeEditModal();
                         
                         // Update the record in allRecords array
-                        const recordIndex = allRecords.findIndex(r => r.id == data.record_id);
+                        const recordIndex = allRecords.findIndex(r => r.id == data.id);
                         if (recordIndex !== -1) {
                             allRecords[recordIndex] = { ...allRecords[recordIndex], ...data };
                         }

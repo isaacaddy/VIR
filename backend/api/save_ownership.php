@@ -107,11 +107,75 @@ try {
         throw new Exception("No rows were inserted");
     }
 
+    $insertedId = $conn->lastInsertId();
+
+    // Log into vehicle_history for searchability
+    try {
+        // Attempt to find matching vehicle registration by chassis or vehicle number
+        $vStmt = $conn->prepare("SELECT id, vehicle_number FROM vehicle_registrations WHERE chassis_number = :chassis OR vehicle_number = :vehicle LIMIT 1");
+        $vStmt->execute([
+            ':chassis' => $data['chassis_number'],
+            ':vehicle' => $data['vehicle_number']
+        ]);
+        $vehicle = $vStmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($vehicle && isset($vehicle['id'])) {
+            $vehicleId = (int)$vehicle['id'];
+            $vehicleNumber = $vehicle['vehicle_number'] ?: $data['vehicle_number'];
+
+            $newData = [
+                'co_full_name' => $data['co_full_name'],
+                'co_postal_address' => $data['co_postal_address'],
+                'co_residential_address' => $data['co_residential_address'],
+                'co_contact' => $data['co_contact'],
+                'co_email' => $data['co_email'],
+                'co_tin' => $data['co_tin'],
+                'po_full_name' => $data['po_full_name'],
+                'po_postal_address' => $data['po_postal_address'],
+                'po_residential_address' => $data['po_residential_address'],
+                'po_contact' => $data['po_contact'],
+                'po_email' => $data['po_email'],
+                'po_tin' => $data['po_tin'],
+                'vehicle_make' => $data['vehicle_make'],
+                'model_name' => $data['model_name'],
+                'chassis_number' => $data['chassis_number'],
+                'year_of_manufacture' => $data['year_of_manufacture'],
+                'body_type' => $data['body_type'],
+                'color' => $data['color'],
+                'vehicle_use' => $data['vehicle_use'],
+                'fuel_type' => $data['fuel_type'],
+                'cubic_capacity' => $data['cubic_capacity'],
+                'engine_number' => $data['engine_number'],
+                'number_of_cylinders' => $data['number_of_cylinders'],
+                'vehicle_number' => $data['vehicle_number'],
+                'remarks' => $data['remarks'] ?? ''
+            ];
+
+            $hist = $conn->prepare("INSERT INTO vehicle_history (vehicle_id, vehicle_number, chassis_number, action_type, action_description, previous_data, new_data, performed_by, remarks) VALUES (?,?,?,?,?,?,?,?,?)");
+            $performedBy = 'System';
+            if (session_status() === PHP_SESSION_NONE) { @session_start(); }
+            if (!empty($_SESSION['user_email'])) { $performedBy = $_SESSION['user_email']; }
+            $hist->execute([
+                $vehicleId,
+                $vehicleNumber,
+                $data['chassis_number'],
+                'ownership_change',
+                'Ownership transferred (new ownership record created)',
+                null,
+                json_encode($newData),
+                $performedBy,
+                $data['remarks'] ?? null
+            ]);
+        }
+    } catch (Exception $e) {
+        error_log('Failed to log vehicle_history from save_ownership: ' . $e->getMessage());
+    }
+
     http_response_code(200);
     echo json_encode(array(
         "status" => "success",
         "message" => "Record saved successfully",
-        "id" => $conn->lastInsertId()
+        "id" => $insertedId
     ));
 
 } catch(Exception $e) {

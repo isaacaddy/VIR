@@ -195,6 +195,31 @@
                 </div>
             </div>
 
+            <!-- Transfer/Change Counts -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                <div class="bg-white rounded-lg shadow p-4 flex items-center justify-between">
+                    <div>
+                        <div class="text-sm text-gray-500">Transfers Today</div>
+                        <div class="text-2xl font-bold" id="transferDayCount">0</div>
+                    </div>
+                    <span class="material-icons text-green-600">today</span>
+                </div>
+                <div class="bg-white rounded-lg shadow p-4 flex items-center justify-between">
+                    <div>
+                        <div class="text-sm text-gray-500">This Month</div>
+                        <div class="text-2xl font-bold" id="transferMonthCount">0</div>
+                    </div>
+                    <span class="material-icons text-blue-600">date_range</span>
+                </div>
+                <div class="bg-white rounded-lg shadow p-4 flex items-center justify-between">
+                    <div>
+                        <div class="text-sm text-gray-500">This Year</div>
+                        <div class="text-2xl font-bold" id="transferYearCount">0</div>
+                    </div>
+                    <span class="material-icons text-purple-600">event</span>
+                </div>
+            </div>
+
             <!-- Saved Records Table -->
             <div class="bg-white rounded-lg shadow-lg overflow-hidden mb-6">
                 <table class="w-full table-auto">
@@ -214,6 +239,19 @@
                         <!-- Records will be populated here dynamically -->
                     </tbody>
                 </table>
+            </div>
+
+            <!-- Pagination Controls -->
+            <div id="paginationControls" class="flex items-center justify-between mb-6 hidden">
+                <button id="prevPageBtn" onclick="changePage(-1)" class="px-3 py-2 bg-gray-200 text-gray-700 rounded disabled:opacity-50 disabled:cursor-not-allowed">
+                    Prev
+                </button>
+                <div class="text-gray-600">
+                    <span id="pageInfo">Page 1 of 1</span>
+                </div>
+                <button id="nextPageBtn" onclick="changePage(1)" class="px-3 py-2 bg-gray-200 text-gray-700 rounded disabled:opacity-50 disabled:cursor-not-allowed">
+                    Next
+                </button>
             </div>
 
             <!-- Add this right after the table in records.html -->
@@ -653,11 +691,114 @@
         document.addEventListener('DOMContentLoaded', () => {
             console.log('🚀 Page loaded, starting initialization...');
             testConnection();
+            fetchTransferCounts();
             loadRecords();
         });
 
         // Global variables
         let allRecords = [];
+        let currentPage = 1;
+        const pageSize = 15;
+
+        function totalPages() {
+            return Math.max(1, Math.ceil((allRecords?.length || 0) / pageSize));
+        }
+
+        function changePage(delta) {
+            const next = currentPage + delta;
+            if (next < 1 || next > totalPages()) return;
+            currentPage = next;
+            renderRecords();
+        }
+
+        function updatePaginationControls() {
+            const controls = document.getElementById('paginationControls');
+            const prevBtn = document.getElementById('prevPageBtn');
+            const nextBtn = document.getElementById('nextPageBtn');
+            const info = document.getElementById('pageInfo');
+
+            const total = totalPages();
+            if (allRecords.length > pageSize) {
+                controls.classList.remove('hidden');
+            } else {
+                controls.classList.add('hidden');
+            }
+
+            if (info) info.textContent = `Page ${currentPage} of ${total}`;
+            if (prevBtn) prevBtn.disabled = currentPage <= 1;
+            if (nextBtn) nextBtn.disabled = currentPage >= total;
+        }
+
+        function renderRecords() {
+            const tbody = document.getElementById('recordsList');
+            if (!tbody) return;
+
+            tbody.innerHTML = '';
+
+            if (!allRecords || allRecords.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="8" class="p-4 text-center text-gray-500">
+                            No records found
+                        </td>
+                    </tr>
+                `;
+                updatePaginationControls();
+                return;
+            }
+
+            const start = (currentPage - 1) * pageSize;
+            const end = Math.min(start + pageSize, allRecords.length);
+            const pageSlice = allRecords.slice(start, end);
+
+            const rowsHtml = pageSlice.map((record, index) => `
+                <tr class="border-b hover:bg-gray-50">
+                    <td class="p-4">${start + index + 1}</td>
+                    <td class="p-4">${record.co_full_name || 'N/A'}</td>
+                    <td class="p-4">${record.co_contact || 'N/A'}</td>
+                    <td class="p-4">${record.co_email || 'N/A'}</td>
+                    <td class="p-4">${record.vehicle_make || 'N/A'}</td>
+                    <td class="p-4">${record.chassis_number || 'N/A'}</td>
+                    <td class="p-4">${record.created_at ? new Date(record.created_at).toLocaleDateString() : 'N/A'}</td>
+                    <td class="p-4">
+                        <div class="flex space-x-2 justify-center">
+                            <button onclick="viewRecord(${record.id})" class="p-1 rounded-full hover:bg-gray-100 transition-colors">
+                                <span class="material-icons text-blue-600">visibility</span>
+                            </button>
+                            <button onclick="editRecord(${record.id})" class="p-1 rounded-full hover:bg-gray-100 transition-colors">
+                                <span class="material-icons text-green-600">edit</span>
+                            </button>
+                            <button onclick="deleteRecord(${record.id})" class="p-1 rounded-full hover:bg-gray-100 transition-colors">
+                                <span class="material-icons text-red-600">delete</span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+
+            tbody.innerHTML = rowsHtml;
+            updatePaginationControls();
+        }
+
+        // Fetch transfer/change counts (day, month, year)
+        async function fetchTransferCounts() {
+            try {
+                const res = await fetch('http://localhost/VIR/backend/api/vehicle_statistics.php?type=transfer_counts');
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                const json = await res.json();
+                if (json.status !== 'success' || !json.data) throw new Error(json.message || 'Invalid response');
+
+                const { day, month, year } = json.data;
+                const dayEl = document.getElementById('transferDayCount');
+                const monthEl = document.getElementById('transferMonthCount');
+                const yearEl = document.getElementById('transferYearCount');
+                if (dayEl) dayEl.textContent = day ?? 0;
+                if (monthEl) monthEl.textContent = month ?? 0;
+                if (yearEl) yearEl.textContent = year ?? 0;
+            } catch (e) {
+                console.error('Failed to fetch transfer counts:', e);
+            }
+        }
 
         // Function to load all records from the API
         async function loadRecords() {
@@ -683,54 +824,8 @@
                     console.log('✅ API call successful!');
                     allRecords = result.data || [];
                     console.log('📊 Records received:', allRecords.length);
-                    console.log('📊 Sample record:', allRecords[0]);
-                    recordsList.innerHTML = '';
-
-                    if (allRecords.length === 0) {
-                        console.log('⚠️ No records found in database');
-                        recordsList.innerHTML = `
-                            <tr>
-                                <td colspan="8" class="p-4 text-center text-gray-500">
-                                    No records found
-                                </td>
-                            </tr>
-                        `;
-                        return;
-                    }
-
-                    console.log('🔄 Building table rows...');
-                    allRecords.forEach((record, index) => {
-                        console.log(`📝 Processing record ${index + 1}:`, record.co_full_name);
-                        const row = document.createElement('tr');
-                        row.className = 'border-b hover:bg-gray-50';
-                        row.innerHTML = `
-                            <td class="p-4">${index + 1}</td>
-                            <td class="p-4">${record.co_full_name || 'N/A'}</td>
-                            <td class="p-4">${record.co_contact || 'N/A'}</td>
-                            <td class="p-4">${record.co_email || 'N/A'}</td>
-                            <td class="p-4">${record.vehicle_make || 'N/A'}</td>
-                            <td class="p-4">${record.chassis_number || 'N/A'}</td>
-                            <td class="p-4">${new Date(record.created_at).toLocaleDateString()}</td>
-                            <td class="p-4">
-                                <div class="flex space-x-2 justify-center">
-                                    <button onclick="viewRecord(${record.id})" 
-                                        class="p-1 rounded-full hover:bg-gray-100 transition-colors">
-                                        <span class="material-icons text-blue-600">visibility</span>
-                                    </button>
-                                    <button onclick="editRecord(${record.id})" 
-                                        class="p-1 rounded-full hover:bg-gray-100 transition-colors">
-                                        <span class="material-icons text-green-600">edit</span>
-                                    </button>
-                                    <button onclick="deleteRecord(${record.id})" 
-                                        class="p-1 rounded-full hover:bg-gray-100 transition-colors">
-                                        <span class="material-icons text-red-600">delete</span>
-                                    </button>
-                                </div>
-                            </td>
-                        `;
-                        recordsList.appendChild(row);
-                    });
-                    console.log('✅ Table rows built successfully!');
+                    currentPage = 1;
+                    renderRecords();
                 } else {
                     console.error('❌ API returned error:', result.message);
                     throw new Error(result.message || 'Failed to fetch records');
@@ -2262,50 +2357,9 @@
                 const data = await response.json();
 
                 if (data.status === 'success') {
-                    const tbody = document.querySelector('#recordsList');
-                    tbody.innerHTML = '';
-
-                    if (!data.data || data.data.length === 0) {
-                        tbody.innerHTML = `
-                            <tr>
-                                <td colspan="8" class="p-4 text-center text-gray-500">
-                                    No matching records found
-                                </td>
-                            </tr>
-                        `;
-                        return;
-                    }
-
-                    data.data.forEach((record, index) => {
-                        const row = document.createElement('tr');
-                        row.className = 'border-b hover:bg-gray-50';
-                        row.innerHTML = `
-                            <td class="p-4">${index + 1}</td>
-                            <td class="p-4">${record.co_full_name || 'N/A'}</td>
-                            <td class="p-4">${record.co_contact || 'N/A'}</td>
-                            <td class="p-4">${record.co_email || 'N/A'}</td>
-                            <td class="p-4">${record.vehicle_make || 'N/A'}</td>
-                            <td class="p-4">${record.chassis_number || 'N/A'}</td>
-                            <td class="p-4">${new Date(record.created_at).toLocaleDateString()}</td>
-                            <td class="p-4">
-                                <div class="flex space-x-2 justify-center">
-                                    <button onclick="viewRecord(${record.id})" 
-                                        class="p-1 rounded-full hover:bg-gray-100 transition-colors">
-                                        <span class="material-icons text-blue-600">visibility</span>
-                                    </button>
-                                    <button onclick="editRecord(${record.id})" 
-                                        class="p-1 rounded-full hover:bg-gray-100 transition-colors">
-                                        <span class="material-icons text-green-600">edit</span>
-                                    </button>
-                                    <button onclick="deleteRecord(${record.id})" 
-                                        class="p-1 rounded-full hover:bg-gray-100 transition-colors">
-                                        <span class="material-icons text-red-600">delete</span>
-                                    </button>
-                                </div>
-                            </td>
-                        `;
-                        tbody.appendChild(row);
-                    });
+                    allRecords = data.data || [];
+                    currentPage = 1;
+                    renderRecords();
                 } else {
                     throw new Error(data.message || 'Failed to search records');
                 }

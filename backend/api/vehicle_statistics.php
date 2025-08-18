@@ -22,6 +22,9 @@ try {
             case 'registration_records':
                 getRegistrationRecordsStats($pdo);
                 break;
+            case 'transfer_counts':
+                getTransferCounts($pdo);
+                break;
             default:
                 getAllStats($pdo);
                 break;
@@ -182,6 +185,40 @@ function getAllStats($pdo) {
             'data' => $stats
         ]);
         
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+    }
+}
+
+function getTransferCounts($pdo) {
+    try {
+        // Today
+        $daySql = "SELECT COUNT(*) as count FROM ownership_changes WHERE status = 'active' AND DATE(created_at) = CURDATE()";
+        $dayStmt = $pdo->prepare($daySql);
+        $dayStmt->execute();
+        $dayCount = (int)$dayStmt->fetchColumn();
+
+        // This month
+        $monthSql = "SELECT COUNT(*) as count FROM ownership_changes WHERE status = 'active' AND YEAR(created_at) = YEAR(CURDATE()) AND MONTH(created_at) = MONTH(CURDATE())";
+        $monthStmt = $pdo->prepare($monthSql);
+        $monthStmt->execute();
+        $monthCount = (int)$monthStmt->fetchColumn();
+
+        // This year
+        $yearSql = "SELECT COUNT(*) as count FROM ownership_changes WHERE status = 'active' AND YEAR(created_at) = YEAR(CURDATE())";
+        $yearStmt = $pdo->prepare($yearSql);
+        $yearStmt->execute();
+        $yearCount = (int)$yearStmt->fetchColumn();
+
+        echo json_encode([
+            'status' => 'success',
+            'data' => [
+                'day' => $dayCount,
+                'month' => $monthCount,
+                'year' => $yearCount
+            ]
+        ]);
     } catch (Exception $e) {
         http_response_code(500);
         echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);

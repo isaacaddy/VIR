@@ -248,9 +248,9 @@
                             </div>
                             <div>
                                 <label for="owner_email" class="block text-sm font-medium text-gray-700 mb-2">
-                                    Email Address <span class="text-red-500">*</span>
+                                    Email Address
                                 </label>
-                                <input type="email" id="owner_email" name="owner_email" required
+                                <input type="email" id="owner_email" name="owner_email"
                                     class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition duration-200"
                                     placeholder="Enter email address">
                             </div>
@@ -333,9 +333,9 @@
                             </div>
                             <div>
                                 <label for="engine_number" class="block text-sm font-medium text-gray-700 mb-2">
-                                    Engine Number <span class="text-red-500">*</span>
+                                    Engine Number
                                 </label>
-                                <input type="text" id="engine_number" name="engine_number" required
+                                <input type="text" id="engine_number" name="engine_number"
                                     class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition duration-200"
                                     placeholder="Enter engine number">
                             </div>
@@ -351,7 +351,7 @@
                                     <option value="Hatchback">Hatchback</option>
                                     <option value="Coupe">Coupe</option>
                                     <option value="Convertible">Convertible</option>
-                                    <option value="Wagon">Wagon</option>
+                                    <option value="Station Wagon">Station Wagon</option>
                                     <option value="Pickup">Pickup</option>
                                     <option value="Van">Van</option>
                                     <option value="Truck">Truck</option>
@@ -398,26 +398,26 @@
                             </div>
                             <div>
                                 <label for="cubic_capacity" class="block text-sm font-medium text-gray-700 mb-2">
-                                    Cubic Capacity (CC)
+                                    Cubic Capacity (CC)/ Battery Capacity (CC) <span class="text-red-500">*</span>
                                 </label>
-                                <input type="number" id="cubic_capacity" name="cubic_capacity"
+                                <input type="number" id="cubic_capacity" name="cubic_capacity" required
                                     class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition duration-200"
                                     placeholder="e.g., 1500">
                             </div>
                             <div>
                                 <label for="number_of_cylinders" class="block text-sm font-medium text-gray-700 mb-2">
-                                    Number of Cylinders
+                                    Number of Cylinders <span class="text-red-500">*</span>
                                 </label>
-                                <input type="number" id="number_of_cylinders" name="number_of_cylinders"
+                                <input type="number" id="number_of_cylinders" name="number_of_cylinders" required
                                     class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition duration-200"
                                     placeholder="e.g., 4">
                                 <p id="cylinders_note" class="text-xs text-gray-500 mt-1 hidden">Note: Electric vehicles don't have cylinders</p>
                             </div>
                             <div>
                                 <label for="declaration_number" class="block text-sm font-medium text-gray-700 mb-2">
-                                    Declaration Number
+                                    Declaration Number <span class="text-red-500">*</span>
                                 </label>
-                                <input type="text" id="declaration_number" name="declaration_number"
+                                <input type="text" id="declaration_number" name="declaration_number" required
                                     class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition duration-200"
                                     placeholder="Enter declaration number">
                             </div>
@@ -703,9 +703,10 @@
         // Form validation
         function validateForm(data) {
             const requiredFields = [
-                'owner_full_name', 'owner_contact', 'owner_email', 'owner_postal_address',
+                'owner_full_name', 'owner_contact', 'owner_postal_address',
                 'owner_residential_address', 'registration_number', 'vehicle_make', 'model_name', 'year_of_manufacture',
-                'chassis_number', 'engine_number', 'body_type', 'color', 'fuel_type', 'vehicle_use'
+                'chassis_number', 'body_type', 'color', 'fuel_type', 'cubic_capacity', 'number_of_cylinders', 
+                'vehicle_use', 'declaration_number'
             ];
 
             let isValid = true;
