@@ -8,9 +8,8 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 include_once '../config/database.php';
 include_once '../models/User.php';
 
-$database = new Database();
-$db = $database->getConnection();
-$user = new User($db);
+// Use the existing $pdo connection from database.php
+$user = new User($pdo);
 
 $data = json_decode(file_get_contents("php://input"));
 
@@ -66,3 +65,4 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 } 
+?> 

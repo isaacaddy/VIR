@@ -675,7 +675,7 @@
 
     <script>
         // Add this before your other JavaScript code
-        const API_URL = 'http://localhost/VIR/backend/api/get_record.php';
+        const API_URL = 'http://localhost:8000/api/get_record.php';
 
         async function testConnection() {
             try {
@@ -783,7 +783,7 @@
         // Fetch transfer/change counts (day, month, year)
         async function fetchTransferCounts() {
             try {
-                const res = await fetch('http://localhost/VIR/backend/api/vehicle_statistics.php?type=transfer_counts');
+                const res = await fetch('http://localhost:8000/api/vehicle_statistics.php?type=transfer_counts');
                 if (!res.ok) throw new Error(`HTTP ${res.status}`);
                 const json = await res.json();
                 if (json.status !== 'success' || !json.data) throw new Error(json.message || 'Invalid response');
@@ -812,8 +812,8 @@
                 loadingState.classList.remove('hidden');
                 errorState.classList.add('hidden');
 
-                console.log('📡 Fetching from API: http://localhost/VIR/backend/api/get_record.php');
-                const response = await fetch('http://localhost/VIR/backend/api/get_record.php');
+                        console.log('📡 Fetching from API: http://localhost:8000/api/get_record.php');
+        const response = await fetch('http://localhost:8000/api/get_record.php');
                 console.log('📡 Response status:', response.status);
                 console.log('📡 Response ok:', response.ok);
 
@@ -842,7 +842,7 @@
 
         function deleteRecord(id) {
             if (confirm('Are you sure you want to delete this record?')) {
-                fetch('http://localhost/VIR/backend/api/delete_record.php', {
+                fetch('http://localhost:8000/api/delete_record.php', {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json'
@@ -883,7 +883,7 @@
             modal.classList.remove('hidden');
 
             // Fetch record details
-            fetch(`http://localhost/VIR/backend/api/get_record.php?id=${id}`)
+            fetch(`http://localhost:8000/api/get_record.php?id=${id}`)
                 .then(response => response.json())
                 .then(data => {
                     if (data.status === 'success') {

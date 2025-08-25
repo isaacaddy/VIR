@@ -1,9 +1,9 @@
 <?php
-// Database configuration
-$host = 'localhost';
-$dbname = 'dvla_db';
-$username = 'root';
-$password = '';
+// Database configuration - Docker compatible
+$host = getenv('DB_HOST') ?: 'localhost';
+$dbname = getenv('DB_NAME') ?: 'dvla_db';
+$username = getenv('DB_USER') ?: 'root';
+$password = getenv('DB_PASSWORD') ?: '';
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password);

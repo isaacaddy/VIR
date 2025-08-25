@@ -8,6 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/config.js"></script>
     <style>
         .logo {
             width: 130px;
@@ -413,7 +414,7 @@
             // Add this function to get and display user info
             async function getUserInfo() {
                 try {
-                    const response = await fetch('http://localhost/VIR/backend/api/user_info.php', {
+                    const response = await fetch(getApiUrl(API_CONFIG.ENDPOINTS.USER_INFO), {
                         credentials: 'include'  // Important for session handling
                     });
                     const data = await response.json();
@@ -442,7 +443,7 @@
         // Test API connection
         async function testAPI() {
             try {
-                const response = await fetch('http://localhost/VIR/backend/api/dashboard_stats.php');
+                const response = await fetch(getApiUrl(API_CONFIG.ENDPOINTS.DASHBOARD_STATS));
                 const data = await response.json();
                 console.log('API Response:', data);
                 return data;
@@ -455,7 +456,7 @@
         // Update dashboard function
         async function updateDashboard() {
             try {
-                const response = await fetch('http://localhost/VIR/backend/api/dashboard_stats.php');
+                const response = await fetch(getApiUrl(API_CONFIG.ENDPOINTS.DASHBOARD_STATS));
                 const data = await response.json();
 
                 if (data.status === 'success') {

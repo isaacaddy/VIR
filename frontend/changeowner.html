@@ -587,7 +587,7 @@
 
                 // Show loading for 3 seconds then save
                 setTimeout(() => {
-                    fetch('http://localhost/VIR/backend/api/save_ownership.php', {
+                    fetch('http://localhost:8000/api/save_ownership.php', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -685,7 +685,7 @@
                 };
 
                 // Send update request to backend
-                fetch(`http://localhost/VIR/backend/api/update_ownership.php`, {
+                fetch(`http://localhost:8000/api/update_ownership.php`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -719,7 +719,7 @@
                 const recordId = urlParams.get('id');
                 if (recordId) {
                     // Fetch record data
-                    fetch(`http://localhost/VIR/backend/api/get_records.php?id=${recordId}`)
+                    fetch(`http://localhost:8000/api/get_records.php?id=${recordId}`)
                         .then(response => response.json())
                         .then(data => {
                             if (data.status === 'success') {
@@ -1050,7 +1050,7 @@
             }
 
             try {
-                const response = await fetch('http://localhost/VIR/backend/api/save_ownership.php', {
+                const response = await fetch('http://localhost:8000/api/save_ownership.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

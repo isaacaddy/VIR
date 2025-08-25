@@ -7,29 +7,28 @@ header('Access-Control-Allow-Headers: Content-Type');
 include_once '../config/database.php';
 
 try {
-    $database = new Database();
-    $db = $database->getConnection();
-
+    // Use the existing $pdo connection from database.php
+    
     // Get total transfers
     $totalQuery = "SELECT COUNT(*) as total FROM ownership_changes";
-    $totalStmt = $db->query($totalQuery);
+    $totalStmt = $pdo->query($totalQuery);
     $totalResult = $totalStmt->fetch(PDO::FETCH_ASSOC);
 
     // Get today's transfers
     $todayQuery = "SELECT COUNT(*) as today FROM ownership_changes 
                    WHERE DATE(created_at) = CURDATE()";
-    $todayStmt = $db->query($todayQuery);
+    $todayStmt = $pdo->query($todayQuery);
     $todayResult = $todayStmt->fetch(PDO::FETCH_ASSOC);
 
     // Get recent activities (last 24 hours)
     $recentQuery = "SELECT COUNT(*) as recent FROM activity_logs 
                     WHERE created_at >= NOW() - INTERVAL 24 HOUR";
-    $recentStmt = $db->query($recentQuery);
+    $recentStmt = $pdo->query($recentQuery);
     $recentResult = $recentStmt->fetch(PDO::FETCH_ASSOC);
 
     // Get total registered vehicles
     $vehiclesQuery = "SELECT COUNT(*) as total FROM ownership_changes";
-    $vehiclesStmt = $db->query($vehiclesQuery);
+    $vehiclesStmt = $pdo->query($vehiclesQuery);
     $vehiclesResult = $vehiclesStmt->fetch(PDO::FETCH_ASSOC);
 
     // Get transfer trends (last 7 days)
@@ -38,14 +37,14 @@ try {
                    WHERE created_at >= NOW() - INTERVAL 7 DAY 
                    GROUP BY DATE(created_at) 
                    ORDER BY date";
-    $trendsStmt = $db->query($trendsQuery);
+    $trendsStmt = $pdo->query($trendsQuery);
     $trends = $trendsStmt->fetchAll(PDO::FETCH_ASSOC);
 
     // Get vehicle types distribution
     $typesQuery = "SELECT body_type, COUNT(*) as count 
                   FROM ownership_changes 
                   GROUP BY body_type";
-    $typesStmt = $db->query($typesQuery);
+    $typesStmt = $pdo->query($typesQuery);
     $types = $typesStmt->fetchAll(PDO::FETCH_ASSOC);
 
     // Get recent transfers
@@ -57,7 +56,7 @@ try {
                             FROM ownership_changes 
                             ORDER BY created_at DESC 
                             LIMIT 5";
-    $recentTransfersStmt = $db->query($recentTransfersQuery);
+    $recentTransfersStmt = $pdo->query($recentTransfersQuery);
     $recentTransfers = $recentTransfersStmt->fetchAll(PDO::FETCH_ASSOC);
 
     echo json_encode([
@@ -79,3 +78,4 @@ try {
         'message' => $e->getMessage()
     ]);
 } 
+?> 
