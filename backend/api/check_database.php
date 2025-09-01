@@ -3,11 +3,11 @@ header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 
 try {
-    // Database configuration
-    $host = 'localhost';
-    $dbname = 'dvla_db';
-    $username = 'root';
-    $password = '';
+    // Database configuration - Docker compatible
+    $host = getenv('DB_HOST') ?: 'mysql';
+    $dbname = getenv('DB_NAME') ?: 'dvla_db';
+    $username = getenv('DB_USER') ?: 'vir_user';
+    $password = getenv('DB_PASSWORD') ?: 'vir_password';
 
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);

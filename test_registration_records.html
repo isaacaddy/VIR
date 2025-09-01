@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Registration Records</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-8">
+    <div class="max-w-7xl mx-auto">
+        <h1 class="text-3xl font-bold text-gray-800 mb-8">Test Registration Records</h1>
+        
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">Debug Information</h2>
+            
+            <div class="space-y-4">
+                <div>
+                    <button onclick="testAPI()" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                        Test API Connection
+                    </button>
+                    <span id="apiStatus" class="ml-4 text-gray-600">Not tested</span>
+                </div>
+                
+                <div>
+                    <button onclick="testDataProcessing()" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+                        Test Data Processing
+                    </button>
+                    <span id="dataStatus" class="ml-4 text-gray-600">Not tested</span>
+                </div>
+                
+                <div>
+                    <button onclick="testTableCreation()" class="bg-purple-500 text-white px-4 py-2 rounded hover:bg-purple-600">
+                        Test Table Creation
+                    </button>
+                    <span id="tableStatus" class="ml-4 text-gray-600">Not tested</span>
+                </div>
+            </div>
+            
+            <div id="debugOutput" class="mt-6 p-4 bg-gray-100 rounded text-sm font-mono max-h-96 overflow-y-auto">
+                <div>Debug output will appear here...</div>
+            </div>
+        </div>
+        
+        <div id="testTable" class="mt-8 bg-white rounded-lg shadow-lg p-6 hidden">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4">Test Table</h3>
+            <table class="w-full">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Vehicle Number</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Owner Name</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Make</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Model</th>
+                    </tr>
+                </thead>
+                <tbody id="testTableBody">
+                    <!-- Test data will be populated here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        function log(message) {
+            const output = document.getElementById('debugOutput');
+            const timestamp = new Date().toLocaleTimeString();
+            output.innerHTML += `<div>[${timestamp}] ${message}</div>`;
+            output.scrollTop = output.scrollHeight;
+            console.log(message);
+        }
+        
+        async function testAPI() {
+            log('🧪 Testing API connection...');
+            const statusEl = document.getElementById('apiStatus');
+            
+            try {
+                const response = await fetch('http://localhost:8000/api/vehicle_registration.php');
+                log(`📡 Response status: ${response.status}`);
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    log(`✅ API successful - Status: ${data.status}`);
+                    log(`📊 Records received: ${data.data?.length || 0}`);
+                    
+                    if (data.data && data.data.length > 0) {
+                        log(`📋 Sample record: ${JSON.stringify(data.data[0], null, 2)}`);
+                    }
+                    
+                    statusEl.textContent = '✅ API working';
+                    statusEl.className = 'ml-4 text-green-600';
+                    
+                    // Store the data globally for other tests
+                    window.testData = data.data;
+                } else {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+            } catch (error) {
+                log(`❌ API error: ${error.message}`);
+                statusEl.textContent = '❌ API failed';
+                statusEl.className = 'ml-4 text-red-600';
+            }
+        }
+        
+        function testDataProcessing() {
+            log('🧪 Testing data processing...');
+            const statusEl = document.getElementById('dataStatus');
+            
+            if (!window.testData) {
+                log('❌ No test data available. Run API test first.');
+                statusEl.textContent = '❌ No data';
+                statusEl.className = 'ml-4 text-red-600';
+                return;
+            }
+            
+            try {
+                const records = window.testData;
+                log(`📊 Processing ${records.length} records...`);
+                
+                // Test field access
+                const sampleRecord = records[0];
+                log(`📋 Sample record fields:`);
+                log(`   - vehicle_number: ${sampleRecord.vehicle_number}`);
+                log(`   - owner_full_name: ${sampleRecord.owner_full_name}`);
+                log(`   - vehicle_make: ${sampleRecord.vehicle_make}`);
+                log(`   - model_name: ${sampleRecord.model_name}`);
+                
+                // Test filtering
+                const activeRecords = records.filter(r => r.status === 'Active');
+                log(`📊 Active records: ${activeRecords.length}`);
+                
+                statusEl.textContent = '✅ Data processing working';
+                statusEl.className = 'ml-4 text-green-600';
+                
+            } catch (error) {
+                log(`❌ Data processing error: ${error.message}`);
+                statusEl.textContent = '❌ Data processing failed';
+                statusEl.className = 'ml-4 text-red-600';
+            }
+        }
+        
+        function testTableCreation() {
+            log('🧪 Testing table creation...');
+            const statusEl = document.getElementById('tableStatus');
+            
+            if (!window.testData) {
+                log('❌ No test data available. Run API test first.');
+                statusEl.textContent = '❌ No data';
+                statusEl.className = 'ml-4 text-red-600';
+                return;
+            }
+            
+            try {
+                const records = window.testData;
+                const tableBody = document.getElementById('testTableBody');
+                const testTable = document.getElementById('testTable');
+                
+                log(`📊 Creating table with ${records.length} records...`);
+                
+                // Clear existing rows
+                tableBody.innerHTML = '';
+                
+                // Create rows
+                records.slice(0, 5).forEach((record, index) => {
+                    log(`🔄 Creating row ${index + 1} for ${record.vehicle_number}`);
+                    
+                    const row = document.createElement('tr');
+                    row.className = 'hover:bg-gray-50';
+                    row.innerHTML = `
+                        <td class="px-4 py-4 text-sm text-gray-900">${record.vehicle_number || 'N/A'}</td>
+                        <td class="px-4 py-4 text-sm text-gray-900">${record.owner_full_name || 'N/A'}</td>
+                        <td class="px-4 py-4 text-sm text-gray-900">${record.vehicle_make || 'N/A'}</td>
+                        <td class="px-4 py-4 text-sm text-gray-900">${record.model_name || 'N/A'}</td>
+                    `;
+                    
+                    tableBody.appendChild(row);
+                });
+                
+                // Show the table
+                testTable.classList.remove('hidden');
+                log('✅ Table created and displayed successfully');
+                
+                statusEl.textContent = '✅ Table creation working';
+                statusEl.className = 'ml-4 text-green-600';
+                
+            } catch (error) {
+                log(`❌ Table creation error: ${error.message}`);
+                statusEl.textContent = '❌ Table creation failed';
+                statusEl.className = 'ml-4 text-red-600';
+            }
+        }
+        
+        // Auto-run API test on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            log('🚀 Test page loaded');
+            log('🔄 Auto-running API test...');
+            setTimeout(testAPI, 1000);
+        });
+    </script>
+</body>
+</html>

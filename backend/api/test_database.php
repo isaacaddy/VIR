@@ -6,11 +6,15 @@ header('Access-Control-Allow-Origin: *');
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-include_once '../config/database.php';
+// Database configuration - Docker compatible
+$host = getenv('DB_HOST') ?: 'mysql';
+$dbname = getenv('DB_NAME') ?: 'dvla_db';
+$username = getenv('DB_USER') ?: 'vir_user';
+$password = getenv('DB_PASSWORD') ?: 'vir_password';
 
 try {
-    $database = new Database();
-    $db = $database->getConnection();
+    $db = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password);
+    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     
     if ($db) {
         // Test if activity_logs table exists

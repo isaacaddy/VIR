@@ -5,7 +5,7 @@ const API_CONFIG = {
         DASHBOARD_STATS: '/api/dashboard_stats.php',
         USER_INFO: '/api/user_info.php',
         SAVE_OWNERSHIP: '/api/save_ownership.php',
-        UPDATE_OWNERSHIP: '/api/update_ownership.php',
+
         GET_RECORDS: '/api/get_record.php',
         VEHICLE_REGISTRATION: '/api/vehicle_registration.php',
         VEHICLE_STATISTICS: '/api/vehicle_statistics.php',
